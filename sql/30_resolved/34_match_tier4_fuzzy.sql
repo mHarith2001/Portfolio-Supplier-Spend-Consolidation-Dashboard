@@ -1,3 +1,6 @@
 -- 34_match_tier4_fuzzy.sql
+-- Layer: L3 resolved_
 -- Not yet written. Phase 3.
--- Rules: 05a_PREP_PACKAGES/portfolio-b-prep-package/08-transformation-guidelines.md
+-- Validation for this layer: sql/90_validation/93_validate_resolved.sql
+--
+-- Note: NEVER auto-accepted. Output goes to docs/review_queue.csv with decision blank.

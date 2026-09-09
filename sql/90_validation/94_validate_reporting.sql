@@ -1,3 +1,5 @@
 -- 94_validate_reporting.sql
+-- Layer: validation. Runs AFTER its layer, not once at the end.
 -- Not yet written. Phase 3.
--- Rules: 05a_PREP_PACKAGES/portfolio-b-prep-package/08-transformation-guidelines.md
+--
+-- Note: V4.1-V4.6, all HARD.

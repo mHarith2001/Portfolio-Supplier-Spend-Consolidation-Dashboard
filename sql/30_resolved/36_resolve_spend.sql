@@ -1,3 +1,8 @@
 -- 36_resolve_spend.sql
+-- Layer: L3 resolved_
 -- Not yet written. Phase 3.
--- Rules: 05a_PREP_PACKAGES/portfolio-b-prep-package/08-transformation-guidelines.md
+-- Validation for this layer: sql/90_validation/93_validate_resolved.sql
+--
+-- Note: V3.1 and V3.2 run against this: row count and SUM(amount) must be
+--        identical before and after. A fan-out here is the single most likely
+--        way this analysis becomes quietly wrong.

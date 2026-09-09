@@ -77,7 +77,7 @@ sql_files=(
   "sql/90_validation/95_measure_match_precision.sql"
 )
 for f in "${sql_files[@]}"; do
-  [ -f "$f" ] || printf -- "-- %s\n-- Not yet written. Phase 3.\n-- Rules: 05a_PREP_PACKAGES/portfolio-b-prep-package/08-transformation-guidelines.md\n" "$(basename "$f")" > "$f"
+  [ -f "$f" ] || printf -- "-- %s\n-- Not yet written. Phase 3.\n-- Rules: the project transformation guidelines (not in this repository)\n" "$(basename "$f")" > "$f"
 done
 
 # --- Python script placeholders ----------------------------------------------

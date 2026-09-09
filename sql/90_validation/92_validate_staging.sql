@@ -1,3 +1,8 @@
 -- 92_validate_staging.sql
+-- Layer: validation. Runs AFTER its layer, not once at the end.
 -- Not yet written. Phase 3.
--- Rules: 05a_PREP_PACKAGES/portfolio-b-prep-package/08-transformation-guidelines.md
+--
+-- Note: V2.1-V2.12. V2.8 is HARD as of 2026-09-05: amount_vat_basis must be
+--        net_plus_irrecoverable_confirmed or net_plus_irrecoverable_code_basis.
+--        A NULL or unknown is a FAILED CASE — an entity string matching none of
+--        the expected six — not a data condition. Halt, do not count it.

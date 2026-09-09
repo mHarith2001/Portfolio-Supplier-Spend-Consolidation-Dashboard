@@ -1,3 +1,6 @@
 -- 91_validate_raw.sql
+-- Layer: validation. Runs AFTER its layer, not once at the end.
 -- Not yet written. Phase 3.
--- Rules: 05a_PREP_PACKAGES/portfolio-b-prep-package/08-transformation-guidelines.md
+--
+-- Note: V1.1-V1.5, all HARD. V1.1 is the foundation of E-1 — if row counts
+--        do not tie to docs/provenance.csv, nothing downstream can be trusted.

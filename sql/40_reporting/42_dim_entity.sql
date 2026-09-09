@@ -1,3 +1,4 @@
 -- 42_dim_entity.sql
+-- Layer: L4 reporting_
 -- Not yet written. Phase 3.
--- Rules: 05a_PREP_PACKAGES/portfolio-b-prep-package/08-transformation-guidelines.md
+-- Validation for this layer: sql/90_validation/94_validate_reporting.sql

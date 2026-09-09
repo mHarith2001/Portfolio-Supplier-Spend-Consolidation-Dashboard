@@ -1,3 +1,6 @@
 -- 31_match_tier1_company_number.sql
+-- Layer: L3 resolved_
 -- Not yet written. Phase 3.
--- Rules: 05a_PREP_PACKAGES/portfolio-b-prep-package/08-transformation-guidelines.md
+-- Validation for this layer: sql/90_validation/93_validate_resolved.sql
+--
+-- Note: Deterministic. The only tier that needs no judgement.

@@ -1,3 +1,8 @@
 -- 95_measure_match_precision.sql
+-- Layer: validation. Runs AFTER its layer, not once at the end.
 -- Not yet written. Phase 3.
--- Rules: 05a_PREP_PACKAGES/portfolio-b-prep-package/08-transformation-guidelines.md
+--
+-- Note: E-3, the load-bearing measurement. Scored against the Contracts Finder
+--        subset where the company number is known — 32.42% coverage, a complete
+--        census. Output: docs/match_precision.md. Published whether or not it
+--        flatters the method.

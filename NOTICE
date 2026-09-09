@@ -1,0 +1,40 @@
+NOTICE — scope of the repository licence, and the separate data licences
+
+The MIT licence in LICENSE covers the CODE AND DOCUMENTATION in this
+repository only. It does not, and cannot, relicense the source data.
+
+--------------------------------------------------------------------------
+DATA LICENCES
+--------------------------------------------------------------------------
+
+B-DS-01  Spend over GBP 25,000 - central departments
+B-DS-02  Council spending - local authorities
+B-DS-04  Contracts Finder OCDS award notices
+
+  Open Government Licence v3.0. Required attribution:
+
+    Contains public sector information licensed under the
+    Open Government Licence v3.0.
+
+  Manchester City Council additionally requires a council-specific
+  attribution string and carries a commercial-use condition. Both are
+  stated in docs/limitations.md.
+
+B-DS-03  Companies House Free Company Data Product, snapshot 2026-08-01
+
+  Crown copyright. Required attribution:
+
+    Contains public sector information from Companies House,
+    licensed under Crown copyright.
+
+  Four binding conditions:
+
+    1. Reproduce accurately - no altered or invented company records
+    2. Not misleading in context
+    3. Identify source and acknowledge copyright status wherever
+       output is published
+    4. Data-protection compliance rests with the publisher of the
+       derived work, not with Companies House
+
+  Condition 4 is why the raw register is never committed to this
+  repository. See .gitignore and docs/limitations.md.

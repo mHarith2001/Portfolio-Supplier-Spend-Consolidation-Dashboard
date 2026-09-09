@@ -1,3 +1,6 @@
 -- 93_validate_resolved.sql
+-- Layer: validation. Runs AFTER its layer, not once at the end.
 -- Not yet written. Phase 3.
--- Rules: 05a_PREP_PACKAGES/portfolio-b-prep-package/08-transformation-guidelines.md
+--
+-- Note: V3.1-V3.17. V3.1 and V3.2 are the two most important checks in the
+--        project: COUNT(*) and SUM(amount) identical to staging, to the penny.

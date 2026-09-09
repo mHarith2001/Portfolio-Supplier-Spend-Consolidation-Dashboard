@@ -1,0 +1,42 @@
+# ==============================================================================
+# Portfolio-Supplier-Spend-Consolidation-Dashboard — .gitattributes
+#
+# Added 2026-09-09 after the step-0 commit, which produced CRLF warnings on
+# every text file. The warnings are harmless for .md, .sql and .py — Git's
+# autocrlf handles them and the content is unaffected.
+#
+# THEY ARE NOT HARMLESS FOR step0-scaffold.sh.
+#
+# That file is now committed in a PUBLIC repository. If a Linux or macOS user
+# clones it after a CRLF checkout, the shebang line reads `#!/usr/bin/env bash\r`
+# and the shell reports:
+#
+#     /usr/bin/env: 'bash\r': No such file or directory
+#
+# — an error that gives no hint of its own cause. The rule below prevents it.
+# ==============================================================================
+
+# Default: let Git normalise line endings in the repository, check out native.
+* text=auto
+
+# Shell scripts MUST stay LF, in the repo and on disk, on every platform.
+*.sh text eol=lf
+
+# Keep these LF too — they are read by tools, not only by editors.
+*.py text eol=lf
+*.sql text eol=lf
+
+# Documentation and data: normalise, check out native. Windows editors are the
+# main consumer here.
+*.md text
+*.csv text
+*.txt text
+
+# Binary — never touch.
+*.twbx binary
+*.hyper binary
+*.tde binary
+*.png binary
+*.jpg binary
+*.pdf binary
+*.zip binary

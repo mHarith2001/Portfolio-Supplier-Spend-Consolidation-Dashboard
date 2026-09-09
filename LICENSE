@@ -19,14 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----
-
-NOTE ON SCOPE — this licence covers the CODE AND DOCUMENTATION in this
-repository only. It does not and cannot relicense the source data.
-
-  B-DS-01, B-DS-02, B-DS-04   Open Government Licence v3.0
-  B-DS-03                     Companies House, Crown copyright
-
-Both are stated with their attribution strings in README.md and docs/limitations.md,
-and apply on their own terms.

@@ -1,3 +1,4 @@
 -- 11_create_raw_spend.sql
+-- Layer: L1 raw_
 -- Not yet written. Phase 3.
--- Rules: 05a_PREP_PACKAGES/portfolio-b-prep-package/08-transformation-guidelines.md
+-- Validation for this layer: sql/90_validation/91_validate_raw.sql
