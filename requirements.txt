@@ -1,0 +1,36 @@
+# Portfolio B — acquisition and profiling dependencies
+#
+# SCOPE: Python is used here for ACQUISITION AND PROFILING ONLY.
+# All analysis is SQL on BigQuery (charter §4 — Python is allocated to Portfolio C,
+# and keeping B tool-pure protects C's originality).
+#
+# ------------------------------------------------------------------------------
+# VERSIONS ARE NOT PINNED YET — AND THAT IS A KNOWN GAP, NOT AN OVERSIGHT.
+#
+# Acquisition ran on 2026-08-29. The exact versions used in that run were not
+# recorded, and inventing them here would be worse than leaving them open.
+#
+# FIRST BUILD ACTION: create the venv, install, run one acquisition script to
+# confirm it works, then:
+#
+#     pip freeze > requirements.txt
+#
+# and commit the pinned file. QA check Q8.2 requires versions, not ranges.
+# ------------------------------------------------------------------------------
+
+# HTTP acquisition
+requests
+
+# Encoding detection — transformation rule R5.
+# 46 of 62 files contain bytes in the 0x80-0x9F range (14,012 occurrences,
+# corrupting 322 supplier names). BigQuery accepts only UTF-8 or ISO-8859-1;
+# CP1252 is neither. Detection has to happen before conversion.
+charset-normalizer
+
+# Source profiling — column inventory, redaction rate, date-format census.
+# Profiling only. No analysis, no modelling.
+pandas
+
+# Google Cloud — staging the Companies House load through Cloud Storage (D-P-029)
+google-cloud-storage
+google-cloud-bigquery
