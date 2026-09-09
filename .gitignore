@@ -1,0 +1,191 @@
+# ==============================================================================
+# Portfolio-Supplier-Spend-Consolidation-Dashboard
+# .gitignore — COMMITTED FIRST, ALONE, BEFORE ANY OTHER FILE EXISTS
+#
+# This repository is PUBLIC from creation. There is no private window in which a
+# mistaken commit can be removed before anyone sees it. `.gitignore` does not
+# apply to already-tracked paths, and `git rm --cached` is forward-looking only:
+# every commit made before it still contains the blob.
+#
+# Governing rules: charter L-3 (raw register never committed) and Companies
+# House Crown copyright condition 4 (data-protection responsibility rests with
+# the publisher of the derived work).
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. RAW AND INTERMEDIATE DATA — the reason this file is committed first
+# ------------------------------------------------------------------------------
+# data/raw/     ~470 MB Companies House register + 62 spend CSVs.
+#               Registered addresses may be residential.
+# data/interim/ No evidential value; regenerable.
+#
+# The `*` + negation pattern is deliberate: a bare `data/raw/` would also block
+# the .gitkeep placeholder the scaffold needs.
+
+data/raw/*
+!data/raw/.gitkeep
+
+data/interim/*
+!data/interim/.gitkeep
+
+# Belt and braces — these names must never appear anywhere in the tree,
+# whatever directory someone puts them in.
+BasicCompanyData*
+BasicCompanyData*.zip
+BasicCompanyData*.csv
+**/companies_house/
+**/companies-house/
+
+# ------------------------------------------------------------------------------
+# 2. CREDENTIALS — narrow patterns, not blanket *.json
+# ------------------------------------------------------------------------------
+# B-DS-04 (Contracts Finder) is published as OCDS JSON, and config files are
+# JSON. A blanket *.json would hide real project files. These patterns target
+# credential shapes specifically.
+
+*.pem
+*.key
+*.p12
+*.pfx
+.env
+.env.*
+!.env.example
+
+# Google Cloud service-account keys
+*service-account*.json
+*service_account*.json
+*-key.json
+*_key.json
+*credentials*.json
+*client_secret*.json
+gcloud-*.json
+application_default_credentials.json
+.gcloud/
+.config/gcloud/
+
+# BigQuery / gcloud local state
+.bigqueryrc
+
+# ------------------------------------------------------------------------------
+# 3. TABLEAU — the .twbx is committed; extracts and backups are not
+# ------------------------------------------------------------------------------
+# READ THIS BEFORE THE FIRST TABLEAU SAVE.
+#
+# `tableau/spend-consolidation.twbx` IS committed — it is the E-7 artefact.
+# A .twbx is a PACKAGED workbook: it EMBEDS its data extract.
+#
+# .gitignore CANNOT protect you here, because the file is deliberately tracked.
+# The guard is procedural: build the extract from data/outputs/ aggregates only,
+# never from a full resolved or staging table. See the runbook §4.
+
+*.hyper
+*.tde
+*.tdsx
+*.twbr
+*.twb.bak
+tableau/Backup/
+tableau/*.hyper
+tableau/*.tde
+tableau/Logs/
+tableau/TableauTemp/
+
+# ------------------------------------------------------------------------------
+# 4. PYTHON — acquisition and profiling scripts only (charter §4: Python is
+#    allocated to Portfolio C; B uses it for acquisition, not analysis)
+# ------------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Jupyter (not expected in B, ignored defensively)
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Testing / coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+
+# ------------------------------------------------------------------------------
+# 5. LOCAL DATABASE ENGINES — B-5 DuckDB / SQLite, the approved local alternative
+# ------------------------------------------------------------------------------
+# If the local path is ever exercised, its database file would contain the full
+# Companies House register. Ignored in advance.
+
+*.duckdb
+*.duckdb.wal
+*.db
+*.sqlite
+*.sqlite3
+*.sqlite-journal
+
+# ------------------------------------------------------------------------------
+# 6. LARGE / ARCHIVE FORMATS ANYWHERE IN THE TREE
+# ------------------------------------------------------------------------------
+# Every legitimate committed artefact in this repo is .sql, .py, .md, .csv
+# (small), .twbx or .png. Nothing needs to be a zip or a parquet.
+
+*.zip
+*.gz
+*.tar
+*.tgz
+*.7z
+*.rar
+*.parquet
+*.avro
+*.orc
+
+# ------------------------------------------------------------------------------
+# 7. EDITOR AND OS NOISE
+# ------------------------------------------------------------------------------
+.vscode/
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# ------------------------------------------------------------------------------
+# 8. WHAT IS DELIBERATELY *NOT* IGNORED — do not add these
+# ------------------------------------------------------------------------------
+# docs/provenance.csv        69 rows — the E-1 reproducibility record
+# docs/review_queue.csv      tier-4 ambiguities, decisions blank
+# docs/match_precision.md    the E-3 measurement
+# data/outputs/*.csv         small derived aggregates, the Tableau source
+# sql/**/*.sql               every layer
+# scripts/*.py               acquisition and profiling
+# tableau/*.twbx             the packaged workbook (see §3)
+#
+# If a future edit makes one of these ignored, E-1, E-3 or E-7 loses its
+# evidence. Check `git status --ignored` after any change to this file.
