@@ -28,6 +28,19 @@ data/raw/*
 data/interim/*
 !data/interim/.gitkeep
 
+# data/clean/  The 62 derived CSVs written by scripts/05_preload_clean.py
+#              (08-transformation-guidelines.md s2.5 step 6). Fully regenerable
+#              from data/raw/ + docs/provenance.csv; no evidential value of its
+#              own. The s2.6 validation report in docs/ is the evidence, not
+#              these files.
+#
+#              ADDED 2026-09-13. The scaffold (06-repo-scaffold.md s3) named
+#              only raw/interim/outputs; 08 s2.5 introduced data/clean/ and the
+#              ignore rule was never carried across.
+
+data/clean/*
+!data/clean/.gitkeep
+
 # Belt and braces — these names must never appear anywhere in the tree,
 # whatever directory someone puts them in.
 BasicCompanyData*
