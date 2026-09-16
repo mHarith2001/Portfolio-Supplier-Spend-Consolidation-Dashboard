@@ -13,10 +13,18 @@ READS (outside the repo — NOT copied in by 00_setup_inputs.py, deliberately):
     <VAULT>/data/companies_house/BasicCompanyData-2026-08-01-part4_7.csv
                                                ~417 MB
 
-    <VAULT> defaults to
-    H:\\My Drive\\Obsidian\\Obsidian Vault\\03_projects\\
-        Portfolio_Data_Analytic_Career\\06_ACTIVE_BUILD\\portfolio-b
-    Override with --vault "<path>" or point at the file with --file "<path>".
+    <VAULT> is the portfolio-b working folder in the Obsidian vault. Its path
+    is deliberately NOT written in this file: this repository is PUBLIC, and
+    publishing a local vault path into it has been a defect in this project
+    before. Supply it one of these ways:
+
+        set PORTFOLIO_B_VAULT=<path to the portfolio-b working folder>
+        --vault "<path to the portfolio-b working folder>"
+        --file  "<full path to the part4 CSV>"
+
+    The script HALTS with these instructions if none is supplied. It does
+    not guess: a wrong guess reads the wrong file and then reports a
+    verdict about it with full confidence.
 
 WRITES:
     docs/v1_5_part4_diagnostic.md              TRACKED — this is the evidence
@@ -70,7 +78,7 @@ IT ALSO COUNTS BLANK RECORDS, and that is not incidental
 """
 
 from __future__ import annotations
-import argparse, csv, sys
+import argparse, csv, os, sys
 from pathlib import Path
 
 csv.field_size_limit(min(sys.maxsize, 2**31 - 1))
@@ -78,10 +86,7 @@ csv.field_size_limit(min(sys.maxsize, 2**31 - 1))
 ROOT = Path(__file__).resolve().parents[1]
 OUT  = ROOT / "docs" / "v1_5_part4_diagnostic.md"
 
-VAULT_DEFAULT = Path(
-    r"H:\My Drive\Obsidian\Obsidian Vault\03_projects"
-    r"\Portfolio_Data_Analytic_Career\06_ACTIVE_BUILD\portfolio-b"
-)
+VAULT_ENV = "PORTFOLIO_B_VAULT"     # no default path: see PREREQUISITES
 PART4 = "BasicCompanyData-2026-08-01-part4_7.csv"
 
 EXPECTED_RECORDS  = 849_999      # CSV records, blank line included
@@ -92,15 +97,25 @@ EXPECTED_COMPANY  = 849_998      # EXPECTED_RECORDS - EXPECTED_BLANKS
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--vault", type=Path, default=VAULT_DEFAULT)
+    ap.add_argument("--vault", type=Path, default=None,
+                    help=f"portfolio-b working folder; or set {VAULT_ENV}")
     ap.add_argument("--file",  type=Path, default=None,
                     help="explicit path to the part4 CSV, overrides --vault")
     args = ap.parse_args()
 
-    src = args.file or (args.vault / "data" / "companies_house" / PART4)
+    env = os.environ.get(VAULT_ENV)
+    vault = args.vault or (Path(env) if env else None)
+    src = args.file or ((vault / "data" / "companies_house" / PART4) if vault else None)
+
+    if src is None:
+        print("FAIL  no source given, and this script does not guess a path.")
+        print(f"      set {VAULT_ENV}=<portfolio-b working folder>")
+        print('      or:  --vault "<portfolio-b working folder>"')
+        print(f'      or:  --file  "<full path to {PART4}>"')
+        return 1
     if not src.exists():
         print(f"FAIL  cannot find {src}")
-        print('      pass the path explicitly:  --file "<path to part4 csv>"')
+        print(f'      pass the path explicitly:  --file "<full path to {PART4}>"')
         return 1
 
     print(f"scanning {src}")

@@ -12,10 +12,15 @@ READS (outside the repo — this is the whole point of the script):
     <VAULT>/data/provenance.csv                69 rows x 18 columns
     <VAULT>/data/raw/*.csv                     62 files, ~48 MB
 
-    <VAULT> defaults to
-    H:\\My Drive\\Obsidian\\Obsidian Vault\\03_projects\\
-        Portfolio_Data_Analytic_Career\\06_ACTIVE_BUILD\\portfolio-b
-    Override with --vault "<path>".
+    <VAULT> is the portfolio-b working folder in the Obsidian vault. Its path
+    is deliberately NOT written in this file: this repository is PUBLIC, and
+    publishing a local vault path into it has been a defect in this project
+    before. Supply it one of these ways:
+
+        set PORTFOLIO_B_VAULT=<path to the portfolio-b working folder>
+        --vault "<path to the portfolio-b working folder>"
+
+    The script HALTS with these instructions if neither is supplied.
 
 WRITES (inside the repo):
     docs/provenance.csv                        TRACKED — evidence, committed
@@ -51,7 +56,7 @@ Idempotent. A file already present with a matching SHA-256 is left alone.
 """
 
 from __future__ import annotations
-import argparse, csv, hashlib, shutil, sys
+import argparse, csv, hashlib, os, shutil, sys
 from pathlib import Path
 
 ROOT       = Path(__file__).resolve().parents[1]
@@ -59,10 +64,7 @@ RAW_DST    = ROOT / "data" / "raw"
 CLEAN_DST  = ROOT / "data" / "clean"
 PROV_DST   = ROOT / "docs" / "provenance.csv"
 
-VAULT_DEFAULT = Path(
-    r"H:\My Drive\Obsidian\Obsidian Vault\03_projects"
-    r"\Portfolio_Data_Analytic_Career\06_ACTIVE_BUILD\portfolio-b"
-)
+VAULT_ENV = "PORTFOLIO_B_VAULT"     # no default path: see PREREQUISITES
 
 EXPECTED_SPEND_FILES = 62           # 08 s1.1 row 1
 EXPECTED_PROV_ROWS   = 69           # 08 s1.1 row 4 (62 spend + 7 Companies House)
@@ -91,13 +93,21 @@ def read_provenance(path: Path) -> list[dict]:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--vault", type=Path, default=VAULT_DEFAULT)
+    ap.add_argument("--vault", type=Path, default=None,
+                    help=f"portfolio-b working folder; or set {VAULT_ENV}")
     ap.add_argument("--check",      action="store_true", help="report only, copy nothing")
     ap.add_argument("--no-verify",  action="store_true", help="skip SHA-256 verification")
     ap.add_argument("--force",      action="store_true", help="re-copy files already present")
     args = ap.parse_args()
 
-    vault     = args.vault
+    env   = os.environ.get(VAULT_ENV)
+    vault = args.vault or (Path(env) if env else None)
+    if vault is None:
+        print("FAIL  no vault path given, and this script does not guess one.")
+        print(f"      set {VAULT_ENV}=<portfolio-b working folder>")
+        print('      or:  python scripts/00_setup_inputs.py --vault "<portfolio-b working folder>"')
+        return 1
+
     prov_src  = vault / "data" / "provenance.csv"
     raw_src   = vault / "data" / "raw"
 

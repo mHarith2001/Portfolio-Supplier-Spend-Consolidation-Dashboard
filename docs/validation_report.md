@@ -199,3 +199,156 @@ registered addresses that may be residential, and it does not persist in cloud
 storage once loaded. Every deleted object was verified present on local disk
 first; the 62 clean files are in any case regenerable by
 `scripts/05_preload_clean.py`.
+
+---
+
+## 6. Layer 2 validation — `V2.1`–`V2.12`
+
+**Executed 2026-09-16** from `sql/90_validation/92_validate_staging.sql` against
+`staging_spend` built by `sql/20_staging/21_stage_spend_union.sql`.
+
+| Rule | Severity | Required | Result |
+|---|---|---:|---|
+| `V2.1` row count | HARD | 352,614 | **PASS**, delta 0 |
+| `V2.2` `spend_id` unique | HARD | 0 dupes | **PASS** |
+| `V2.3` traces to L1 | HARD | 0 untraceable | **PASS** |
+| `V2.4` unparsed dates | HARD | 46 | **PASS** |
+| `V2.5` window split | SOFT | 289,990 / 62,578 | **PASS**, exact |
+| `V2.6` unparsed amounts | HARD | 10 | **PASS** |
+| `V2.8` `amount_vat_basis` | HARD | 2 permitted values | **PASS** |
+| `V2.9` name unless redacted | HARD | 0 | **40 — see §6.5** |
+| `V2.10` normalisation erasure | HARD | 0 | **PASS** |
+| `V2.11` postcode format | SOFT | — | 4,562 of 44,073 invalid |
+| `V2.12` `publisher_type` | HARD | 0 null | **PASS** |
+
+### 6.1 Padding removal, per publisher — `08` §11.1 mandatory reporting
+
+| Publisher | L1 rows | `staging_spend` | Padding removed |
+|---|---:|---:|---:|
+| HM Revenue and Customs | 23,759 | 11,558 | **12,201** |
+| Ministry of Justice | 5,160 | 5,142 | **18** |
+| Manchester City Council | 107,223 | 107,221 | **2** |
+| Bristol City Council | 71,375 | 71,375 | 0 |
+| City of York Council | 124,803 | 124,803 | 0 |
+| Department for Transport | 32,515 | 32,515 | 0 |
+| **Total** | **364,835** | **352,614** | **12,221** |
+
+Each figure equals `provenance.blank_padding_rows` for that publisher.
+**Publishing these counts is part of the rule**: a total that falls by 12,221
+between layers is otherwise indistinguishable from a join that lost 12,221 rows.
+
+**The §11.1 filter was corrected.** Its prose defines padding as every field
+empty; its SQL tests only supplier, amount and date. For MOJ those differ — 27
+rows are blank in the three fields but only **18 are blank in all fields**. The
+other 9 carry publisher reconciliation notes in `department_family` ("Exempt
+items", "Bank Rec adjustments", "Duplicate exempt transactions", "On AP18 return
+- added to publish (to be cleared by SCS)" and similar), all in the 2025-01 file.
+They are a data-quality finding, not padding. The all-fields test is used; the
+three-field test yields 352,605 and fails `V2.1` by 9.
+
+### 6.2 Date-ladder rejections — `08` §6.5 mandatory reporting
+
+| Publisher | Rows | Unparsed | % |
+|---|---:|---:|---:|
+| Ministry of Justice | 5,142 | 34 | 0.6612 |
+| Bristol City Council | 71,375 | 11 | 0.0154 |
+| Manchester City Council | 107,221 | 1 | 0.0009 |
+| City of York Council | 124,803 | 0 | 0 |
+| Department for Transport | 32,515 | 0 | 0 |
+| HM Revenue and Customs | 11,558 | 0 | 0 |
+| **Total** | | **46** | |
+
+`is_undated` agrees with the ladder on every row (0 disagreements).
+
+### 6.3 A silent mis-dating defect in the §6.3 ladder, found and fixed
+
+**`SAFE.PARSE_DATE('%d/%m/%Y', '01/03/24')` does not fail. It returns
+`0024-03-01`.** `%Y` accepts a two-digit year, so rung 1 of the ladder consumed
+all **4,451 Ministry of Justice `dd/mm/yy` dates** before rung 7 was reached.
+
+Nothing failed to parse, so `is_undated` stayed FALSE and every one of those
+rows looked correctly dated — while sitting roughly two thousand years outside
+the analysis window. Measured before the fix: MOJ `MIN(payment_date)` =
+`0024-02-01`, with 4,451 rows before `2000-01-01`.
+
+§6.2 warns about the opposite ordering hazard. That one does not fire:
+`PARSE_DATE` requires a full match, so `%d/%m/%y` on `01/03/2024` leaves `24`
+unconsumed and correctly falls through.
+
+**It was caught by the §9.6 window baseline**, which came out at 285,544 against
+a required 289,990 — a shortfall of exactly 4,446. Rung 1 now carries a shape
+guard (`^\d{1,2}/\d{1,2}/\d{4}$`); order is unchanged. After the fix the window
+split is exactly 289,990 / 62,578 / 46 and no publisher has any date before 2000.
+
+### 6.4 Redaction pattern exclusions — `08` §11.4 requires these recorded
+
+The §11.4 pattern flagged **14 real trading names across 186 rows**, every one of
+which would have gone to tier 5 reason `redacted` and been removed from matching:
+
+| Excluded name | Rows | Matched on |
+|---|---:|---|
+| Streamline Taxi & Private Car Hire | 48 | `PRIVATE` |
+| Tiddlywinks Private Day Nursery | 46 | `PRIVATE` |
+| Diamonds Property Development Private Ltd | 34 | `PRIVATE` |
+| ANGEL HOME CARE SERVICE PRIVATE | 15 | `PRIVATE` |
+| Hastings Private Hire | 13 | `PRIVATE` |
+| Redactive Publishing Limited | 8 | `REDACT` |
+| Redactive Publishing Ltd | 6 | `REDACT` |
+| Private Public Ltd | 4 | `PRIVATE` |
+| Taylor Private Hire | 4 | `PRIVATE` |
+| Redactive Events Ltd | 3 | `REDACT` |
+| P Bixby T/A Constructive Individuals Ltd | 2 | `INDIVIDUAL` |
+| HAGUE CONFERENCE ON PRIVATE INTERNATIONAL LAW | 1 | `PRIVATE` |
+| REDACTIVE | 1 | `REDACT` |
+| Tiddlywinks Private Day Nursery Easingwold | 1 | `PRIVATE` |
+
+The pattern now matches the redaction **idiom** rather than a substring:
+`REDACTED`/`REDACTION` rather than `REDACT`, `PRIVATE` only as a whole name or
+within `PRIVATE INDIVIDUAL`, and `INDIVIDUAL` only as a whole word. Verified
+against every distinct name the original flagged: all 5 genuine redaction
+strings still flag, all 14 trading names no longer do.
+
+**Result: 31,508 redacted rows across 5 distinct strings** — `Redacted Personal
+Information` 25,355 · `REDACTED - PERSONAL DATA` 3,271 · `REDACTED` 2,540 ·
+`REDACTED` (variant) 341 · `Name redacted` 1. Redaction rate 8.94%.
+
+### 6.5 `V2.9` — 40 rows fail as written, and they are not a data error
+
+40 rows have no `supplier_name_raw` and are not redacted. **All 40 are
+`is_undated = TRUE`**, and they carry no amount in 9 cases. They are the
+structurally-empty and annotation rows that §11.1 deliberately retains because
+they are not blank in *every* field.
+
+`V2.9` as written ("`supplier_name_raw` non-null unless `is_redacted`", HARD)
+cannot pass while §11.1 retains them. The two rules are in tension and the
+resolution is not the builder's: either `V2.9` is scoped to rows carrying a
+payment amount, or these rows get an explicit flag of their own.
+**Reported, not worked around.**
+
+### 6.6 Amounts and Grant-in-Aid
+
+| Publisher | Rows | Unparsed | Negative | Sum (GBP) |
+|---|---:|---:|---:|---:|
+| Bristol City Council | 71,375 | 0 | 1,069 | 1,536,631,027.65 |
+| City of York Council | 124,803 | 0 | 2,215 | 532,545,696.76 |
+| Department for Transport | 32,515 | 0 | 0 | 45,190,494,506.05 |
+| HM Revenue and Customs | 11,558 | 0 | 393 | 2,282,004,549.81 |
+| Manchester City Council | 107,221 | 0 | 5,202 | 1,247,793,286.58 |
+| Ministry of Justice | 5,142 | 10 | 151 | 3,097,386,774.25 |
+
+All 10 unparsed amounts are Ministry of Justice, as `08` §10.5 requires.
+Negatives are **retained and counted** per `V2.7` — they are credits and
+reversals. MOJ's 19 accounting-parenthesis negatives parse with the correct sign;
+mis-parsed they would swing the total by GBP 5,532,432.16 while still looking
+plausible.
+
+**Grant-in-Aid (`D-P-022`, Option A per `D-P-028`): 59 rows, GBP
+10,788,523,565.00, 23.87% of DfT's GBP 45,190,494,506.05.** Flagged and retained,
+excluded from supplier concentration and cross-publisher rankings.
+
+### 6.7 `amount_vat_basis` (`V2.8`)
+
+`net_plus_irrecoverable_confirmed` 232,024 · `net_plus_irrecoverable_code_basis`
+120,590. No NULL and no third value, so no entity string fell outside the
+expected six. York's `Irrecoverable_VAT` column was independently confirmed
+**empty in all 124,803 rows**, as `08` §11.3 states.
