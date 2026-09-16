@@ -138,3 +138,64 @@ part4 record #454,675 contains an embedded newline inside
 against a 55-field header** — a legitimate quoted newline. The record is intact,
 no fields are shifted, no company is missing from the register, and tier-1
 matching will not fail silently. No limitations-register entry is required.
+
+### 5.8 Contracts Finder load — `08` §5.4
+
+**Executed 2026-09-16** from `sql/10_raw/13_create_raw_contracts_finder.sql`.
+
+| Measure | Value | Required |
+|---|---:|---:|
+| `raw_contracts_finder` rows | **76,449** | 76,449 |
+| Columns | 9 | — |
+| Non-STRING columns | **0** | 0 |
+
+**The required figure was confirmed against the source before loading**, not
+after. `q15-awards.csv` holds 76,450 physical lines; parsed with `csv.reader` it
+yields **76,449 records**, every row 9 fields, **0 blank records and 0 embedded
+newlines**. A physical line count is not a record count — the 9 DfT records
+demonstrate that in this same project.
+
+The file carries a UTF-8 BOM on its header line. It is harmless here because the
+load uses an explicit schema with `skip_leading_rows=1`, so that line is
+discarded. Under autodetect the first column would have been named with the BOM
+attached, and every later reference to it would have failed invisibly.
+
+`raw_contracts_finder` carries **no system columns**, for the same reason
+`raw_companies_house` does not: it is a single-file reference load, not one of
+the 62 per-period spend files. `V1.3` and `V1.4a` are scoped to the six spend
+tables and this table is outside both by construction.
+
+#### `E-3` known-answer subset — sizing the precision measurement
+
+| Scheme | Releases | Distinct identifiers | Blank identifier |
+|---|---:|---:|---:|
+| `GB-COH` | 24,938 | 12,670 | 157 |
+| *(none)* | 51,331 | — | 51,331 |
+| `GB-CHC` | 175 | 153 | 0 |
+| `GB-SC` | 4 | 4 | 0 |
+| `GB-NIC` | 1 | 1 | 0 |
+| **Total** | **76,449** | | |
+
+**`E-3` is measured on the `GB-COH` subset carrying an identifier: 24,781
+releases covering 12,670 distinct companies.** Two-thirds of Contracts Finder
+releases (51,331) carry no supplier identifier at all, which is a property of
+the source and not of the matching. **A precision figure quoted without the size
+of the subset it was measured on is not a measurement**, so this table is the
+denominator `docs/match_precision.md` must cite.
+
+The operative measurement base is smaller still: it is the intersection of these
+12,670 companies with suppliers actually appearing in the spend data, which is
+not known until Layer 3.
+
+### 5.9 Cloud storage — deleted 2026-09-16
+
+`gs://portfolio-b-spend-mh2026/` and all **69 objects (2,941,913,742 bytes)** —
+7 Companies House part CSVs and 62 clean spend CSVs — were deleted after
+`V1.1`–`V1.5` and `V1.4a` all passed and `ext_ch_reconcile` was dropped.
+**No bucket remains in the project.**
+
+This closes `D-P-029` condition 2 and charter `L-3`: the full register carries
+registered addresses that may be residential, and it does not persist in cloud
+storage once loaded. Every deleted object was verified present on local disk
+first; the 62 clean files are in any case regenerable by
+`scripts/05_preload_clean.py`.
