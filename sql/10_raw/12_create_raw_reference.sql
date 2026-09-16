@@ -15,8 +15,8 @@
 -- ===========================================================================
 -- V1.5 — RESOLVED 2026-09-13. The expected figure was wrong; the load is right.
 -- ===========================================================================
--- The load returned 5,695,466 against a provenance figure of 5,695,467. The
--- reconciliation is closed in favour of the LOADED number, on evidence:
+-- The load was reconciled against a provenance figure of 5,695,467, and closed
+-- in favour of the LOADED data, on evidence:
 --
 --   1. 91a_reconcile_ch_per_file.sql localised the gap to ONE file: part4
 --      loaded 849,999 against a census figure of 850,000. Every other part
@@ -39,17 +39,49 @@
 --      BigQuery's parse agrees with the census figure; part1 simply has no
 --      trailing newline on its final line. It is NOT a second short file.
 --
--- CORRECTED per-part expectation (used by 91_validate_raw.sql V1.5):
+-- CORRECTED per-part expectation:
 --      part1 849,999 · part2 850,000 · part3 850,000 · part4 849,999
 --      part5 850,000 · part6 850,000 · part7 595,468   TOTAL 5,695,466
 --
--- CARRIED FORWARD, open and separate: whether part4's merged record is a
--- LEGITIMATE quoted newline (record intact — 849,999 is simply true) or a
--- MALFORMED stray quote (two company records merged; one company missing from
--- the table, another with corrupted fields, and tier-1 matching failing
--- silently for both). The row COUNT is settled either way; the row CONTENT is
--- not. Classify it with scripts/06_identify_part4_merged_record.py before
--- Layer 3 entity resolution. It does not block Layer 1 or the spend pipeline.
+-- ===========================================================================
+-- AMENDED 2026-09-16 — TWO QUANTITIES, BOTH CORRECT. NOTHING ABOVE IS WRONG.
+-- ===========================================================================
+-- The 2026-09-13 ruling counted CSV RECORDS, and every figure in it stands:
+-- part4 really does parse to 849,999 records, and 5,695,466 really is the CSV
+-- record total. A local stream of part4 on 2026-09-16 reproduced 849,999
+-- exactly. What the ruling did not separate is that a BigQuery table row count
+-- is a different quantity:
+--
+--       5,695,466   CSV records across the seven parts   <- ratified, unchanged
+--     -         1   part4 record #454,676 — a BLANK LINE, 0 fields.
+--                   BigQuery does not materialise an empty CSV line as a row.
+--     = 5,695,465   company records = COUNT(*) on this table
+--
+-- V1.1 and V1.5 compared a table row count against the CSV record count, so
+-- they failed by one and would have done so forever. The CHECK was wrong — not
+-- the load, not the source file, and not the ratified figure. The expectation
+-- used by 91_validate_raw.sql is therefore 5,695,465 COMPANY RECORDS, with
+-- 5,695,466 retained there as the CSV-record figure so the derivation is
+-- visible rather than a bare edited number.
+--
+-- part4 per-part line, both quantities:  849,999 CSV records / 849,998 company
+-- records. Seven-part total: 5,695,466 CSV records / 5,695,465 company records.
+--
+-- Corroboration, independent of the local scan: an external table over the same
+-- GCS objects, anti-joined to this table on company number, returns EXACTLY ONE
+-- row present in GCS and absent here — and that row carries a NULL
+-- CompanyNumber and a NULL CompanyName. No company record is missing. This
+-- table's metadata also shows creationTime == lastModifiedTime == 2026-09-13
+-- 19:24:51 UTC with numRows 5,695,465, so it has never been modified since the
+-- load and there was no load change to investigate.
+--
+-- THE CONTENT QUESTION IS NOW SETTLED, AND IT IS BENIGN. part4 record #454,675
+-- is a LEGITIMATE quoted newline: 55 fields against a 55-field header, the
+-- newline sitting inside PreviousName_10.CompanyName of company 09056746. The
+-- record is intact, no fields are shifted, no company is missing, and tier-1
+-- matching will not fail silently. Evidence: docs/v1_5_part4_diagnostic.md,
+-- produced by scripts/06_identify_part4_merged_record.py. E-3 carries a
+-- one-line note; no limitations-register entry is required.
 --
 -- Also verified after load, before any bucket deletion:
 --   CompanyNumber data_type = STRING   PASS

@@ -181,6 +181,7 @@ htmlcov/
 .vscode/
 !.vscode/extensions.json
 .idea/
+.kilo/
 *.swp
 *.swo
 *~

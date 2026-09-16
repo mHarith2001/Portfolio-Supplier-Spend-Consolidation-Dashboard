@@ -53,6 +53,20 @@ The test is the field count. Companies House BasicCompanyData has a fixed
 header; a legitimate quoted newline leaves the field count unchanged, a stray
 quote does not. The script reports the header width, the offending record's
 width, and the field that contains the newline.
+
+IT ALSO COUNTS BLANK RECORDS, and that is not incidental
+    Added 2026-09-16. Without it this diagnostic answers the CONTENT question
+    and leaves the COUNT question open, which is exactly what happened: V1.5
+    compared a BigQuery table row count against a CSV RECORD count and failed
+    by one forever, because part4 holds a blank line at record #454,676 and
+    BigQuery does not materialise an empty CSV line as a row.
+
+    Both quantities are real and both are reported here:
+        CSV records     849,999  = what csv.reader yields (blank line included)
+        company records 849,998  = what LOAD DATA produces
+
+    A count that separates these cannot fail by one for a reason nobody can
+    name. One that conflates them already did.
 """
 
 from __future__ import annotations
@@ -70,8 +84,10 @@ VAULT_DEFAULT = Path(
 )
 PART4 = "BasicCompanyData-2026-08-01-part4_7.csv"
 
-EXPECTED_RECORDS = 849_999
-EXPECTED_LINES   = 850_001
+EXPECTED_RECORDS  = 849_999      # CSV records, blank line included
+EXPECTED_LINES    = 850_001      # physical lines, header included
+EXPECTED_BLANKS   = 1            # part4 record #454,676 — an empty line
+EXPECTED_COMPANY  = 849_998      # EXPECTED_RECORDS - EXPECTED_BLANKS
 
 
 def main() -> int:
@@ -91,6 +107,7 @@ def main() -> int:
     print(f"  {src.stat().st_size:,} bytes\n")
 
     hits: list[tuple[int, int, int, list[str]]] = []   # recno, nfields, field index, row
+    blanks: list[tuple[int, int]] = []                 # recno, nfields
     header: list[str] = []
     nrec = 0
 
@@ -101,6 +118,9 @@ def main() -> int:
                 header = row
                 continue
             nrec += 1
+            if not row or all(v.strip() == "" for v in row):
+                blanks.append((nrec, len(row)))
+                continue
             for j, val in enumerate(row):
                 if "\n" in val or "\r" in val:
                     hits.append((nrec, len(row), j, row))
@@ -112,6 +132,10 @@ def main() -> int:
     print(f"\n  header fields   : {width}")
     print(f"  records parsed  : {nrec:,}   (expect {EXPECTED_RECORDS:,})")
     print(f"  records with an embedded newline: {len(hits)}")
+    print(f"  BLANK records   : {len(blanks)}   (expect {EXPECTED_BLANKS})")
+    for bn, bf in blanks:
+        print(f"      record #{bn:,}  fields={bf}  -> not loaded by BigQuery")
+    print(f"  company records : {nrec - len(blanks):,}   (expect {EXPECTED_COMPANY:,})")
 
     lines: list[str] = [
         "# V1.5 — Companies House part4 embedded-newline diagnostic",
@@ -122,6 +146,23 @@ def main() -> int:
         f"- Records parsed: **{nrec:,}** (expected {EXPECTED_RECORDS:,}; "
         f"physical lines {EXPECTED_LINES:,})",
         f"- Records containing an embedded newline: **{len(hits)}**",
+        f"- Blank records: **{len(blanks)}** (expected {EXPECTED_BLANKS})",
+        "",
+        "## The count question — two quantities, both correct",
+        "",
+        "| Quantity | Value | What produces it |",
+        "|---|---:|---|",
+        f"| CSV records in part4 | **{nrec:,}** | `csv.reader`; a blank line is a record |",
+        f"| Blank records | **{len(blanks)}** | "
+        + (", ".join(f"record #{bn:,} ({bf} fields)" for bn, bf in blanks) or "none") + " |",
+        f"| Company records in part4 | **{nrec - len(blanks):,}** | "
+        "`LOAD DATA`; BigQuery does not materialise an empty line as a row |",
+        "",
+        "Seven-part totals follow from this: **5,695,466 CSV records** "
+        "(the ratified figure, unchanged) and **5,695,465 company records** "
+        "(`COUNT(*)` on `raw_companies_house`). `V1.5` compares a table row "
+        "count, so it must be measured against the second. The two differ by "
+        "this one blank line and by nothing else.",
         "",
     ]
 
@@ -136,8 +177,10 @@ def main() -> int:
             intact = (nfields == width)
             colname = header[j] if j < len(header) else f"(field {j})"
             verdict = ("LEGITIMATE QUOTED NEWLINE — record intact, field count "
-                       "correct. 849,999 is the true record count and the load "
-                       "is correct."
+                       "correct. No company is missing and no field is shifted, "
+                       "so tier-1 matching will not fail silently. See the count "
+                       "table above for which total this supports: it confirms "
+                       "the CSV record count, not the table row count."
                        if intact else
                        "MALFORMED — field count differs from the header. Two "
                        "records were merged. This is real corruption and part4 "
