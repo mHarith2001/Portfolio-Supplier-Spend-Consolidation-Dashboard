@@ -191,6 +191,19 @@ desktop.ini
 $RECYCLE.BIN/
 
 # ------------------------------------------------------------------------------
+# Claude Code configuration — IGNORED, deliberately
+# ------------------------------------------------------------------------------
+# This repository is PUBLIC. Both files contain absolute local paths — the Windows
+# user profile and the private Obsidian vault structure — and both are
+# machine-specific, so a clone elsewhere could not use them anyway. Tracking them
+# would publish the local layout for no portability gain.
+#
+# Keep them on disk. They are working configuration, not project evidence.
+
+CLAUDE.md
+.claude/
+
+# ------------------------------------------------------------------------------
 # 8. WHAT IS DELIBERATELY *NOT* IGNORED — do not add these
 # ------------------------------------------------------------------------------
 # docs/provenance.csv        69 rows — the E-1 reproducibility record
