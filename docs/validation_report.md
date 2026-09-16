@@ -216,7 +216,7 @@ first; the 62 clean files are in any case regenerable by
 | `V2.5` window split | SOFT | 289,990 / 62,578 | **PASS**, exact |
 | `V2.6` unparsed amounts | HARD | 10 | **PASS** |
 | `V2.8` `amount_vat_basis` | HARD | 2 permitted values | **PASS** |
-| `V2.9` name unless redacted | HARD | 0 | **40 — see §6.5** |
+| `V2.9` name unless redacted (scoped) | HARD | 0 | **FAIL — 31 rows, GBP 2.08bn. See §6.5** |
 | `V2.10` normalisation erasure | HARD | 0 | **PASS** |
 | `V2.11` postcode format | SOFT | — | 4,562 of 44,073 invalid |
 | `V2.12` `publisher_type` | HARD | 0 null | **PASS** |
@@ -312,18 +312,67 @@ strings still flag, all 14 trading names no longer do.
 Information` 25,355 · `REDACTED - PERSONAL DATA` 3,271 · `REDACTED` 2,540 ·
 `REDACTED` (variant) 341 · `Name redacted` 1. Redaction rate 8.94%.
 
-### 6.5 `V2.9` — 40 rows fail as written, and they are not a data error
+### 6.5 `V2.9` — a GBP 2.08bn double-count, found by scoping the rule
 
-40 rows have no `supplier_name_raw` and are not redacted. **All 40 are
-`is_undated = TRUE`**, and they carry no amount in 9 cases. They are the
-structurally-empty and annotation rows that §11.1 deliberately retains because
-they are not blank in *every* field.
+> **This section replaces an earlier version that recorded these 40 rows as
+> "not a data error". That was wrong.** It was written before the rows were
+> inspected, on the assumption that they were inert. Corrected 2026-09-16.
 
-`V2.9` as written ("`supplier_name_raw` non-null unless `is_redacted`", HARD)
-cannot pass while §11.1 retains them. The two rules are in tension and the
-resolution is not the builder's: either `V2.9` is scoped to rows carrying a
-payment amount, or these rows get an explicit flag of their own.
-**Reported, not worked around.**
+`V2.9` is scoped to rows **carrying an amount**: a row with neither a supplier
+name nor an amount cannot participate in matching or aggregation. 9 rows fall
+out of scope on that basis, all Ministry of Justice.
+
+**The scoping did not make the rule pass. It made it point at something.**
+
+| | Rows | Value |
+|---|---:|---:|
+| No supplier name, not redacted, **carrying an amount** | **31** | **GBP 2,084,055,613.01** |
+| No supplier name, no amount — out of scope, inert | 9 | — |
+
+**These are file total rows, and they are double-counting spend.** Proven, not
+inferred: for 20 of the 22 affected files the unnamed row's amount equals the
+sum of **every other row in the same file to the penny** — difference 0.00.
+
+| Publisher | Files with a proven total row | Double-counted |
+|---|---:|---:|
+| Bristol City Council | 11 of 12 | GBP 733,176,703.99 |
+| Ministry of Justice | 9 | GBP 1,022,864,893.02 |
+| **Proven total** | **20** | **GBP 1,756,041,597.01** |
+
+Each sits at its file's final `_row_num` — Bristol 2024-04 at row 6,727 of
+6,727; 2024-05 at 6,574 of 6,574 — and MOJ's carry a `transaction_number`
+exactly one below their `_row_num`. Bristol 2024-03 has no such row and shows a
+difference of −70,277,619.67, confirming the test discriminates.
+
+**Bristol's true spend is GBP 803,454,323.66, not the GBP 1,536,631,027.65 in
+`staging_spend`.** Eleven of its twelve months are counted twice.
+
+Two of the 22 are **not** totals and are excluded from the finding: Manchester
+2024-04, a single unnamed credit of −GBP 529.52; and MOJ 2025-01, which holds 10
+unnamed rows worth GBP 328,014,545.52 so the per-file test cannot isolate a
+single total — it needs separate examination.
+
+#### Why no other control would have caught it
+
+**The inflation is in the source, so it reconciles perfectly at every layer.**
+`V2.1` ties to provenance. `E-5` preserves `SUM(amount)` from L2 to L4 exactly as
+required. Every total agrees with every other total. **A double-count that
+reconciles is invisible to a reconciliation** — it would have passed the
+completion gate and reached the dashboard as a headline figure roughly double
+the truth for two publishers.
+
+`V2.9` is the only rule in the suite that asks whether money has a **named
+recipient**, and that is the single question that exposes this.
+
+#### Not acted on
+
+Excluding total rows is a **new exclusion rule**. It is not in `08` §11, and it
+changes the published spend figure for two publishers by GBP 1.76bn. That is a
+specification decision, not a builder's. `V2.9a`, the per-file total-row
+detector, is committed in `92_validate_staging.sql` so the test is repeatable
+and the evidence is not a one-off query.
+
+**No Layer 3 or Layer 4 work should proceed on these totals until it is ruled.**
 
 ### 6.6 Amounts and Grant-in-Aid
 

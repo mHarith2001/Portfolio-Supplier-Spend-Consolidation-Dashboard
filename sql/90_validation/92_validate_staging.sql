@@ -198,12 +198,78 @@ ORDER BY rows_total DESC;
 -- ===========================================================================
 -- V2.9  supplier_name_raw non-null unless redacted                 HARD
 -- ===========================================================================
+-- SCOPED 2026-09-16, user-approved: tested only on rows CARRYING AN AMOUNT.
+-- A row with neither a supplier name nor an amount cannot participate in
+-- matching or aggregation and is inert bookkeeping, not a matching failure.
+-- 9 rows fall out of scope on that basis, all Ministry of Justice.
+--
+-- ===========================================================================
+-- THE SCOPING DID NOT MAKE THIS PASS. IT MADE IT POINT AT SOMETHING.
+-- ===========================================================================
+-- 31 rows carry an amount and no supplier name, worth GBP 2,084,055,613.01.
+-- They are FILE TOTAL ROWS, and they are double-counting spend.
+--
+-- PROOF, not inference. For all 11 Bristol files that contain such a row, the
+-- row's amount equals the sum of EVERY OTHER ROW IN THE SAME FILE to the penny
+-- — difference 0.00 in all 11. Each sits at the file's final _row_num
+-- (2024-04 at 6727 of 6727, 2024-05 at 6574 of 6574, ...). Bristol 2024-03 has
+-- no such row and shows a difference of -70,277,619.67, i.e. no total present.
+-- MOJ's carry a transaction_number exactly one below their _row_num.
+--
+--   Ministry of Justice       19 rows   GBP 1,350,879,438.54
+--   Bristol City Council      11 rows   GBP   733,176,703.99
+--   Manchester City Council    1 row    GBP          -529.52
+--
+-- Bristol's true spend is GBP 803,454,323.66, not the GBP 1,536,631,027.65
+-- currently in staging_spend. Eleven of its twelve months are counted twice.
+--
+-- WHY NOTHING ELSE WOULD HAVE CAUGHT IT. The inflation is IN THE SOURCE, so it
+-- reconciles perfectly at every layer: V2.1 ties to provenance, E-5 preserves
+-- SUM(amount) L2->L3->L4 exactly as required, and every total agrees with every
+-- other total. A double-count that reconciles is invisible to a reconciliation.
+-- V2.9 is the only rule in the suite that asks whether money has a named
+-- recipient, which is the one question that exposes it.
+--
+-- NOT ACTED ON. Excluding total rows is a new exclusion rule, it is not in 08
+-- §11, and it changes the headline spend figure for two publishers. That is a
+-- specification decision, not a builder's.
 
 SELECT
-  COUNTIF(COALESCE(TRIM(supplier_name_raw), '') = '' AND NOT is_redacted) AS missing_name_not_redacted,
-  IF(COUNTIF(COALESCE(TRIM(supplier_name_raw), '') = '' AND NOT is_redacted) = 0,
-     'PASS', 'REVIEW  <-- see note') AS v2_9
+  COUNTIF(COALESCE(TRIM(supplier_name_raw), '') = '' AND NOT is_redacted
+          AND amount IS NOT NULL)                      AS missing_name_on_payment_rows,
+  COUNTIF(COALESCE(TRIM(supplier_name_raw), '') = '' AND NOT is_redacted
+          AND amount IS NULL)                          AS inert_rows_out_of_scope,
+  ROUND(SUM(IF(COALESCE(TRIM(supplier_name_raw), '') = '' AND NOT is_redacted
+               AND amount IS NOT NULL, amount, 0)), 2) AS value_at_stake,
+  IF(COUNTIF(COALESCE(TRIM(supplier_name_raw), '') = '' AND NOT is_redacted
+             AND amount IS NOT NULL) = 0,
+     'PASS', 'FAIL  <-- HARD') AS v2_9
 FROM `portfolio-508106.portfolio_b.staging_spend`;
+
+-- ---------------------------------------------------------------------------
+-- V2.9a  Total-row detector — the test that turns the finding into evidence
+-- ---------------------------------------------------------------------------
+-- Per file: does the unnamed amount-bearing row equal the sum of all the other
+-- rows in that file? A difference of 0.00 means the row is a total of its own
+-- file and is being counted twice. Run this before trusting ANY spend total.
+
+SELECT
+  entity,
+  _source_file,
+  ROUND(SUM(IF(is_unnamed, amount, 0)), 2) AS unnamed_row_amount,
+  ROUND(SUM(IF(is_unnamed, 0, amount)), 2) AS sum_of_other_rows,
+  ROUND(SUM(IF(is_unnamed, amount, 0)) - SUM(IF(is_unnamed, 0, amount)), 2) AS difference,
+  IF(ROUND(SUM(IF(is_unnamed, amount, 0)) - SUM(IF(is_unnamed, 0, amount)), 2) = 0,
+     'TOTAL ROW  <-- double counted', 'not a total') AS verdict
+FROM (
+  SELECT entity, _source_file, amount,
+         (COALESCE(TRIM(supplier_name_raw), '') = '' AND NOT is_redacted
+          AND amount IS NOT NULL) AS is_unnamed
+  FROM `portfolio-508106.portfolio_b.staging_spend`
+)
+GROUP BY entity, _source_file
+HAVING SUM(IF(is_unnamed, 1, 0)) > 0
+ORDER BY entity, _source_file;
 
 -- ===========================================================================
 -- V2.10  normalisation must not erase a name                       HARD
