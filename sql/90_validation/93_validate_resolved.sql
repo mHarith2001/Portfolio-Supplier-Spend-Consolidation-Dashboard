@@ -1,20 +1,19 @@
 -- 93_validate_resolved.sql
 -- Layer: validation. Runs AFTER L3, before any Layer 4 work begins.
 --
--- EXECUTED 2026-09-17 — TIERS 1-3 ONLY. Layer 3 is open, not complete.
+-- EXECUTED 2026-09-18 — COMPLETE. V3.1-V3.17, plus the universe control (L3.0)
+-- and the acceptance-point controls on tiers 1-3.
 --
--- WHAT RUNS NOW: the checks that apply to the tier candidate tables built by
--- 31-33 — the name universe, hard rules 2 and 3, and V3.6, V3.8 and V3.11 at the
--- point of acceptance.
+-- Run from a file on standard input:
+--   cmd /c "bq query --use_legacy_sql=false --format=pretty < sql\90_validation\93_validate_resolved.sql"
 --
--- WHAT DOES NOT RUN YET, and why:
---   V3.1-V3.3   resolved_spend (36) is not built. V3.3 requires EVERY resolved_spend
---               row to carry a supplier_key, while Layer 3 aggregates transactions
---               only — a decision is open on how non-transaction rows are keyed.
---   V3.4-V3.5,  resolved_supplier_match is assembled after tier 4 (34), which is
---   V3.7, V3.9,  not built: its similarity method and threshold need measuring
---   V3.10       against E-3 first.
---   V3.12-V3.17 the golden record (35) is not built.
+-- Every HARD control prints its own PASS / 'FAIL  <-- HARD' verdict beside the
+-- numbers it was computed from, so a failure cannot be read past.
+--
+-- WHERE THE CHECKS RECOMPUTE RATHER THAN RE-READ: V3.15 counts raw spellings from
+-- resolved_spend, not from the staging_spend + match join that built the column.
+-- A control that reads the same expression twice proves only that the expression
+-- is repeatable.
 
 -- ===========================================================================
 -- L3.0  The name universe is complete and unique                    HARD
@@ -70,44 +69,248 @@ GROUP BY acc.tier
 ORDER BY acc.tier;
 
 -- ===========================================================================
--- Tiers 1-3, first match wins — INFO. The interim picture, not the result.
+-- V3.1  row count preserved                                         HARD
+-- V3.2  SUM(amount) preserved to the penny                          HARD
+-- V3.3  every TRANSACTION row carries exactly one supplier_key      HARD
 -- ===========================================================================
--- Spend names only. Tier 4 and the unresolved reasons are not yet assigned, so
--- 'not yet resolved' is a work queue, not a finding.
+-- E-5. Resolution changes attribution, never totals. V3.3 is scoped to
+-- transaction rows (05 V3.3-note, 2026-09-18): non-transaction rows carry NULL
+-- BY DESIGN, and the second count below proves they carry nothing else.
+--
+-- The excluded value printed here is the H-5 amount. It is reported every run so
+-- that a change in the row_role classification cannot pass unnoticed.
 
-WITH n AS (SELECT * FROM `portfolio-508106.portfolio_b.resolved_names` WHERE in_spend),
-t1 AS (SELECT supplier_name_norm FROM `portfolio-508106.portfolio_b.resolved_match_tier1` WHERE accepted),
-t2 AS (SELECT supplier_name_norm FROM `portfolio-508106.portfolio_b.resolved_match_tier2` WHERE accepted),
-t3 AS (SELECT supplier_name_norm FROM `portfolio-508106.portfolio_b.resolved_match_tier3` WHERE accepted)
 SELECT
-  CASE
-    WHEN t1.supplier_name_norm IS NOT NULL THEN '1 company number (bridged)'
-    WHEN t2.supplier_name_norm IS NOT NULL THEN '2 exact name'
-    WHEN t3.supplier_name_norm IS NOT NULL THEN '3 name + postcode'
-    ELSE                                        'not yet resolved'
-  END                                   AS tier,
-  COUNT(*)                              AS supplier_names,
-  SUM(n.spend_rows)                     AS transaction_rows,
-  ROUND(SUM(n.spend_value), 2)          AS transaction_value
-FROM n
-LEFT JOIN t1 USING (supplier_name_norm)
-LEFT JOIN t2 USING (supplier_name_norm)
-LEFT JOIN t3 USING (supplier_name_norm)
+  (SELECT COUNT(*) FROM `portfolio-508106.portfolio_b.staging_spend`)   AS staging_rows,
+  (SELECT COUNT(*) FROM `portfolio-508106.portfolio_b.resolved_spend`)  AS resolved_rows,
+  (SELECT ROUND(SUM(amount), 2) FROM `portfolio-508106.portfolio_b.staging_spend`)  AS staging_amount,
+  (SELECT ROUND(SUM(amount), 2) FROM `portfolio-508106.portfolio_b.resolved_spend`) AS resolved_amount,
+  (SELECT ROUND(SUM(IF(row_role = 'transaction', amount, 0)), 2)
+     FROM `portfolio-508106.portfolio_b.resolved_spend`)                AS transaction_amount,
+  (SELECT ROUND(SUM(IF(row_role != 'transaction', amount, 0)), 2)
+     FROM `portfolio-508106.portfolio_b.resolved_spend`)                AS excluded_amount_h5,
+  (SELECT COUNTIF(row_role = 'transaction' AND supplier_key IS NULL)
+     FROM `portfolio-508106.portfolio_b.resolved_spend`)                AS txn_rows_without_key,
+  (SELECT COUNTIF(row_role != 'transaction' AND supplier_key IS NOT NULL)
+     FROM `portfolio-508106.portfolio_b.resolved_spend`)                AS non_txn_rows_with_key,
+  IF((SELECT COUNT(*) FROM `portfolio-508106.portfolio_b.staging_spend`)
+     = (SELECT COUNT(*) FROM `portfolio-508106.portfolio_b.resolved_spend`), 'PASS', 'FAIL  <-- HARD') AS v3_1,
+  IF((SELECT ROUND(SUM(amount), 2) FROM `portfolio-508106.portfolio_b.staging_spend`)
+     = (SELECT ROUND(SUM(amount), 2) FROM `portfolio-508106.portfolio_b.resolved_spend`), 'PASS', 'FAIL  <-- HARD') AS v3_2,
+  IF((SELECT COUNTIF(row_role = 'transaction' AND supplier_key IS NULL)
+        FROM `portfolio-508106.portfolio_b.resolved_spend`) = 0
+     AND (SELECT COUNTIF(row_role != 'transaction' AND supplier_key IS NOT NULL)
+        FROM `portfolio-508106.portfolio_b.resolved_spend`) = 0, 'PASS', 'FAIL  <-- HARD') AS v3_3;
+
+-- ===========================================================================
+-- V3.4  one row per normalised name                                 HARD
+-- V3.5  match_tier in 1-5 and match_method agrees with the tier      HARD
+-- V3.7  no tier-4 match carries high confidence                     HARD
+-- V3.10 every tier-5 row states a reason                            HARD
+-- ===========================================================================
+-- V3.4 is checked against the SOURCE population, not against itself: the match
+-- table must cover every distinct transaction name once, no more and no fewer.
+
+WITH names AS (
+  SELECT DISTINCT supplier_name_norm
+  FROM `portfolio-508106.portfolio_b.staging_spend`
+  WHERE row_role = 'transaction' AND supplier_name_norm IS NOT NULL
+),
+m AS (SELECT * FROM `portfolio-508106.portfolio_b.resolved_supplier_match`)
+SELECT
+  (SELECT COUNT(*) FROM names)                                        AS transaction_names,
+  (SELECT COUNT(*) FROM m)                                            AS match_rows,
+  (SELECT COUNT(DISTINCT supplier_name_norm) FROM m)                  AS match_distinct_names,
+  (SELECT COUNT(*) FROM names LEFT JOIN m USING (supplier_name_norm)
+     WHERE m.supplier_name_norm IS NULL)                              AS names_missing_from_match,
+  (SELECT COUNTIF(match_tier NOT IN (1,2,3,4,5)) FROM m)              AS bad_tier,
+  (SELECT COUNTIF(NOT ((match_tier = 1 AND match_method = 'company_number')
+                    OR (match_tier = 2 AND match_method = 'exact_name')
+                    OR (match_tier = 3 AND match_method = 'name_postcode')
+                    OR (match_tier = 4 AND match_method = 'fuzzy')
+                    OR (match_tier = 5 AND match_method = 'unresolved'))) FROM m) AS method_tier_mismatch,
+  (SELECT COUNTIF(match_tier = 4 AND match_confidence = 'high') FROM m) AS tier4_high_confidence,
+  (SELECT COUNTIF(match_tier = 5 AND unresolved_reason IS NULL) FROM m) AS tier5_without_reason,
+  IF((SELECT COUNT(*) FROM m) = (SELECT COUNT(*) FROM names)
+     AND (SELECT COUNT(*) FROM m) = (SELECT COUNT(DISTINCT supplier_name_norm) FROM m)
+     AND (SELECT COUNT(*) FROM names LEFT JOIN m USING (supplier_name_norm)
+            WHERE m.supplier_name_norm IS NULL) = 0, 'PASS', 'FAIL  <-- HARD') AS v3_4,
+  IF((SELECT COUNTIF(match_tier NOT IN (1,2,3,4,5)) FROM m) = 0
+     AND (SELECT COUNTIF(NOT ((match_tier = 1 AND match_method = 'company_number')
+                    OR (match_tier = 2 AND match_method = 'exact_name')
+                    OR (match_tier = 3 AND match_method = 'name_postcode')
+                    OR (match_tier = 4 AND match_method = 'fuzzy')
+                    OR (match_tier = 5 AND match_method = 'unresolved'))) FROM m) = 0,
+     'PASS', 'FAIL  <-- HARD') AS v3_5,
+  IF((SELECT COUNTIF(match_tier = 4 AND match_confidence = 'high') FROM m) = 0, 'PASS', 'FAIL  <-- HARD') AS v3_7,
+  IF((SELECT COUNTIF(match_tier = 5 AND unresolved_reason IS NULL) FROM m) = 0, 'PASS', 'FAIL  <-- HARD') AS v3_10;
+
+-- ===========================================================================
+-- V3.9  every redacted row is tier 5, reason 'redacted'              HARD
+-- ===========================================================================
+-- Checked from the SPEND side: every redacted transaction row, followed through
+-- its name to its match row. 04 §3 hard rule 4 keeps these names out of matching
+-- entirely — this control proves none slipped in.
+
+WITH r AS (
+  SELECT s.spend_id, s.supplier_name_norm, m.match_tier, m.unresolved_reason
+  FROM `portfolio-508106.portfolio_b.resolved_spend` s
+  LEFT JOIN `portfolio-508106.portfolio_b.resolved_supplier_match` m USING (supplier_name_norm)
+  WHERE s.row_role = 'transaction' AND s.is_redacted
+)
+SELECT
+  COUNT(*)                                                      AS redacted_transaction_rows,
+  COUNT(DISTINCT supplier_name_norm)                            AS redacted_names,
+  COUNTIF(match_tier != 5)                                      AS not_tier5,
+  COUNTIF(unresolved_reason != 'redacted' OR unresolved_reason IS NULL) AS wrong_reason,
+  IF(COUNTIF(match_tier != 5) = 0
+     AND COUNTIF(unresolved_reason != 'redacted' OR unresolved_reason IS NULL) = 0,
+     'PASS', 'FAIL  <-- HARD') AS v3_9
+FROM r;
+
+-- ===========================================================================
+-- V3.8  end to end — no attributed payment precedes incorporation   HARD
+-- V3.11 end to end — no attributed key is an orphan                 HARD
+-- ===========================================================================
+-- The acceptance-point controls above test the tier tables. This one tests what
+-- actually reached the spend rows, which is the claim that matters.
+
+WITH a AS (
+  SELECT s.payment_date, g.company_number, g.incorporation_date, g.is_resolved
+  FROM `portfolio-508106.portfolio_b.resolved_spend` s
+  JOIN `portfolio-508106.portfolio_b.resolved_supplier_golden` g USING (supplier_key)
+  WHERE s.row_role = 'transaction' AND g.is_resolved
+)
+SELECT
+  COUNT(*)                                                                    AS attributed_rows,
+  COUNTIF(payment_date < incorporation_date)                                  AS rows_before_incorporation,
+  (SELECT COUNT(*) FROM `portfolio-508106.portfolio_b.resolved_supplier_golden` g
+    WHERE g.is_resolved AND NOT EXISTS (
+      SELECT 1 FROM `portfolio-508106.portfolio_b.staging_companies` c
+      WHERE c.company_number = g.company_number))                             AS orphan_company_numbers,
+  IF(COUNTIF(payment_date < incorporation_date) = 0, 'PASS', 'FAIL  <-- HARD') AS v3_8_end_to_end,
+  IF((SELECT COUNT(*) FROM `portfolio-508106.portfolio_b.resolved_supplier_golden` g
+    WHERE g.is_resolved AND NOT EXISTS (
+      SELECT 1 FROM `portfolio-508106.portfolio_b.staging_companies` c
+      WHERE c.company_number = g.company_number)) = 0, 'PASS', 'FAIL  <-- HARD') AS v3_11_end_to_end
+FROM a;
+
+-- ===========================================================================
+-- V3.13 supplier_key unique                                         HARD
+-- V3.14 company_number unique among resolved records                HARD
+-- V3.15 name_variant_count >= 1 and equals the raw names collapsing in  HARD
+-- V3.16 resolved legal_name comes from Companies House              HARD
+-- V3.17 unresolved records carry no company_number                  HARD
+-- ===========================================================================
+-- V3.15 RECOMPUTES the variant count from resolved_spend — a different path from
+-- the one that built it — and compares row by row.
+
+WITH g AS (SELECT * FROM `portfolio-508106.portfolio_b.resolved_supplier_golden`),
+recount AS (
+  SELECT supplier_key, COUNT(DISTINCT supplier_name_raw) AS raw_variants
+  FROM `portfolio-508106.portfolio_b.resolved_spend`
+  WHERE row_role = 'transaction' AND supplier_key IS NOT NULL
+  GROUP BY supplier_key
+)
+SELECT
+  (SELECT COUNT(*) FROM g)                                              AS golden_rows,
+  (SELECT COUNT(*) - COUNT(DISTINCT supplier_key) FROM g)               AS duplicate_keys,
+  (SELECT COUNTIF(is_resolved) - COUNT(DISTINCT IF(is_resolved, company_number, NULL)) FROM g) AS duplicate_company_numbers,
+  (SELECT COUNTIF(name_variant_count IS NULL OR name_variant_count < 1) FROM g) AS bad_variant_count,
+  (SELECT COUNT(*) FROM g JOIN recount USING (supplier_key)
+    WHERE g.name_variant_count != recount.raw_variants)                 AS variant_count_disagrees,
+  (SELECT COUNT(*) FROM g LEFT JOIN `portfolio-508106.portfolio_b.staging_companies` c
+     ON c.company_number = g.company_number
+    WHERE g.is_resolved AND (c.company_name IS NULL OR c.company_name != g.legal_name)) AS legal_name_not_from_ch,
+  (SELECT COUNTIF(NOT is_resolved AND company_number IS NOT NULL) FROM g) AS unresolved_with_number,
+  IF((SELECT COUNT(*) - COUNT(DISTINCT supplier_key) FROM g) = 0, 'PASS', 'FAIL  <-- HARD') AS v3_13,
+  IF((SELECT COUNTIF(is_resolved) - COUNT(DISTINCT IF(is_resolved, company_number, NULL)) FROM g) = 0, 'PASS', 'FAIL  <-- HARD') AS v3_14,
+  IF((SELECT COUNTIF(name_variant_count IS NULL OR name_variant_count < 1) FROM g) = 0
+     AND (SELECT COUNT(*) FROM g JOIN recount USING (supplier_key)
+            WHERE g.name_variant_count != recount.raw_variants) = 0, 'PASS', 'FAIL  <-- HARD') AS v3_15,
+  IF((SELECT COUNT(*) FROM g LEFT JOIN `portfolio-508106.portfolio_b.staging_companies` c
+        ON c.company_number = g.company_number
+       WHERE g.is_resolved AND (c.company_name IS NULL OR c.company_name != g.legal_name)) = 0,
+     'PASS', 'FAIL  <-- HARD') AS v3_16,
+  IF((SELECT COUNTIF(NOT is_resolved AND company_number IS NOT NULL) FROM g) = 0, 'PASS', 'FAIL  <-- HARD') AS v3_17;
+
+-- ===========================================================================
+-- V3.12 dissolved-company matches                                   INFO
+-- ===========================================================================
+-- A finding, not an error. Money paid to a company the register calls dissolved
+-- is either a late payment, a stale name, or a mismatch — and it is exactly the
+-- kind of thing a spend dashboard should surface rather than smooth over.
+
+SELECT
+  g.company_status,
+  COUNT(DISTINCT g.supplier_key)                    AS suppliers,
+  COUNT(*)                                          AS transaction_rows,
+  ROUND(SUM(s.amount), 2)                           AS transaction_value,
+  COUNTIF(s.payment_date > g.incorporation_date)    AS rows_after_incorporation
+FROM `portfolio-508106.portfolio_b.resolved_spend` s
+JOIN `portfolio-508106.portfolio_b.resolved_supplier_golden` g USING (supplier_key)
+WHERE s.row_role = 'transaction' AND g.is_resolved
+GROUP BY g.company_status
+ORDER BY transaction_value DESC;
+
+-- ===========================================================================
+-- The resolution profile — INFO, and the figure the portfolio quotes
+-- ===========================================================================
+-- Names, rows and value by tier, over transaction rows only. The unresolved line
+-- is published with the same prominence as the resolved ones.
+
+SELECT
+  CASE m.match_tier
+    WHEN 1 THEN '1 company number'
+    WHEN 2 THEN '2 exact name'
+    WHEN 3 THEN '3 name + postcode'
+    WHEN 4 THEN '4 fuzzy — REVIEW ONLY, not resolved'
+    ELSE        '5 unresolved'
+  END                                         AS tier,
+  COUNT(DISTINCT m.supplier_name_norm)        AS supplier_names,
+  COUNT(*)                                    AS transaction_rows,
+  ROUND(SUM(s.amount), 2)                     AS transaction_value,
+  ROUND(100 * SUM(s.amount) / SUM(SUM(s.amount)) OVER (), 2) AS pct_of_value
+FROM `portfolio-508106.portfolio_b.resolved_spend` s
+JOIN `portfolio-508106.portfolio_b.resolved_supplier_match` m USING (supplier_name_norm)
+WHERE s.row_role = 'transaction'
 GROUP BY tier
 ORDER BY tier;
 
 -- ===========================================================================
--- Tier 1 register disagreement — INFO, and a review candidate
+-- Unresolved reasons, and the review queue — INFO
 -- ===========================================================================
--- Accepted tier-1 names whose stated number is registered under a different
--- normalised name. 04 §3 treats the buyer's statement as deterministic; this is
--- the population where that assumption deserves a second look.
+-- What 'unresolved' actually means, by value. 'review' is the tier-4 queue:
+-- names with a candidate and a score, awaiting a human decision.
 
 SELECT
-  COUNTIF(accepted)                                  AS tier1_accepted,
-  COUNTIF(accepted AND register_name_agrees)         AS register_name_agrees,
-  COUNTIF(accepted AND NOT register_name_agrees)     AS register_name_differs,
-  COUNTIF(reject_reason = 'ambiguous')               AS rejected_ambiguous,
-  COUNTIF(reject_reason = 'number_not_in_register')  AS rejected_not_in_register,
-  COUNTIF(reject_reason = 'implausible_before_incorporation') AS rejected_implausible
+  COALESCE(m.unresolved_reason, 'resolved')   AS unresolved_reason,
+  COUNT(DISTINCT m.supplier_name_norm)        AS supplier_names,
+  ROUND(SUM(s.amount), 2)                     AS transaction_value
+FROM `portfolio-508106.portfolio_b.resolved_spend` s
+JOIN `portfolio-508106.portfolio_b.resolved_supplier_match` m USING (supplier_name_norm)
+WHERE s.row_role = 'transaction'
+GROUP BY unresolved_reason
+ORDER BY transaction_value DESC;
+
+-- ===========================================================================
+-- Tier 1 demotion — INFO, and the count published either way
+-- ===========================================================================
+-- 04 §3 hard rule 6 (ruled 2026-09-18): where the buyer states a company number
+-- whose registered name disagrees with the supplier name, the match is DEMOTED TO
+-- REVIEW rather than accepted. The count is published whether it flatters the
+-- method or not. Some demoted names are later confirmed by tier 2 or 3 on their
+-- own evidence — that is the rule working, not leaking.
+
+SELECT
+  COUNTIF(accepted)                                           AS tier1_accepted,
+  COUNTIF(reject_reason = 'register_name_disagrees')          AS demoted_to_review,
+  COUNTIF(reject_reason = 'ambiguous')                        AS rejected_ambiguous,
+  COUNTIF(reject_reason = 'number_not_in_register')           AS rejected_not_in_register,
+  (SELECT COUNT(*) FROM `portfolio-508106.portfolio_b.resolved_match_tier1` a
+    JOIN `portfolio-508106.portfolio_b.resolved_supplier_match` m USING (supplier_name_norm)
+   WHERE a.reject_reason = 'register_name_disagrees' AND m.match_tier IN (2,3)) AS demoted_then_confirmed_elsewhere,
+  (SELECT COUNT(*) FROM `portfolio-508106.portfolio_b.resolved_match_tier1` a
+    JOIN `portfolio-508106.portfolio_b.resolved_supplier_match` m USING (supplier_name_norm)
+   WHERE a.reject_reason = 'register_name_disagrees' AND m.match_tier = 1) AS demoted_but_still_tier1
 FROM `portfolio-508106.portfolio_b.resolved_match_tier1`;

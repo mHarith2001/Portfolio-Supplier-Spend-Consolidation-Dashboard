@@ -71,11 +71,21 @@ FULL OUTER JOIN e3 e USING (supplier_name_norm);
 --   * that number exists in staging_companies (V3.11 — no orphan references);
 --   * no payment predates incorporation (hard rule 3).
 --
--- FLAGGED, NOT BLOCKED: register_name_agrees = FALSE where the company registered
--- under the stated number has a different normalised name from the supplier.
--- 04 §3 makes tier 1 'high' because the buyer stated it, and that is implemented;
--- the disagreement is recorded so it can be seen and reviewed. Measured
--- 2026-09-17 before this build: 232 of 1,404 candidates disagree.
+-- DEMOTED TO REVIEW, ruled 2026-09-18: register_name_agrees = FALSE, where the
+-- company registered under the stated number carries a different normalised name
+-- from the supplier. These do NOT flow as confirmed matches. Measured 2026-09-17:
+-- 232 of 1,404 candidates disagree.
+--
+-- Why they are not simply accepted. 04 §3 calls tier 1 deterministic because the
+-- buyer stated the number — but a buyer can state the number of a parent, a group
+-- company or the wrong company entirely, and nothing in the spend file contradicts
+-- it. A name that does not match the register is the only signal available that
+-- this has happened, and a high-confidence match to a differently named company is
+-- worse than no match: it is wrong and it looks certain.
+--
+-- The name is not discarded. It continues down the ladder, so a stronger tier can
+-- still resolve it; if nothing does, it reaches the review queue carrying this
+-- candidate. The count is published either way.
 --
 -- Not applicable to E-3: for Contracts Finder names the stated number IS the
 -- answer being measured against.
@@ -103,9 +113,15 @@ SELECT
     WHEN cf.candidate_count > 1                               THEN 'ambiguous'
     WHEN c.company_number IS NULL                             THEN 'number_not_in_register'
     WHEN n.first_payment_date < c.incorporation_date          THEN 'implausible_before_incorporation'
+    WHEN NOT (c.company_name_norm = n.supplier_name_norm)     THEN 'register_name_disagrees'
   END                                                                     AS reject_reason,
+  -- demoted to review, not accepted, and not discarded
   (cf.candidate_count = 1 AND c.company_number IS NOT NULL
-   AND COALESCE(NOT (n.first_payment_date < c.incorporation_date), TRUE)) AS accepted
+   AND COALESCE(NOT (n.first_payment_date < c.incorporation_date), TRUE)
+   AND NOT COALESCE(c.company_name_norm = n.supplier_name_norm, FALSE))   AS demoted_to_review,
+  (cf.candidate_count = 1 AND c.company_number IS NOT NULL
+   AND COALESCE(NOT (n.first_payment_date < c.incorporation_date), TRUE)
+   AND COALESCE(c.company_name_norm = n.supplier_name_norm, FALSE))       AS accepted
 FROM `portfolio-508106.portfolio_b.resolved_names` n
 JOIN cf USING (supplier_name_norm)
 LEFT JOIN `portfolio-508106.portfolio_b.staging_companies` c

@@ -498,6 +498,12 @@ chart in this repository may select `supplier_name_raw` for an `is_redacted` row
 
 ## 7. Layer 3 — opened: tiers 1–3 (`93_validate_resolved.sql`)
 
+> **§7 and §7.1 record the opening pass of 2026-09-17 and are superseded by §7.3
+> onwards.** They are kept, not rewritten: the tier-1 count below (1,404 accepted) is
+> the figure *before* the demotion rule of `04` §3 hard rule 6, and the difference
+> between 1,404 and the final 1,172 is itself the evidence that the rule did
+> something. A validation report that edits its own history proves nothing.
+
 **Executed 2026-09-17. Layer 3 is open, not complete.** Tier 4, the matched-supplier
 assembly, the golden record and `resolved_spend` are not built; `V3.1`–`V3.5`, `V3.7`,
 `V3.9`, `V3.10` and `V3.12`–`V3.17` therefore have not run.
@@ -537,3 +543,146 @@ exactly. **"Not yet resolved" is a work queue for tier 4, not a finding.**
   `LIMITED` company.
 - **Tier 4 is computationally feasible.** First-token blocking gives 11,048 names and
   12,697,337 candidate pairs; the largest block holds 31,189 companies.
+
+### 7.3 Layer 3 complete — `V3.1`–`V3.17` all PASS (2026-09-18)
+
+Executed by `93_validate_resolved.sql` after `34`, `35` and `36`. Every HARD control
+prints its verdict beside the numbers it was computed from.
+
+| Control | Result |
+|---|---|
+| `L3.0` name universe | **PASS** — 13,373 spend names, 0 duplicates, 0 missing |
+| `V3.1` row count preserved | **PASS** — 352,614 → 352,614 |
+| `V3.2` `SUM(amount)` preserved | **PASS** — GBP 53,886,855,841.10 both layers |
+| `V3.3` every transaction row keyed | **PASS** — 0 transaction rows without a key, 0 non-transaction rows with one |
+| `V3.4` one row per name | **PASS** — 13,377 names, 13,377 rows, 0 missing |
+| `V3.5` tier/method agree | **PASS** — 0 mismatches |
+| `V3.6` no ambiguous acceptance | **PASS** — 0 in every tier |
+| `V3.7` no high-confidence tier 4 | **PASS** — 0 |
+| `V3.8` no payment before incorporation | **PASS** — 0 of 175,470 attributed rows |
+| `V3.9` redacted rows are tier 5 | **PASS** — 31,508 rows, 4 names, 0 wrong |
+| `V3.10` every tier 5 states a reason | **PASS** — 0 without |
+| `V3.11` no orphan company number | **PASS** — 0 |
+| `V3.12` dissolved matches | **INFO — structurally unobservable, see §7.6** |
+| `V3.13` `supplier_key` unique | **PASS** — 13,363 rows, 0 duplicates |
+| `V3.14` `company_number` unique among resolved | **PASS** — 0 duplicates |
+| `V3.15` `name_variant_count` correct | **PASS** — recomputed from `resolved_spend`, 0 disagreements |
+| `V3.16` resolved `legal_name` from Companies House | **PASS** — 0 exceptions |
+| `V3.17` unresolved carry no number | **PASS** — 0 |
+
+**The name universe is 13,377, not 13,373.** The extra four are the redacted names,
+which are held out of matching by `04` §3 hard rule 4 but still need a row in the audit
+trail. Two quantities that look alike: names *entering matching* and names *needing a
+verdict*.
+
+### 7.4 The resolution profile — the figure the portfolio quotes
+
+Transaction rows only (`row_role = 'transaction'`).
+
+| Tier | Supplier names | Transaction rows | Value (GBP) | % of value |
+|---|---:|---:|---:|---:|
+| 1 — company number | 1,172 | 50,129 | 3,981,459,526.06 | 7.76% |
+| 2 — exact normalised name | 4,755 | 123,926 | 15,790,231,297.20 | 30.76% |
+| 3 — name core + postcode | 54 | 1,415 | 10,164,008,997.88 | 19.80% |
+| 4 — fuzzy, **review only, not resolved** | 1,305 | 44,976 | 3,309,114,953.18 | 6.45% |
+| 5 — unresolved | 6,091 | 132,082 | 18,085,444,321.06 | 35.23% |
+
+**Resolved is tiers 1–3: 5,981 names, GBP 29,935,699,821.14 — 58.32% of transaction
+value.** Tier 4 is *not* counted as resolved anywhere in this project. Counting it would
+raise the headline to 64.77% on the strength of 80.86% precision (`docs/match_precision.md`)
+and no human review, which is the claim this build exists to avoid making.
+
+**Why "unresolved" is published as loudly as "resolved":**
+
+| Reason | Names | Value (GBP) |
+|---|---:|---:|
+| `no_match` — no candidate at any tier | 2,834 | 11,758,436,464.64 |
+| `below_threshold` — best fuzzy score under 0.85 | 3,108 | 5,548,797,358.30 |
+| `review` — tier-4 queue, decision pending | 1,305 | 3,309,114,953.18 |
+| `ambiguous` — more than one candidate, or the register disagrees | 145 | 664,944,471.37 |
+| `redacted` — payee withheld at source | 4 | 113,266,026.75 |
+
+**A large unresolved share is expected and is not a defect.** Public bodies name
+suppliers freely — departments, agencies, NHS trusts, councils, universities, charities
+and individuals all appear, and **none of them are companies**, so no Companies House
+method can ever reach them. `V3.12` in §7.6 shows a second, harder ceiling.
+
+### 7.5 The golden record
+
+**13,363 rows: 5,967 resolved entities and 7,396 unresolved buckets.** 5,981 matched
+names collapse onto 5,967 companies — 14 names are alternative spellings of a company
+another name already reached.
+
+**The most-collapsed supplier carries 16 distinct raw spellings.** `name_variant_count`
+was recomputed from `resolved_spend` by a different path than the one that built it
+(`V3.15`), and agrees on every row.
+
+Unresolved names keep their own key (`NAME|<normalised name>`) rather than being pooled
+into one bucket or dropped. Every transaction row therefore carries a `supplier_key`, and
+unresolved spend stays countable instead of disappearing from the total.
+
+### 7.6 `V3.12` cannot be satisfied — and that is the finding
+
+`V3.12` asks how much money went to companies the register calls **dissolved**. The
+answer is structurally zero, because **the Companies House snapshot contains no dissolved
+companies at all**:
+
+| Status in the snapshot | Companies |
+|---|---:|
+| Active | 5,190,379 |
+| Active – Proposal to Strike off | 388,951 |
+| Liquidation | 108,791 |
+| In Administration | 3,739 |
+| 10 further insolvency states | 3,512 |
+
+**Confirmed fact.** 14 distinct statuses, none of them `Dissolved`. The free
+"basic company data" product is a snapshot of the *live* register.
+
+Two consequences, both material:
+
+1. **A supplier that has since dissolved can never be matched, at any tier.** Part of the
+   `no_match` population is unreachable by construction, not by weak matching. The
+   measured `E-3` precision is unaffected; recall carries this ceiling.
+2. **`V3.12` should be restated** as *insolvency-state* matches, which the snapshot does
+   carry and which the build does observe:
+
+| Status of matched supplier | Suppliers | Transaction rows | Value (GBP) |
+|---|---:|---:|---:|
+| Active | 5,911 | 173,407 | 29,924,431,545.88 |
+| Active – Proposal to Strike off | 43 | 1,260 | 4,165,339.25 |
+| In Administration | 3 | 109 | 3,640,751.22 |
+| Liquidation | 8 | 687 | 2,894,022.62 |
+| Voluntary Arrangement | 2 | 7 | 568,162.17 |
+
+**GBP 11,268,275.26 of public money reached 56 suppliers in an insolvency state** — a
+finding a spend dashboard should surface rather than smooth over. Every one of those rows
+is dated after the supplier's incorporation (`V3.8`).
+
+### 7.7 The tier-1 demotion, published either way
+
+`04` §3 hard rule 6: where a buyer states a company number whose *registered* name
+disagrees with the supplier name, the match is demoted to review rather than accepted.
+
+| | Names |
+|---|---:|
+| Tier 1 accepted | 1,172 |
+| **Demoted to review** | **232** |
+| Rejected — ambiguous | 132 |
+| Rejected — number not in the register | 26 |
+| Of the 232, later confirmed by tier 2 or 3 on their own evidence | 27 |
+| Of the 232, still resolved at tier 1 | **0** |
+
+The 27 are the rule working, not leaking: the demotion rejects *the buyer's assertion*,
+not the name, so a name that independently matches the register by its own spelling is
+still resolved. The remaining **205 enter the review queue**.
+
+### 7.8 The review queue — `docs/review_queue.csv`
+
+**1,510 rows, decisions blank, highest value first**: 1,305 tier-4 candidates and the 205
+demoted tier-1 names. Per `04` §8, plus one column that specification does not list —
+`queue_reason` — because a reviewer looking at a row with no `match_score` needs to know
+it arrived by demotion rather than by similarity.
+
+The first row is `GREAT WESTERN RAILWAY` → `GREAT WESTERN RAILWAY LIMITED`, score 1.00,
+GBP 1,645,099,386.59. It is almost certainly correct, and it is **still queued**. That is
+the price of "tier 4 never auto-accepts", paid visibly rather than argued away.
