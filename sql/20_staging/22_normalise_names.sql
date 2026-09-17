@@ -75,16 +75,24 @@ AS ((
 -- be catchable, so tier 3/4 need a key that ignores the suffix.
 --
 -- 04 §3: tier 4 uses this "as a blocking key only, never as a match on its own".
+--
+-- SPLIT 2026-09-17. Layer 3 holds names that are ALREADY normalised
+-- (supplier_name_norm, company_name_norm) and needs their core. Re-deriving it
+-- with a second copy of the suffix rule would let the two drift, so the rule
+-- lives once, in name_core_from_norm, and name_core calls it.
+
+CREATE OR REPLACE FUNCTION `portfolio-508106.portfolio_b.name_core_from_norm`(norm STRING)
+RETURNS STRING
+OPTIONS (description = '04-entity-resolution-rules.md §2 step 9 applied to an already-normalised name. The single definition of the suffix rule.')
+AS (
+  NULLIF(TRIM(REGEXP_REPLACE(norm, r'\s+(LTD|PLC|LLP)$', '')), '')
+);
 
 CREATE OR REPLACE FUNCTION `portfolio-508106.portfolio_b.name_core`(raw STRING)
 RETURNS STRING
 OPTIONS (description = '04-entity-resolution-rules.md §2 step 9. Legal-form suffix removed. Tier-3/4 blocking key only — never a match on its own.')
 AS (
-  NULLIF(
-    TRIM(REGEXP_REPLACE(
-      `portfolio-508106.portfolio_b.normalise_name`(raw),
-      r'\s+(LTD|PLC|LLP)$', '')),
-    '')
+  `portfolio-508106.portfolio_b.name_core_from_norm`(`portfolio-508106.portfolio_b.normalise_name`(raw))
 );
 
 -- ===========================================================================

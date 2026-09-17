@@ -493,3 +493,47 @@ One Ministry of Justice 2025-01 annex row repeats a payment the body publishes a
 that row never enters matching. The redaction review in `92_validate_staging.sql` masks any
 row redacted by propagation — as first written, it printed the name. **No extract, table or
 chart in this repository may select `supplier_name_raw` for an `is_redacted` row.**
+
+---
+
+## 7. Layer 3 — opened: tiers 1–3 (`93_validate_resolved.sql`)
+
+**Executed 2026-09-17. Layer 3 is open, not complete.** Tier 4, the matched-supplier
+assembly, the golden record and `resolved_spend` are not built; `V3.1`–`V3.5`, `V3.7`,
+`V3.9`, `V3.10` and `V3.12`–`V3.17` therefore have not run.
+
+**Transactions only.** Every name entering matching comes from `row_role = 'transaction'`.
+Redacted rows never enter matching (`04` §3 hard rule 4).
+
+| Control | Result |
+|---|---|
+| `L3.0` name universe | **PASS** — 13,373 spend names, 0 duplicates, 0 missing; 13,003 `E-3` known-answer names alongside |
+| Hard rules 2–3, `V3.6`, `V3.8`, `V3.11` at acceptance | **PASS** — tier 1: 1,404 accepted · tier 2: 13,488 · tier 3: 588; 0 ambiguous, 0 implausible, 0 orphan numbers in every tier |
+
+### 7.1 Interim distribution — spend names, first match wins
+
+| Tier | Names | Transaction rows | Value (GBP) |
+|---|---:|---:|---:|
+| 1 — company number, bridged | 1,404 | 58,883 | 4,646,004,115.19 |
+| 2 — exact normalised name | 4,740 | 123,720 | 15,775,823,293.99 |
+| 3 — name core + postcode | 42 | 1,190 | 10,095,056,684.98 |
+| not yet resolved | 7,187 | 137,227 | 20,700,108,974.47 |
+
+**Calculated result.** Rows 321,020 + 31,508 redacted = 352,528 transactions; value
+51,216,993,068.63 + 113,266,026.75 redacted = GBP 51,330,259,095.38 — the transaction total
+exactly. **"Not yet resolved" is a work queue for tier 4, not a finding.**
+
+### 7.2 Findings that shape what comes next
+
+- **Tier 1 is a bridge.** Spend rows carry no company number, so a spend supplier reaches a
+  buyer-stated number only where its normalised name equals a Contracts Finder name that
+  carries one. Of 1,404 accepted tier-1 names, **232 are registered under a different
+  normalised name** than the supplier's. 132 names were rejected as ambiguous and 26 because
+  the stated number is not in the register.
+- **Tier 3 can re-introduce the `LTD`/`PLC` conflation `04` §2 exists to prevent**, because its
+  key ignores the legal suffix. Of 42 tier-3 names, 36 (GBP 10,046,822,210.84) carry no suffix
+  in the spend file — the case tier 3 is for. **4 names (GBP 39,014,117.12) carry a suffix that
+  conflicts with the matched company's**, such as a `PLC` or `LLP` supplier matched to a
+  `LIMITED` company.
+- **Tier 4 is computationally feasible.** First-token blocking gives 11,048 names and
+  12,697,337 candidate pairs; the largest block holds 31,189 companies.
