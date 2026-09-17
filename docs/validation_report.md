@@ -216,7 +216,10 @@ first; the 62 clean files are in any case regenerable by
 | `V2.5` window split | SOFT | 289,990 / 62,578 | **PASS**, exact |
 | `V2.6` unparsed amounts | HARD | 10 | **PASS** |
 | `V2.8` `amount_vat_basis` | HARD | 2 permitted values | **PASS** |
-| `V2.9` name unless redacted (scoped) | HARD | 0 | **FAIL — 31 rows, GBP 2.08bn. See §6.5** |
+| `V2.9` named payee on transactions | HARD | 0 | **PASS** — 0 unnamed transactions. See §6.5 and §6.8 |
+| `V2.9a` file totals from amounts alone | HARD | 0 disagreements | **PASS** — 21 found = 21 flagged |
+| `V2.9b` future-month re-check | HARD | 0 | **PASS** |
+| `V2.9c` workbook integrity | HARD | ties | **PASS** |
 | `V2.10` normalisation erasure | HARD | 0 | **PASS** |
 | `V2.11` postcode format | SOFT | — | 4,562 of 44,073 invalid |
 | `V2.12` `publisher_type` | HARD | 0 null | **PASS** |
@@ -364,7 +367,7 @@ the truth for two publishers.
 `V2.9` is the only rule in the suite that asks whether money has a **named
 recipient**, and that is the single question that exposes this.
 
-#### Not acted on
+#### Not acted on at the time — resolved 2026-09-17, see §6.8
 
 Excluding total rows is a **new exclusion rule**. It is not in `08` §11, and it
 changes the published spend figure for two publishers by GBP 1.76bn. That is a
@@ -372,7 +375,10 @@ specification decision, not a builder's. `V2.9a`, the per-file total-row
 detector, is committed in `92_validate_staging.sql` so the test is repeatable
 and the evidence is not a one-off query.
 
-**No Layer 3 or Layer 4 work should proceed on these totals until it is ruled.**
+> **Superseded 2026-09-17.** The ruling was to retain, flag and exclude, never delete.
+> `row_role` implements it (§6.8). The 20 proven totals above became **21**: a
+> name-independent test found a twenty-first total in Ministry of Justice 2024-04 that
+> carries a label in its supplier column, which an unnamed-only test cannot see.
 
 ### 6.6 Amounts and Grant-in-Aid
 
@@ -401,3 +407,89 @@ excluded from supplier concentration and cross-publisher rankings.
 120,590. No NULL and no third value, so no entity string fell outside the
 expected six. York's `Irrecoverable_VAT` column was independently confirmed
 **empty in all 124,803 rows**, as `08` §11.3 states.
+
+### 6.8 `row_role` — which rows are payments (`08` §11.6)
+
+**Executed 2026-09-17.** Every staged row carries a `row_role`. **Rows are retained and
+never deleted; every aggregation keys on `row_role = 'transaction'`.** `V2.1` stays
+352,614.
+
+| `row_role` | Detection | Rows | Value (GBP) |
+|---|---|---:|---:|
+| `file_total` | The file's last row equal to the sum of every other row, to the penny — name-independent | 21 | 1,841,069,862.61 |
+| `reconciliation` | From a file's own `Reconciliation to stack:` marker to its stack row | 6 | 444,090,543.54 |
+| `section_total` | Unnamed subtotal inside an anchored workbook | 9 | 179,984,364.34 |
+| `out_of_scope_section` | Workbook body section whose label is not `Publish` | 16 | 59,439,768.95 |
+| `annex_duplicate` | Change-log row re-listing a body transaction | 24 | 32,012,735.80 |
+| `section_header` | No supplier, no amount, inside an anchored workbook | 9 | — |
+| `trailing_artefact` | Unnamed last row equal to the nearest named row above | 1 | −529.52 |
+| `transaction` | Everything else | 352,528 | 51,330,259,095.38 |
+
+**Calculated result.** Excluded from aggregation: 86 rows, GBP 2,556,596,745.72 =
+53,886,855,841.10 staged − 51,330,259,095.38 transactions. Of that, GBP 59,439,768.95 is
+genuine Exempt and Bank rec entries excluded **by scope**; the remaining GBP
+2,497,156,976.77 is not a payment at all.
+
+| Publisher | Staged (GBP) | Transactions only (GBP) |
+|---|---:|---:|
+| Bristol City Council | 1,536,631,027.65 | **803,454,323.66** |
+| Ministry of Justice | 3,097,386,774.25 | **1,273,966,203.00** |
+| Manchester City Council | 1,247,793,286.58 | 1,247,793,816.10 |
+| York, DfT, HMRC | unchanged | unchanged |
+
+**Detection is not hard-coded.** No file or row number appears in the rules. `V2.9b`
+re-checks every file on every run for a workbook marker or a labelled total among the
+transactions, so a future month with either structure is caught before it is summed.
+
+**All 46 undated rows are non-transaction rows** — 0 undated transactions. No payment line
+lacks a date.
+
+### 6.9 Ministry of Justice 2025-01 — a reconciliation workbook
+
+The file publishes three body sections, each closed by a subtotal; a reconciliation block
+restating them; and a seven-section change-log annex re-listing body transactions.
+
+| `V2.9c` check | Result |
+|---|---|
+| Transactions = the publisher's own `Publish` label | 88,590,412.23 = 88,590,412.23 |
+| Body rows = body section totals = the stack row | 148,030,181.18 three ways |
+| Annex rows accounted for | 24 = 23 matched on transaction number and amount + 1 by redaction |
+
+**Transaction scope: the 344 `Publish` rows, GBP 88,590,412.23**, the basis on which the
+month is comparable with the Ministry's other eleven.
+
+### 6.10 Reference tables — `staging_companies`, `staging_contracts`
+
+| Control | Result |
+|---|---|
+| `V2.R1` companies reconcile | **PASS** — 5,695,465 raw − 93 rejected = 5,695,372 staged; every rejection is an `R` + 7-digit number |
+| `V2.R2` `company_number` key | **PASS** — 0 null, 0 duplicate |
+| `V2.R3` no company name erased | **PASS** — 0 |
+| `V2.R4` contracts drop nothing | **PASS** — 76,449 = 76,449 |
+| `V2.R5` `E-3` known answer | **PASS** — 24,507 rows, 11,593 companies |
+| `V2.R6` recorded gap stays a gap | **PASS** — `award_value` and `classification` NULL on every row |
+| `V2.R7` no supplier name erased | **PASS** — 0; 2 placeholder values counted (a lone `-` and a lone `.`) |
+| `V2.R8` tier-1 reach | INFO — 11,097 of 11,593 known-answer companies are in the snapshot; **496 are not**, so tier 1 can reach at most 23,883 of 24,507 known-answer rows |
+
+**`V2.R7` was refined after its first run.** As first written it failed on the two
+placeholder values, which carry no name to erase. It now fails only when a value containing
+a letter or digit normalises to empty. Recorded here because a control changed after
+failing must say so.
+
+**Recorded gaps, not filled.** Contracts Finder as acquired carries no award value and no
+procurement classification; both columns are typed NULL. `award_date` is the award notice's
+**release date** — an approximation, used by no match tier.
+
+**Canonicalisation, both sides.** A pass-through rung for Companies House society and mutual
+register numbers recovers 576 numbers the ladder rejected, with the Contracts Finder
+figures proven unchanged (22,672 / 1,814 / 21 / 24,507 usable / 274 / distinct 11,593). The
+93 `R` + 7-digit numbers are deliberately not covered: an `R` rung moves the Contracts
+Finder figures by one record whose registered company is not the supplier named against it.
+
+### 6.11 Confidentiality
+
+One Ministry of Justice 2025-01 annex row repeats a payment the body publishes as REDACTED,
+**with the payee's name**. Redaction now propagates to annex duplicates of redacted rows, so
+that row never enters matching. The redaction review in `92_validate_staging.sql` masks any
+row redacted by propagation — as first written, it printed the name. **No extract, table or
+chart in this repository may select `supplier_name_raw` for an `is_redacted` row.**

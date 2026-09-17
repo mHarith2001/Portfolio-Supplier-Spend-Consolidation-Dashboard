@@ -2,7 +2,12 @@
 -- Layer: L2 staging_
 -- Validation for this layer: sql/90_validation/92_validate_staging.sql
 --
--- EXECUTED 2026-09-16. This is the statement that ran.
+-- EXECUTED 2026-09-16; RE-EXECUTED 2026-09-17 with row_role. This is the
+-- statement that ran.
+--
+-- RUN IT FROM A FILE ON STANDARD INPUT. At over 10,000 characters it exceeds the
+-- Windows command-line limit, so pass it as `bq query ... < file`, not as an
+-- argument.
 --
 -- RUN 22_normalise_names.sql FIRST. It defines normalise_name(), which this
 -- statement calls. The numbering is from 06-repo-scaffold.md; the dependency
@@ -15,7 +20,7 @@
 -- GRAIN: one payment line. Unchanged from L1 — no aggregation happens here.
 --
 -- ===========================================================================
--- THREE FINDINGS FROM THE SOURCE DATA THAT CHANGE HOW THIS IS WRITTEN
+-- FOUR FINDINGS FROM THE SOURCE DATA THAT CHANGE HOW THIS IS WRITTEN
 -- ===========================================================================
 --
 -- 1. `entity` IS THE PUBLISHER, AND IT IS NOT THE SOURCE `entity` COLUMN.
@@ -23,7 +28,7 @@
 --
 --       bristol    body_name  = an Ordnance Survey URI, all 71,364 rows
 --       york       body_name  = 'City of York Council'          OK
---       dft        entity     = 13 DIFFERENT BODIES — National Highways 17,133,
+--       dft        entity     = 11 DIFFERENT BODIES — National Highways 17,133,
 --                               'Department for Transport' only 7,186, plus HS2,
 --                               MCA, DVLA, DVSA, British Transport Police, EWR,
 --                               Active Travel England, VCA, Transport Focus
@@ -69,11 +74,50 @@
 --       1: 'Grants paid out'      2: 'Capital - Adaptations'
 --       3: 'Mandatory D F G´s - Adaptations'
 --    so they are mapped to expense_type_raw / expense_area_raw / description.
---    FLAGGED: that is an interpretation of fields the publisher did not label.
+--    LABELLED INFERENCE, accepted 2026-09-17: this is the builder's reading of
+--    fields the publisher did not label — an inference from their content, not
+--    a claim the specification makes.
 --    03 §3 marks these columns 'Publisher vocabulary, not harmonised', so they
 --    are not comparable across publishers by design — but if the reading is
 --    rejected, the alternative is all three into `description` and NULL type and
 --    area for Bristol. Nothing else in the pipeline depends on the choice.
+--
+-- 4. NOT EVERY ROW IS A PAYMENT — row_role, ADDED 2026-09-17 (08 §11.6).
+--    Publishers leave spreadsheet totals, section subtotals and reconciliation
+--    workings in the published files. They carry amounts, so they are summed,
+--    and because the inflation is IN THE SOURCE it reconciles perfectly at
+--    every layer. A double-count that reconciles is invisible to a
+--    reconciliation.
+--
+--    row_role classifies every row; rows are RETAINED, never deleted, and every
+--    aggregation keys on row_role = 'transaction'. V2.1 stays 352,614.
+--
+--      file_total           last row of a file equal to the sum of every other
+--                           row in it, to the penny. NAME-INDEPENDENT: MOJ
+--                           2024-04's total carries a label in the supplier
+--                           column that an unnamed-only test cannot see.
+--      section_total        unnamed subtotal inside an anchored workbook
+--      section_header       no supplier, no amount, inside an anchored workbook
+--      reconciliation       from the file's own marker to its stack row
+--      annex_duplicate      named row after the stack row, re-listing a body row
+--      out_of_scope_section body section whose label is not 'Publish'. An EIGHTH
+--                           value, added at build: the ruling excluded the Exempt
+--                           and Bank rec sections from aggregation and none of the
+--                           seven ruled roles describes them.
+--      trailing_artefact    unnamed last row equal to the nearest named row above
+--      transaction          everything else
+--
+--    WORKBOOK ANCHOR. A file is a workbook only if it carries its own
+--    'Reconciliation to stack:' marker. No file or row is hard-coded: a future
+--    month with the same marker is classified by the same rules, and V2.9b in
+--    92_validate_staging.sql reports every anchored file. MOJ 2025-01's
+--    transaction scope is its 'Publish' section: the 344 rows, GBP 88,590,412.23,
+--    that the publisher's own label states.
+--
+--    REDACTION PROPAGATES. An annex_duplicate matching a redacted body row on
+--    amount and expense type inherits is_redacted = TRUE. MOJ 2025-01 publishes
+--    one payee as REDACTED in its body and repeats the payment WITH THE NAME in
+--    its annex.
 
 CREATE OR REPLACE TABLE `portfolio-508106.portfolio_b.staging_spend` AS
 WITH src AS (
@@ -288,10 +332,129 @@ parsed AS (
   -- §11.1 padding removal, all six publishers. A row is padding only when EVERY
   -- source field is blank. See finding 2.
   WHERE non_blank_fields > 0
+),
+
+-- ===========================================================================
+-- row_role — 08 §11.6. See finding 4.
+-- ===========================================================================
+rr_flags AS (
+  SELECT
+    s.*,
+    SAFE_CAST(s._row_num AS INT64) AS rr_rn,
+    COALESCE(TRIM(s.supplier_name_raw), '') = '' AS rr_no_name,
+    (COALESCE(TRIM(s.supplier_name_raw), '') = '' AND NOT s.is_redacted AND s.amount IS NOT NULL) AS rr_unnamed_amt
+  FROM parsed s
+),
+
+-- ---- Workbook anchor: a file that carries its OWN reconciliation marker ----
+-- Not a hard-coded file or row. Any future file with the same marker is
+-- classified by the same rules, and V2.9b reports every anchored file.
+rr_marker AS (
+  SELECT _source_file, MIN(rr_rn) AS recon_rn
+  FROM rr_flags
+  WHERE UPPER(TRIM(supplier_name_raw)) = 'RECONCILIATION TO STACK:'
+  GROUP BY _source_file
+),
+rr_anchor AS (
+  SELECT m._source_file, m.recon_rn, MIN(f.rr_rn) AS stack_rn
+  FROM rr_marker m
+  JOIN rr_flags f
+    ON f._source_file = m._source_file
+   AND f.rr_rn > m.recon_rn
+   AND REGEXP_CONTAINS(UPPER(TRIM(f.supplier_name_raw)), r'\bSTACK$')
+  GROUP BY m._source_file, m.recon_rn
+),
+rr_wb AS (
+  SELECT f.*, a.recon_rn, a.stack_rn,
+    -- body section index: 1 + number of body section totals strictly above this row
+    1 + COALESCE(COUNTIF(f.rr_rn < a.recon_rn AND f.rr_unnamed_amt) OVER (
+          PARTITION BY f._source_file ORDER BY f.rr_rn
+          ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING), 0) AS body_section_k
+  FROM rr_flags f
+  JOIN rr_anchor a USING (_source_file)
+),
+-- the publisher's own section labels, in order, between the marker and the stack row
+rr_labels AS (
+  SELECT _source_file, UPPER(TRIM(supplier_name_raw)) AS label, amount AS label_amount,
+         ROW_NUMBER() OVER (PARTITION BY _source_file ORDER BY rr_rn) AS section_k
+  FROM rr_wb
+  WHERE rr_rn > recon_rn AND rr_rn < stack_rn AND NOT rr_no_name AND amount IS NOT NULL
+),
+rr_publish AS (
+  SELECT _source_file, section_k AS publish_k FROM rr_labels WHERE label = 'PUBLISH'
+),
+rr_wb_role AS (
+  SELECT w._source_file, w.rr_rn,
+    CASE
+      WHEN w.rr_rn < w.recon_rn THEN
+        CASE
+          WHEN w.rr_unnamed_amt                        THEN 'section_total'
+          WHEN w.rr_no_name AND w.amount IS NULL       THEN 'section_header'
+          WHEN w.body_section_k = p.publish_k          THEN 'transaction'
+          ELSE                                              'out_of_scope_section'
+        END
+      WHEN w.rr_rn <= w.stack_rn                       THEN 'reconciliation'
+      WHEN w.rr_unnamed_amt                            THEN 'section_total'
+      WHEN w.rr_no_name AND w.amount IS NULL           THEN 'section_header'
+      ELSE                                                  'annex_duplicate'
+    END AS wb_role
+  FROM rr_wb w
+  LEFT JOIN rr_publish p USING (_source_file)
+),
+-- redaction propagates to an annex duplicate of a redacted body row
+rr_redact AS (
+  SELECT DISTINCT a._source_file, a.rr_rn
+  FROM rr_wb a
+  JOIN rr_wb_role ar ON ar._source_file = a._source_file AND ar.rr_rn = a.rr_rn
+  JOIN rr_wb b
+    ON b._source_file = a._source_file
+   AND b.rr_rn < b.recon_rn
+   AND b.is_redacted
+   AND b.amount = a.amount
+   AND b.expense_type_raw = a.expense_type_raw
+  WHERE ar.wb_role = 'annex_duplicate' AND NOT a.is_redacted
+),
+
+-- ---- Non-workbook files: file totals and trailing artefacts ----
+-- file_total is NAME-INDEPENDENT: the file's last row, whose amount equals the
+-- sum of every other row in the file to the penny. MOJ 2024-04 row 503 is a
+-- NAMED total ('Publish total after adding in AP18 Reconciliation missing
+-- items') that an unnamed-only test cannot see.
+rr_file AS (
+  SELECT _source_file,
+    ROUND(SUM(amount), 2) AS file_sum,
+    MAX(rr_rn) AS last_rn
+  FROM rr_flags
+  GROUP BY _source_file
+),
+rr_prev AS (
+  SELECT _source_file, rr_rn,
+    LAST_VALUE(IF(NOT rr_no_name, amount, NULL) IGNORE NULLS) OVER (
+      PARTITION BY _source_file ORDER BY rr_rn
+      ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING) AS prev_named_amount
+  FROM rr_flags
+),
+rr_classified AS (
+  SELECT
+    f.* EXCEPT (rr_rn, rr_no_name, rr_unnamed_amt, is_redacted),
+    (f.is_redacted OR r.rr_rn IS NOT NULL) AS is_redacted,
+    CASE
+      WHEN w.wb_role IS NOT NULL                                        THEN w.wb_role
+      WHEN f.rr_rn = x.last_rn AND f.amount IS NOT NULL AND f.amount != 0
+           AND ROUND(f.amount - (x.file_sum - f.amount), 2) = 0          THEN 'file_total'
+      WHEN f.rr_unnamed_amt AND f.rr_rn = x.last_rn
+           AND f.amount = pv.prev_named_amount                          THEN 'trailing_artefact'
+      ELSE                                                                   'transaction'
+    END AS row_role
+  FROM rr_flags f
+  LEFT JOIN rr_wb_role w ON w._source_file = f._source_file AND w.rr_rn = f.rr_rn
+  LEFT JOIN rr_redact  r ON r._source_file = f._source_file AND r.rr_rn = f.rr_rn
+  LEFT JOIN rr_file    x ON x._source_file = f._source_file
+  LEFT JOIN rr_prev   pv ON pv._source_file = f._source_file AND pv.rr_rn = f.rr_rn
 )
 
 SELECT
   *,
   -- §9.1. Derived from payment_date so it cannot disagree with the ladder.
   (payment_date IS NULL) AS is_undated
-FROM parsed;
+FROM rr_classified;

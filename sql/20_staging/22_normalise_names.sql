@@ -140,6 +140,25 @@ AS ((
       -- special registered forms ending in a letter, e.g. IP19059R
       WHEN REGEXP_CONTAINS(v, r'^[A-Z]{2}\d{5}[A-Z]$') THEN v
 
+      -- Companies House society and mutual register forms — ADDED 2026-09-17.
+      -- Industrial & provident societies, registered societies, credit unions:
+      -- a prefix, digits, then a letter suffix (SP2155RS, IP123CUS, SP12BENS).
+      -- Without this rung the ladder rejected 669 of Companies House's own
+      -- 5,695,465 registered numbers; this recovers the 576 society and mutual
+      -- ones. Passed through unchanged. Digits are required before the suffix,
+      -- so an ordinary word (SPARKLES) can never pass.
+      --
+      -- PROVEN BEFORE ADOPTION: on Contracts Finder every 08 §7.3 figure is
+      -- unchanged (0 records differ); on Companies House 0 already-accepted
+      -- numbers change and all stay distinct.
+      --
+      -- R + 7-digit numbers are DELIBERATELY NOT covered (93 remain rejected).
+      -- An R rung accepts one Contracts Finder identifier whose registered
+      -- company is not the supplier named against it, making a high-confidence
+      -- tier-1 match to a differently named company. See 08 §7.3.
+      WHEN REGEXP_CONTAINS(v, r'^(IP|RS|SP)(\d{4}[A-Z]{2}|\d{3}[A-Z]{3}|\d{2}[A-Z]{4}|\d[A-Z]{5})$') THEN v
+      WHEN REGEXP_CONTAINS(v, r'^IPIP(\d{3}[A-Z]|\d{4})$') THEN v
+
       -- anything else goes to the exception log, NOT to a guess
       ELSE NULL
     END
@@ -153,12 +172,16 @@ AS ((
 --  q15-awards.csv, the same file you loaded. A different result means the
 --  function was transcribed incorrectly."
 
+-- CORRECTED 2026-09-17 to the published §7.2 expression: prefixed 1,814 (was
+-- 1,815), total usable 24,507 (was 24,508), not usable 274 (was 273). The old
+-- figures reproduce exactly with an R + 7-digit rung that §7.2 never published.
+
 SELECT
   COUNTIF(c IS NOT NULL AND REGEXP_CONTAINS(c, r'^\d{8}$'))        AS usable_numeric,        -- 22,672
-  COUNTIF(c IS NOT NULL AND REGEXP_CONTAINS(c, r'^[A-Z]{2}\d{6}$')) AS usable_prefixed,      -- 1,815
+  COUNTIF(c IS NOT NULL AND REGEXP_CONTAINS(c, r'^[A-Z]{2}\d{6}$')) AS usable_prefixed,      -- 1,814
   COUNTIF(c IS NOT NULL AND REGEXP_CONTAINS(c, r'^[A-Z]{2}\d{5}[A-Z]$')) AS usable_special,  -- 21
-  COUNTIF(c IS NOT NULL)                                            AS total_usable,         -- 24,508
-  COUNTIF(c IS NULL)                                                AS not_usable,           -- 273
+  COUNTIF(c IS NOT NULL)                                            AS total_usable,         -- 24,507
+  COUNTIF(c IS NULL)                                                AS not_usable,           -- 274
   COUNT(*)                                                          AS gb_coh_records        -- 24,781
 FROM (
   SELECT `portfolio-508106.portfolio_b.canon_company_number`(identifier) AS c
@@ -167,10 +190,31 @@ FROM (
 );
 
 -- Distinct company numbers: 12,666 as published -> 11,593 canonicalised.
--- The rule removes 1,073 spurious entities.
+-- The rule removes 1,073 spurious entities. "As published" is
+-- COUNT(DISTINCT UPPER(TRIM(identifier))); the raw distinct count is 12,669.
 
 SELECT
-  COUNT(DISTINCT identifier)                                                AS distinct_as_published,
-  COUNT(DISTINCT `portfolio-508106.portfolio_b.canon_company_number`(identifier)) AS distinct_canonicalised
+  COUNT(DISTINCT identifier)                                                AS distinct_raw,             -- 12,669
+  COUNT(DISTINCT UPPER(TRIM(identifier)))                                   AS distinct_as_published,    -- 12,666
+  COUNT(DISTINCT `portfolio-508106.portfolio_b.canon_company_number`(identifier)) AS distinct_canonicalised -- 11,593
 FROM `portfolio-508106.portfolio_b.raw_contracts_finder`
 WHERE category = 'GB-COH' AND COALESCE(TRIM(identifier), '') != '';
+
+-- ===========================================================================
+-- Self-check — the Companies House side. ADDED 2026-09-17.
+-- ===========================================================================
+-- Every accepted number must pass through UNCHANGED (Companies House is the
+-- authority for its own numbers) and stay distinct. The only rejections left
+-- are the 93 R + 7-digit numbers the ladder deliberately does not cover.
+
+SELECT
+  COUNT(*)                                          AS ch_rows,          -- 5,695,465
+  COUNTIF(c IS NULL)                                AS rejected,         -- 93
+  COUNTIF(c IS NULL AND NOT REGEXP_CONTAINS(raw, r'^R\d{7}$')) AS rejected_not_r_form, -- 0
+  COUNT(DISTINCT c)                                 AS distinct_accepted, -- 5,695,372
+  COUNTIF(c IS NOT NULL AND c != raw)               AS changed_by_canon  -- 0
+FROM (
+  SELECT t.` CompanyNumber` AS raw,
+         `portfolio-508106.portfolio_b.canon_company_number`(t.` CompanyNumber`) AS c
+  FROM `portfolio-508106.portfolio_b.raw_companies_house` t
+);
