@@ -686,3 +686,86 @@ it arrived by demotion rather than by similarity.
 The first row is `GREAT WESTERN RAILWAY` → `GREAT WESTERN RAILWAY LIMITED`, score 1.00,
 GBP 1,645,099,386.59. It is almost certainly correct, and it is **still queued**. That is
 the price of "tier 4 never auto-accepts", paid visibly rather than argued away.
+
+---
+
+## 8. Layer 4 — the star schema (`94_validate_reporting.sql`)
+
+**Executed 2026-09-18. `V4.1`–`V4.6` all PASS.** Six tables: `dim_supplier`, `dim_entity`,
+`dim_date`, `dim_category`, `fact_spend` and `fact_spend_unresolved`.
+
+| Control | Result |
+|---|---|
+| `V4.1` end-to-end reconciliation | **PASS** — 352,528 rows and GBP 51,330,259,095.38 on both sides, difference **0.00** |
+| `V4.2` no orphan foreign keys | **PASS** — 0 orphans across 4 keys × 352,528 rows, 0 null keys |
+| `V4.3` `uncategorised` member | **PASS** — 1 member among 1,637 category rows |
+| `V4.4` `dim_date` gapless and covering | **PASS** — 728 rows over a 728-day span, 0 fact dates uncovered |
+| `V4.5` unresolved bucket present | **PASS** — 7,396 unresolved rows beside 5,967 resolved |
+| `V4.6` no fan-out on aggregation | **PASS** — 175,470 rows and GBP 29,935,699,821.14 before and after the join, inflation 0.00 |
+
+### 8.1 `V4.1` is the whole pipeline in one line
+
+| | Rows | Value (GBP) |
+|---|---:|---:|
+| `staging_spend`, transactions | 352,528 | 51,330,259,095.38 |
+| `fact_spend` (resolved) | 175,470 | 29,935,699,821.14 |
+| `fact_spend_unresolved` | 177,058 | 21,394,559,274.24 |
+| **Fact total** | **352,528** | **51,330,259,095.38** |
+| **Difference** | **0** | **0.00** |
+
+Four layers, two reconciliations (`E-5` at Layer 3, `V4.1` at Layer 4), and **not one row
+or penny created or lost** between the published CSV files and the dashboard tables.
+
+### 8.2 The consolidation finding
+
+| Measure | Count |
+|---|---:|
+| Distinct raw vendor spellings in transaction rows | **14,434** |
+| Distinct normalised names | 13,377 |
+| Rows in `dim_supplier` | 13,363 |
+| **Resolved supplier entities** | **5,967** |
+| Most spellings collapsed into one supplier | **16** |
+
+**14,434 vendor records describe at most 5,967 identified companies plus 7,396 names that
+could not be identified.** That gap is the reason master data management exists, stated as
+a measurement rather than as a claim.
+
+### 8.3 The ten largest resolved suppliers
+
+| Supplier | Company | Spellings | Rows | Spend (GBP) | Paying bodies |
+|---|---|---:|---:|---:|---:|
+| NETWORK RAIL LIMITED | 04402220 | 2 | 133 | 9,212,149,934.47 | 1 |
+| NATIONAL HIGHWAYS LIMITED | 09346363 | 3 | 31 | 5,296,816,938.73 | 3 |
+| GOVIA THAMESLINK RAILWAY LIMITED | 07934306 | 1 | 44 | 1,875,189,813.94 | 1 |
+| NORTHERN TRAINS LIMITED | 03076444 | 3 | 46 | 1,190,625,688.74 | 3 |
+| FIRST MTR SOUTH WESTERN TRAINS LIMITED | 07900320 | 1 | 33 | 911,676,351.72 | 1 |
+| LONDON NORTH EASTERN RAILWAY LIMITED | 04659712 | 1 | 13 | 741,427,773.74 | 1 |
+| TRANSPORT UK EAST MIDLANDS LIMITED | 09860485 | 1 | 37 | 470,778,190.15 | 1 |
+| SE TRAINS LIMITED | 03266762 | 1 | 29 | 451,685,733.63 | 1 |
+| CONNECT PLUS (M25) LIMITED | 06683845 | 2 | 117 | 401,511,467.76 | 1 |
+| BALFOUR BEATTY CIVIL ENGINEERING LIMITED | 04482405 | 2 | 235 | 398,203,786.58 | 1 |
+
+**Read this table with `P-9` in hand.** It is a rail and roads table because DfT dominates
+by value; it is not a ranking of UK public-sector suppliers. `NETWORK RAIL LIMITED` reaches
+GBP 9.2bn across **133 payment lines** — grant-in-aid scale, not procurement scale.
+
+### 8.4 The declared window, carried as a flag rather than a filter
+
+The declared analysis window is **2024-03-01 to 2025-02-28**. Observed transaction dates run
+**2023-04-04 to 2025-03-31**, because in-window *files* carry out-of-window *records*.
+
+| In the declared window | Rows | Value (GBP) | Span |
+|---|---:|---:|---|
+| Yes | 289,950 | 51,056,283,211.78 | 2024-03-01 → 2025-02-28 |
+| No | **62,578** | 273,975,883.60 | 2023-04-04 → 2025-03-31 |
+
+**62,578 is exactly the figure `09` `P-8` recorded** at preparation, reproduced here from
+the built tables by an independent path.
+
+`dim_date` spans the observed dates and flags the window (`is_in_analysis_window`).
+Generating only the declared window would have failed `V4.2` — or, worse, passed it by
+quietly discarding 62,578 real payments to make a date range look tidy.
+
+**The `08` §12 window baseline reconciles too:** 289,950 in-window transactions + 24
+`annex_duplicate` + 16 `out_of_scope_section` = **289,990**, the recorded baseline. That
+baseline was measured before `row_role` existed, which is precisely the 40-row difference.
