@@ -54,6 +54,7 @@ WITH resolved_23 AS (
 todo AS (
   SELECT
     n.supplier_name_norm, n.in_spend, n.in_e3, n.spend_value,
+    n.first_payment_date,
     SPLIT(n.supplier_name_core, ' ')[SAFE_OFFSET(0)]                     AS block_token,
     ARRAY(SELECT DISTINCT t FROM UNNEST(SPLIT(n.supplier_name_core, ' ')) t WHERE t != '') AS tokens,
     REGEXP_EXTRACT(n.supplier_name_norm, r'\s(LTD|PLC|LLP)$')            AS name_suffix,
@@ -97,6 +98,17 @@ SELECT
 FROM todo t
 JOIN ch c USING (block_token)
 WHERE NOT (t.name_suffix IS NOT NULL AND c.name_suffix IS NOT NULL AND t.name_suffix != c.name_suffix)
+  -- HARD RULE 3, applied at tier 4 from 2026-09-18. A company incorporated AFTER
+  -- the first payment cannot be the payee. Tiers 1-3 have always rejected this;
+  -- tier 4 did not, and 107 of its 1,305 queued candidates were impossible on
+  -- those grounds, carrying GBP 64,259,806.06 -- one of them incorporated
+  -- 2025-12-24, after payments it supposedly received.
+  --
+  -- It is a FILTER ON CANDIDATES, not on names, and deliberately so: a name whose
+  -- best candidate is impossible can still reach a plausible second-best one,
+  -- which is the whole point of scoring more than one. Names with no payment date
+  -- (the E-3 population) are kept, matching tier 1's treatment of unknown dates.
+  AND COALESCE(NOT (t.first_payment_date < c.incorporation_date), TRUE)
   AND SAFE_DIVIDE(
         ARRAY_LENGTH(ARRAY(
           SELECT tok FROM UNNEST(t.tokens) AS tok

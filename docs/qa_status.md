@@ -20,22 +20,22 @@ them — an unticked box is more useful than a tick that is not true.
 | `Q3.1` | Tier distribution by count **and value** | **PASS** — validation report §7.4 |
 | `Q3.2` | No tier-4 auto-merge | **PASS** — 1,510 queue rows, **0 non-blank decisions** |
 | `Q3.3` | Ambiguity surfaced, never auto-accepted | **PASS** — `V3.6`, 0 accepted with `candidate_count > 1` |
-| `Q3.4` | Plausibility applied | **PASS for what is attributed** — 0 of 175,470 attributed rows precede incorporation. **See the caveat below** |
+| `Q3.4` | Plausibility applied | **PASS at every tier** — 0 of 175,470 attributed rows precede incorporation, and since 2026-09-18 hard rule 3 also filters tier-4 candidates: **0 impossible candidates remain in the queue** |
 | `Q3.5` | Redacted population reported as a named category | **PASS** — 4 names, 31,508 rows, GBP 113,266,026.75, **0.2207%** of transaction value |
 | `Q3.6` | Precision measured and published | **PASS** — `docs/match_precision.md` |
 | `Q3.7` | Precision reported honestly | **PASS** — 95.25% overall published with tier 4's 80.86%, recall 84.49%, and three ceilings |
 | `Q3.8` | `name_variant_count` produces the headline | **PASS** — 14,434 vendor records → 5,967 identified suppliers + 7,396 unidentified names |
 
-### `Q3.4` caveat — hard rule 3 is not applied at tier 4
+### `Q3.4` — how it came to pass at every tier (2026-09-18)
 
-Tiers 1–3 reject a candidate whose incorporation date falls after the first payment. **Tier 4
-does not**, and **107 of its 1,305 queued candidates are impossible on those grounds**,
-carrying GBP 64,259,806.06.
+It did not start that way. Tiers 1–3 rejected a candidate incorporated after the first
+payment; **tier 4 did not**, and 107 of its 1,305 queued candidates were impossible on those
+grounds, carrying GBP 64,259,806.06.
 
-Nothing is mis-attributed by this: tier 4 resolves nothing, so no impossible match reached
-`fact_spend`, which is why `Q3.4` passes as written. What it does mean is that **107 queue
-entries waste a reviewer's time on a company that cannot be the payee.** Recorded as a
-proposal, not silently fixed.
+Nothing was ever mis-attributed — tier 4 resolves nothing — so `Q3.4` passed as written
+throughout. It was fixed anyway, because 107 queue entries were costing a reviewer time on a
+company that cannot be the payee. The queue fell to 1,199 tier-4 names and tier-4 precision
+rose from 80.86% to 81.40%. See validation report §7.9.
 
 ## Tableau QA (`07` §4) — **BLOCKED**
 
@@ -60,7 +60,7 @@ no workbook has been built. Nothing here is claimed.
 |---|---|
 | RUN | **BLOCKED** — not executed end to end on a clean machine |
 | RECONCILE | **PASS** — `V3.1`, `V3.2`, `V4.1` all hold; `V1.1` ties to source counts |
-| DOCUMENT | **INCOMPLETE** — README, validation report, match precision and review queue exist. **Missing: `limitations.md` (cited by `match_precision.md` but absent), the data dictionary, the schema document and the entity-resolution rules** |
+| DOCUMENT | **COMPLETE** — README, `validation_report.md`, `match_precision.md`, `review_queue.csv`, `limitations.md`, `schema.md`, `entity_resolution.md`, `data_dictionary.md`. The `limitations.md` citation in `match_precision.md` now resolves |
 | PUBLISH | **PARTIAL** — GitHub is public and carries no raw register. Tableau Public not published |
 | EXPLAIN | Not attempted — `07` §7 |
 

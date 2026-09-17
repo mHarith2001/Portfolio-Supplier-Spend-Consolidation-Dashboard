@@ -209,7 +209,15 @@ CLAUDE.md
 # docs/provenance.csv        69 rows — the E-1 reproducibility record
 # docs/review_queue.csv      tier-4 ambiguities, decisions blank
 # docs/match_precision.md    the E-3 measurement
-# data/outputs/*.csv         small derived aggregates, the Tableau source
+# data/outputs/*.csv         ROW-LEVEL extracts of the Layer 4 star schema, the
+#                            Tableau source. 8 files, 28.3 MB: 352,528 payment
+#                            lines across two fact tables plus six dimensions.
+#                            Corrected 2026-09-18 — this line previously read
+#                            "small derived aggregates", which the extract is
+#                            not. Every row is already published by the bodies
+#                            themselves; no postcode and no withheld individual
+#                            name is exported (charter L-1 and L-3, and 46's
+#                            export layer is where that is enforced).
 # sql/**/*.sql               every layer
 # scripts/*.py               acquisition and profiling
 # tableau/*.twbx             the packaged workbook (see §3)
