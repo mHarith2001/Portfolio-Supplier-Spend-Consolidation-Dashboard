@@ -35,3 +35,21 @@ foreach ($t in $tables) {
   $rows = (Get-Content $out | Measure-Object -Line).Lines - 1
   '{0,-24} {1,9:N0} rows' -f $t, $rows
 }
+
+# The review queue is a published artefact too, so it is produced HERE rather than
+# by hand. Its order is set inside 37 (highest value first).
+cmd /c "bq query --use_legacy_sql=false --format=csv --max_rows=100000 < sql\30_resolved\37_build_review_queue.sql > docs\review_queue.csv" 2>$null
+if ($LASTEXITCODE -ne 0) { throw 'export failed: review_queue' }
+'{0,-24} {1,9:N0} rows' -f 'review_queue', ((Get-Content docs\review_queue.csv | Measure-Object -Line).Lines - 1)
+
+# ENCODING GUARD. Every published file must be strict UTF-8. Found 2026-09-18: the
+# same bq command, run from Git Bash rather than PowerShell, wrote five characters
+# (É, Ó, an en dash, a curly apostrophe) in Windows-1252, and the broken file was
+# committed. A strict decoder throws on the first invalid byte, so a bad file
+# stops the run here instead of reaching the repository.
+$strict = New-Object System.Text.UTF8Encoding($false, $true)
+foreach ($f in (Get-ChildItem data\outputs\*.csv) + (Get-Item docs\review_queue.csv)) {
+  try { [void]$strict.GetString([System.IO.File]::ReadAllBytes($f.FullName)) }
+  catch { throw "NOT valid UTF-8 - do not commit: $($f.Name)" }
+}
+'all outputs valid UTF-8'
