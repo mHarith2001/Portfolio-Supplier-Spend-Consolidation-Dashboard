@@ -588,13 +588,14 @@ Transaction rows only (`row_role = 'transaction'`).
 | 1 — company number | 1,172 | 50,129 | 3,981,459,526.06 | 7.76% |
 | 2 — exact normalised name | 4,755 | 123,926 | 15,790,231,297.20 | 30.76% |
 | 3 — name core + postcode | 54 | 1,415 | 10,164,008,997.88 | 19.80% |
-| 4 — fuzzy, **review only, not resolved** | 1,226 | 41,637 | 3,250,493,817.87 | 6.33% |
+| 4 — fuzzy, **accepted on recorded review** | 1 | 120 | 870,427,482.80 | 1.70% |
+| 4 — fuzzy, **review only, not resolved** | 1,225 | 41,517 | 2,380,066,335.07 | 4.64% |
 | 5 — unresolved | 6,170 | 135,421 | 18,144,065,456.37 | 35.35% |
 
 **Resolved is tiers 1–3: 5,981 names, GBP 29,935,699,821.14 — 58.32% of transaction
-value.** Tier 4 is *not* counted as resolved anywhere in this project. Counting it would
-raise the headline to 64.64% on the strength of 81.40% precision (`docs/match_precision.md`)
-and no human review, which is the claim this build exists to avoid making.
+value.** Tier 4 is *not* counted as resolved anywhere in this project. Counting the still-unreviewed
+queue would raise the total to 64.65% on the strength of 80.88% precision
+(`docs/match_precision.md`) and no human review, which is the claim this build exists to avoid making.
 
 **Why "unresolved" is published as loudly as "resolved":**
 
@@ -602,7 +603,7 @@ and no human review, which is the claim this build exists to avoid making.
 |---|---:|---:|
 | `no_match` — no candidate at any tier | 1,802 | 10,370,301,942.78 |
 | `below_threshold` — best fuzzy score under 0.85 | 4,214 | 6,986,288,357.72 |
-| `review` — tier-4 queue, decision pending | 1,226 | 3,250,493,817.87 |
+| `review` — tier-4 queue, decision pending | 1,225 | 2,380,066,335.07 |
 | `ambiguous` — more than one candidate, or the register disagrees | 150 | 674,209,129.12 |
 | `redacted` — payee withheld at source | 4 | 113,266,026.75 |
 
@@ -689,7 +690,7 @@ names. Per `04` §8, plus `queue_reason` — because a reviewer looking at a row
 
 **Decisions are recorded in `sql/30_resolved/38_queue_decisions.sql` as literals under
 version control**, and joined in by the generator, so regenerating the queue never loses
-them and every decision carries its reason. **One row is decided so far** (§7.10); the rest
+them and every decision carries its reason. **Two rows are decided so far** (§7.10, §7.11); the rest
 are blank, which remains the honest presentation.
 
 The first row is `GREAT WESTERN RAILWAY` → `GREAT WESTERN RAILWAY LIMITED`, score 1.00,
@@ -781,6 +782,54 @@ and precisely why tier 4 is reviewed rather than merged.
 **Unchanged by all of it: the resolution claim.** Tiers 1–3 are untouched — 5,981 names,
 GBP 29,935,699,821.14, **58.32%** — and all 23 `V3`/`V4` controls were re-run after the
 rebuild with **0 FAIL**.
+
+### 7.11 The first accept, and how a decision takes effect (2026-09-18)
+
+**Queue row 2 approved:** `WEST MIDLANDS TRAINS` → `WEST MIDLANDS TRAINS LIMITED`
+(`09860466`), GBP 870,427,482.80.
+
+**The basis recorded is corroboration, not the score.** The same payer also writes this
+supplier as `West Midlands Trains Limited` and `West Midlands Trains Ltd`, and that longer
+spelling already resolves at **tier 2, high confidence, to `09860466`**. The payer's own
+files bridge the short form to the company independently of any fuzzy matching. The score
+— 1.00 against 99 rivals all at 0.50 under the corrected blocking — supports the decision;
+it is not the reason for it.
+
+**How a decision now takes effect.** An accepted row resolves its name, with
+`match_confidence = 'reviewed'`, **only if the accepted company is still the tier-4
+candidate**. A rebuild that changes the candidate makes the decision stale: it is not
+applied, it is flagged, and `93`'s new `D.1`–`D.4` controls fail until someone looks again.
+An approval is of a specific company, never of a name in general.
+
+The resolved/unresolved verdict is computed **once**, as `is_resolved` in
+`resolved_supplier_match`, and the golden record, `resolved_spend` and `dim_supplier` all
+read it. One predicate, not four copies of it waiting to disagree.
+
+**The resolution claim, by basis** — reported separately so that one kind of evidence never
+borrows the other's credibility:
+
+| Basis | Names | Value (GBP) | % of value |
+|---|---:|---:|---:|
+| **Method** — tiers 1–3 | 5,981 | 29,935,699,821.14 | **58.32%** |
+| **Reviewed** — tier 4 accepted on a recorded decision | 1 | 870,427,482.80 | **1.70%** |
+| **Total resolved** | **5,982** | **30,806,127,303.94** | **60.02%** |
+| Unresolved | 7,395 | 20,524,131,791.44 | 39.98% |
+
+**`E-3` did not move** — 95.25% precision, 84.50% recall, tier 4 80.88%. Decisions change
+what is resolved; they never touch the measurement of the method, which `95` takes from the
+method's own tables.
+
+**What moved:** the golden record fell from 13,363 rows to **13,362** — the short spelling's
+unresolved bucket merged into the existing `09860466` entity, which now carries **3 raw
+spellings** — and `fact_spend` rose from 175,470 rows to **175,590**. `V4.1` still reconciles
+to the penny: 352,528 rows, GBP 51,330,259,095.38, difference 0.00. All `V3`, `V4` and
+`D` controls pass.
+
+**One defect the accept exposed, and fixed:** the review queue looked its labels up through
+the golden record's `NAME|` key, and an accepted name no longer has one — it merges into the
+company's `CH|` key. The first regeneration blanked the label of exactly the row just decided.
+Labels now come from the spend files directly (`37`), and the regenerated queue has **0**
+empty labels.
 
 ---
 

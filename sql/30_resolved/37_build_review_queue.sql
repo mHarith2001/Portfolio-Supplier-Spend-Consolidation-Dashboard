@@ -23,8 +23,21 @@ WITH spend AS (
   WHERE row_role = 'transaction'
   GROUP BY supplier_name_norm
 ),
+-- The label comes from the SPEND FILES, per normalised name -- not from the
+-- golden record. An accepted name merges into its company's CH| key and no
+-- longer has a NAME| row there, so a golden-record lookup blanks the label of
+-- exactly the rows a reviewer has just decided. (Found 2026-09-18 on row 2.)
 raw_name AS (
-  SELECT supplier_key, display_name FROM `portfolio-508106.portfolio_b.resolved_supplier_golden`
+  SELECT supplier_name_norm, supplier_name_raw AS display_name
+  FROM (
+    SELECT supplier_name_norm, supplier_name_raw,
+           ROW_NUMBER() OVER (PARTITION BY supplier_name_norm
+                              ORDER BY COUNT(*) DESC, MAX(payment_date) DESC, supplier_name_raw) AS rn
+    FROM `portfolio-508106.portfolio_b.resolved_spend`
+    WHERE row_role = 'transaction'
+    GROUP BY supplier_name_norm, supplier_name_raw
+  )
+  WHERE rn = 1
 ),
 m AS (SELECT * FROM `portfolio-508106.portfolio_b.resolved_supplier_match`),
 t1 AS (
@@ -72,7 +85,7 @@ SELECT
 FROM q
 JOIN spend s USING (supplier_name_norm)
 LEFT JOIN raw_name r
-  ON r.supplier_key = TO_HEX(SHA256(CONCAT('NAME|', q.supplier_name_norm)))
+  ON r.supplier_name_norm = q.supplier_name_norm
 LEFT JOIN `portfolio-508106.portfolio_b.resolved_queue_decisions` d
   ON d.supplier_name_norm = q.supplier_name_norm
 ORDER BY s.total_spend DESC;

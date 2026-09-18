@@ -60,13 +60,26 @@ base AS (
     t4.candidate_company_number           AS t4_num,
     t4.candidate_company_name             AS t4_name,
     t4.match_score                        AS t4_score,
-    t4.candidate_count                    AS t4_cnt
+    t4.candidate_count                    AS t4_cnt,
+    d.decision                            AS d_decision,
+    d.candidate_company_number            AS d_num,
+    d.decided_on                          AS d_date
   FROM spend_names n
   LEFT JOIN redacted_names r USING (supplier_name_norm)
   LEFT JOIN `portfolio-508106.portfolio_b.resolved_match_tier1` t1 USING (supplier_name_norm)
   LEFT JOIN `portfolio-508106.portfolio_b.resolved_match_tier2` t2 USING (supplier_name_norm)
   LEFT JOIN `portfolio-508106.portfolio_b.resolved_match_tier3` t3 USING (supplier_name_norm)
   LEFT JOIN `portfolio-508106.portfolio_b.resolved_match_tier4` t4 USING (supplier_name_norm)
+  LEFT JOIN `portfolio-508106.portfolio_b.resolved_queue_decisions` d USING (supplier_name_norm)
+),
+-- A human accept takes effect ONLY for the exact company that was approved. If a
+-- rebuild changes the tier-4 candidate, the old decision is stale and is NOT
+-- carried across to the new company (see 38).
+judged AS (
+  SELECT *,
+    (t4_score >= 0.85 AND d_decision = 'accepted' AND d_num = t4_num)            AS t4_accepted,
+    (d_decision = 'accepted' AND NOT COALESCE(d_num = t4_num AND t4_score >= 0.85, FALSE)) AS stale_accept
+  FROM base
 )
 SELECT
   supplier_name_norm,
@@ -93,6 +106,7 @@ SELECT
        WHEN t1_ok            THEN 'high'
        WHEN t2_ok            THEN 'high'
        WHEN t3_ok            THEN 'medium'
+       WHEN t4_accepted      THEN 'reviewed'
        WHEN t4_score >= 0.85 THEN 'review'
        ELSE 'none' END                                             AS match_confidence,
   CASE WHEN is_redacted_name THEN 1
@@ -118,16 +132,25 @@ SELECT
     IF(t4_score >= 0.85, CONCAT('tier 4 review candidate, score ', CAST(t4_score AS STRING)), NULL),
     IF(t4_score < 0.85, CONCAT('tier 4 best score ', CAST(t4_score AS STRING), ' is below the 0.85 threshold'), NULL),
     IF(t4_score IS NULL AND NOT is_redacted_name,
-       'no tier-4 candidate: no company in the register shares the first core token', NULL)
+       'no tier-4 candidate: no company reaches the 0.5 floor under the prefix filter', NULL),
+    IF(t4_accepted, CONCAT('tier 4 ACCEPTED on recorded human review, ', CAST(d_date AS STRING),
+                           ' - basis in 38_queue_decisions.sql'), NULL),
+    IF(d_decision = 'rejected', CONCAT('tier 4 candidate REJECTED on recorded human review, ',
+                                       CAST(d_date AS STRING)), NULL),
+    IF(stale_accept, 'STALE DECISION: the accepted company is no longer the tier-4 candidate - not applied', NULL)
   ]) x WHERE x IS NOT NULL), ' | ')                                AS resolution_notes,
   CASE WHEN is_redacted_name                                  THEN 'redacted'
-       WHEN t1_ok OR t2_ok OR t3_ok                           THEN NULL
+       WHEN t1_ok OR t2_ok OR t3_ok OR t4_accepted            THEN NULL
        WHEN t4_score >= 0.85                                  THEN 'review'
        WHEN t1_rej = 'register_name_disagrees'                THEN 'ambiguous'
        WHEN COALESCE(t1_rej, t2_rej, t3_rej) = 'ambiguous'    THEN 'ambiguous'
        WHEN t4_score IS NOT NULL                              THEN 'below_threshold'
-       ELSE 'no_match' END                                         AS unresolved_reason
-FROM base;
+       ELSE 'no_match' END                                         AS unresolved_reason,
+  -- THE one resolved/unresolved verdict. Golden record, resolved_spend and
+  -- dim_supplier all read this column rather than re-deriving it.
+  (NOT is_redacted_name AND (t1_ok OR t2_ok OR t3_ok OR COALESCE(t4_accepted, FALSE))) AS is_resolved,
+  COALESCE(stale_accept, FALSE)                                    AS has_stale_decision
+FROM judged;
 
 -- ===========================================================================
 -- 2. resolved_supplier_golden - one row per supplier entity
@@ -137,9 +160,10 @@ FROM base;
 -- from any source but the spend files, and no legal name from anywhere but the
 -- register.
 --
--- RESOLVED entities are tiers 1-3 only. A tier-4 name is queued, not resolved, so
--- it keeps its own unresolved record: the review queue stays visible in the data
--- rather than merged into a supplier nobody confirmed (L-1).
+-- RESOLVED entities are tiers 1-3, plus tier-4 names ACCEPTED ON RECORDED HUMAN
+-- REVIEW (38). A queued tier-4 name keeps its own unresolved record: the review
+-- queue stays visible in the data rather than merged into a supplier nobody
+-- confirmed (L-1). The verdict is read from resolved_supplier_match.is_resolved.
 --
 -- EVERY transaction name has a golden row, resolved or not, so every transaction
 -- row in 36 can carry a supplier_key. Unresolved keys are name-keyed and stay
@@ -188,7 +212,7 @@ resolved AS (
     SUM(nv.raw_n)                  AS name_variant_count
   FROM `portfolio-508106.portfolio_b.resolved_supplier_match` m
   JOIN norm_variants nv USING (supplier_name_norm)
-  WHERE m.match_tier <= 3 AND m.matched_company_number IS NOT NULL
+  WHERE m.is_resolved AND m.matched_company_number IS NOT NULL
   GROUP BY m.matched_company_number
 )
 SELECT
@@ -221,4 +245,4 @@ SELECT
 FROM `portfolio-508106.portfolio_b.resolved_supplier_match` m
 LEFT JOIN norm_variants nv USING (supplier_name_norm)
 LEFT JOIN top_raw      tr USING (supplier_name_norm)
-WHERE m.matched_company_number IS NULL OR m.match_tier >= 4;
+WHERE NOT m.is_resolved;

@@ -14,11 +14,20 @@
 --     with the reasoning rather than just with the outcome;
 --   * `git log` shows who decided what and when, which a spreadsheet does not.
 --
--- A DECISION IS NOT A MATCH. Nothing in this table feeds resolution: a rejected
--- row stays unresolved and an accepted row would still need an override
--- mechanism this build does not have. The table records JUDGEMENT, and the
--- separation is deliberate -- measured precision must keep measuring the METHOD,
--- not the method plus a human's corrections.
+-- HOW A DECISION TAKES EFFECT (from 2026-09-18, row 2).
+--   rejected  -> the name stays unresolved; the decision is shown in the queue.
+--   accepted  -> 35 resolves the name to the candidate, with match_confidence
+--                'reviewed' -- but ONLY IF the accepted candidate still equals the
+--                current tier-4 candidate. A rebuild that changes the candidate
+--                makes the decision STALE: it is not applied, it is flagged, and
+--                93 fails until a human looks again. An approval is of a specific
+--                company, never of a name in general.
+--
+-- DECISIONS NEVER TOUCH E-3. Precision is measured by 95 on the method's own
+-- tables (resolved_match_tier2 / tier4), never on resolved_supplier_match, so it
+-- keeps measuring the METHOD rather than the method plus a human's corrections.
+-- Every decision records its BASIS, and for an accept the basis must be evidence
+-- beyond the score -- a score alone is wrong about one time in six at 1.00.
 
 CREATE OR REPLACE TABLE `portfolio-508106.portfolio_b.resolved_queue_decisions` AS
 SELECT * FROM UNNEST([
@@ -37,5 +46,20 @@ SELECT * FROM UNNEST([
       'Railway is the trading name of that company, so 05113733 is the likelier ',
       'recipient of the franchise payments. Returned to the queue; no manual ',
       'override was applied.')                  AS decision_note
+  ),
+  STRUCT(
+    'WEST MIDLANDS TRAINS',
+    '09860466',
+    'accepted',
+    DATE '2026-09-18',
+    CONCAT(
+      'BASIS IS CORROBORATION, NOT THE SCORE. The same payer also writes this ',
+      'supplier as West Midlands Trains Limited and West Midlands Trains Ltd, and ',
+      'that longer spelling already resolves at TIER 2, high confidence, to ',
+      '09860466 -- the payer, in its own files, bridges the short form to this company ',
+      'independently of any fuzzy matching. Supporting: under the corrected ',
+      'prefix-filter blocking, 09860466 WEST MIDLANDS TRAINS LIMITED scores 1.00 ',
+      'while all 99 other candidates score 0.50; SIC 49100 passenger rail; ',
+      'active; incorporated 2015-11-06, before the first payment on 2024-03-20.')
   )
 ]);

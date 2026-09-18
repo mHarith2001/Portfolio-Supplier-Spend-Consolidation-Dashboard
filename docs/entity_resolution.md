@@ -5,7 +5,7 @@ The intellectual core of this project. Every figure measured 2026-09-18.
 ## The problem
 
 Six public bodies publish spend independently. **14,434 distinct raw vendor spellings**
-appear across their files. They describe **at most 5,967 identified companies plus 7,396
+appear across their files. They describe **at most 5,967 identified companies plus 7,395
 names that could not be identified**. One supplier alone is spelled **16** different ways.
 
 Nobody can answer "how much did the public sector pay this company?" until those spellings
@@ -31,7 +31,7 @@ first or conflate the second.
 | 1 | Company number, bridged via a Contracts Finder award | high | 1,172 | 3,981,459,526.06 |
 | 2 | Exact normalised name against Companies House | high | 4,755 | 15,790,231,297.20 |
 | 3 | Name core + postcode | medium | 54 | 10,164,008,997.88 |
-| 4 | Token-set similarity ≥ 0.85 on the core | **review only** | 1,226 | 3,250,493,817.87 |
+| 4 | Token-set similarity ≥ 0.85 on the core | **review**; resolves only on a recorded human accept | 1,226 | 3,250,493,817.87 |
 | 5 | Unresolved, with a stated reason | none | 6,170 | 18,144,065,456.37 |
 
 **Tier 1 is a bridge, not a lookup.** Spend files carry no company numbers. A spend supplier
@@ -43,13 +43,17 @@ that carries one.
 corrected 2026-09-18 — with edit distance as a tie-break. Token-set is the right measure for this
 data: publishers truncate and reorder supplier names far more often than they misspell them.
 
-**Resolution is tiers 1–3 only: 5,981 names, GBP 29,935,699,821.14 — 58.32% of transaction
-value.**
+**Resolution by method is tiers 1–3: 5,981 names, GBP 29,935,699,821.14 — 58.32% of transaction
+value.** Human review adds tier-4 names accepted on a recorded decision, reported
+**separately** so one kind of evidence never borrows the other's credibility: so far 1 name,
+GBP 870,427,482.80, 1.70% — **60.02% in total**.
 
 ## Seven hard rules
 
 1. **Tier 4 never auto-merges.** It populates a review queue with its score and candidate
-   count. A portfolio project cannot claim human review it did not do.
+   count. A tier-4 name resolves **only** on a recorded human decision whose basis is evidence
+   beyond the score, and only for the exact company approved — a rebuild that changes the
+   candidate makes the decision stale, and it is not carried across.
 2. **`candidate_count > 1` is never accepted at any tier.** A name matching three active
    companies is not resolved because one was returned first.
 3. **No match where the payment precedes incorporation.** Applied at every tier — tier 4
@@ -89,8 +93,8 @@ precision plateau begins; below 0.70, tier-4 precision collapses.
 ## The review queue
 
 **1,431 rows, highest value first** (`review_queue.csv`): 1,226 tier-4 candidates and the
-205 demoted tier-1 names that no other tier confirmed. One row is decided; the rest are
-blank.
+205 demoted tier-1 names that no other tier confirmed. Two rows are decided — one rejected, one
+accepted — and the rest are blank.
 
 **The most confident batch in that queue — score 1.00 with a single candidate — is correct
 81.21% of the time.** Bulk-accepting it would be wrong about one time in six, and only 42 of

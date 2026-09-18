@@ -19,19 +19,21 @@
 -- keeps the GBP 2,556,596,745.72 of H-5 non-payment value out of supplier spend
 -- without deleting a single row.
 --
--- WHICH KEY A TRANSACTION GETS:
---   tiers 1-3  -> the Companies House entity key    CH|<company_number>
---   tier 4, 5  -> its own unresolved key            NAME|<supplier_name_norm>
--- Tier 4 is a review candidate, not a resolution (04 §3 hard rule 1), so it must
--- not inherit the company's key. Every transaction row still gets a key, so
--- unresolved spend is counted and visible rather than dropped.
+-- WHICH KEY A TRANSACTION GETS -- read from resolved_supplier_match.is_resolved,
+-- never re-derived here:
+--   resolved   -> the Companies House entity key    CH|<company_number>
+--                 (tiers 1-3, plus tier-4 names accepted on recorded review)
+--   unresolved -> its own unresolved key            NAME|<supplier_name_norm>
+-- An UNREVIEWED tier-4 candidate is a question, not a resolution (04 §3 hard
+-- rule 1), so it must not inherit the company's key. Every transaction row still
+-- gets a key, so unresolved spend is counted and visible rather than dropped.
 
 CREATE OR REPLACE TABLE `portfolio-508106.portfolio_b.resolved_spend` AS
 SELECT
   s.*,
   CASE
     WHEN s.row_role != 'transaction'                    THEN NULL
-    WHEN m.match_tier <= 3 AND m.matched_company_number IS NOT NULL
+    WHEN m.is_resolved AND m.matched_company_number IS NOT NULL
       THEN TO_HEX(SHA256(CONCAT('CH|', m.matched_company_number)))
     WHEN s.supplier_name_norm IS NOT NULL
       THEN TO_HEX(SHA256(CONCAT('NAME|', s.supplier_name_norm)))

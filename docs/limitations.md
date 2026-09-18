@@ -111,7 +111,7 @@ GBP 273,975,883.60 to make a date range look tidy.
 | Transaction value | GBP 51,330,259,095.38 |
 | Excluded non-payment value | GBP 2,556,596,745.72 |
 | In-window transactions | 289,950 (+ 24 annex duplicates + 16 out-of-scope section rows = 289,990) |
-| Vendor spellings → identified suppliers | 14,434 → 5,967, plus 7,396 unidentified names |
+| Vendor spellings → identified suppliers | 14,434 → 5,967, plus 7,395 unidentified names |
 
 ---
 
@@ -121,9 +121,10 @@ GBP 273,975,883.60 to make a date range look tidy.
   decisions blank. Measured against known answers, the queue's most confident batch — score
   1.00 with a single candidate — is correct **81.21%** of the time. Bulk-accepting it would
   be wrong about one time in six.
-- **That 58.32% is a good resolution rate or a bad one.** It is the measured rate for these
-  six publishers against this snapshot.
-- **That the unresolved population is small.** It is 41.68% of transaction value, reported
+- **That 58.32% is a good resolution rate or a bad one.** It is the method's measured rate for
+  these six publishers against this snapshot. Human review adds 1.70% so far, reported
+  separately, for 60.02% in total.
+- **That the unresolved population is small.** It is 39.98% of transaction value, reported
   with its reasons and its value.
 - **That any named supplier has done anything wrong.** This is payment-line data.
   Concentration and variance are legitimate readings; impropriety is not supported by spend

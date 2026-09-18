@@ -264,7 +264,9 @@ SELECT
     WHEN 1 THEN '1 company number'
     WHEN 2 THEN '2 exact name'
     WHEN 3 THEN '3 name + postcode'
-    WHEN 4 THEN '4 fuzzy — REVIEW ONLY, not resolved'
+    WHEN 4 THEN IF(m.match_confidence = 'reviewed',
+                   '4 fuzzy — ACCEPTED on recorded review',
+                   '4 fuzzy — REVIEW ONLY, not resolved')
     ELSE        '5 unresolved'
   END                                         AS tier,
   COUNT(DISTINCT m.supplier_name_norm)        AS supplier_names,
@@ -314,3 +316,61 @@ SELECT
     JOIN `portfolio-508106.portfolio_b.resolved_supplier_match` m USING (supplier_name_norm)
    WHERE a.reject_reason = 'register_name_disagrees' AND m.match_tier = 1) AS demoted_but_still_tier1
 FROM `portfolio-508106.portfolio_b.resolved_match_tier1`;
+
+-- ===========================================================================
+-- The resolution claim, by BASIS — INFO, and the only figure to quote
+-- ===========================================================================
+-- Two different kinds of evidence resolve a name, and they are reported
+-- separately so one never borrows the credibility of the other:
+--   METHOD    tiers 1-3, decided by rule, measured by E-3
+--   REVIEWED  tier-4 candidates accepted on a recorded human decision (38),
+--             each with a basis beyond the score
+-- 58.32% was the method's claim before the queue was worked. It still is.
+
+SELECT
+  CASE
+    WHEN m.is_resolved AND m.match_tier <= 3 THEN '1 METHOD — tiers 1-3'
+    WHEN m.is_resolved                       THEN '2 REVIEWED — tier 4 accepted on recorded decision'
+    ELSE                                          '3 UNRESOLVED'
+  END                                                           AS basis,
+  COUNT(DISTINCT m.supplier_name_norm)                          AS supplier_names,
+  COUNT(*)                                                      AS transaction_rows,
+  ROUND(SUM(s.amount), 2)                                       AS transaction_value,
+  ROUND(100 * SUM(s.amount) / SUM(SUM(s.amount)) OVER (), 2)    AS pct_of_value
+FROM `portfolio-508106.portfolio_b.resolved_spend` s
+JOIN `portfolio-508106.portfolio_b.resolved_supplier_match` m USING (supplier_name_norm)
+WHERE s.row_role = 'transaction'
+GROUP BY basis
+ORDER BY basis;
+
+-- ===========================================================================
+-- D.1-D.4  Review-queue decisions are applied exactly as recorded     HARD
+-- ===========================================================================
+-- D.1 every decision names a name that exists in the audit trail
+-- D.2 no decision is STALE — an accept is of a specific company; if a rebuild
+--     changes the tier-4 candidate the approval must not follow the name
+-- D.3 every accept resolves its name; every reject leaves it unresolved
+-- D.4 'reviewed' confidence exists only where an accept exists
+
+WITH d AS (SELECT * FROM `portfolio-508106.portfolio_b.resolved_queue_decisions`),
+m AS (SELECT * FROM `portfolio-508106.portfolio_b.resolved_supplier_match`)
+SELECT
+  (SELECT COUNT(*) FROM d)                                                        AS decisions,
+  (SELECT COUNTIF(decision = 'accepted') FROM d)                                  AS accepted,
+  (SELECT COUNTIF(decision = 'rejected') FROM d)                                  AS rejected,
+  (SELECT COUNT(*) FROM d LEFT JOIN m USING (supplier_name_norm)
+    WHERE m.supplier_name_norm IS NULL)                                           AS orphan_decisions,
+  (SELECT COUNTIF(has_stale_decision) FROM m)                                     AS stale_decisions,
+  (SELECT COUNT(*) FROM d JOIN m USING (supplier_name_norm)
+    WHERE (d.decision = 'accepted' AND NOT m.is_resolved)
+       OR (d.decision = 'rejected' AND m.is_resolved AND m.match_tier = 4))       AS decisions_not_applied,
+  (SELECT COUNT(*) FROM m LEFT JOIN d USING (supplier_name_norm)
+    WHERE m.match_confidence = 'reviewed' AND COALESCE(d.decision, '') != 'accepted') AS reviewed_without_accept,
+  IF((SELECT COUNT(*) FROM d LEFT JOIN m USING (supplier_name_norm) WHERE m.supplier_name_norm IS NULL) = 0
+     AND (SELECT COUNTIF(has_stale_decision) FROM m) = 0
+     AND (SELECT COUNT(*) FROM d JOIN m USING (supplier_name_norm)
+           WHERE (d.decision = 'accepted' AND NOT m.is_resolved)
+              OR (d.decision = 'rejected' AND m.is_resolved AND m.match_tier = 4)) = 0
+     AND (SELECT COUNT(*) FROM m LEFT JOIN d USING (supplier_name_norm)
+           WHERE m.match_confidence = 'reviewed' AND COALESCE(d.decision, '') != 'accepted') = 0,
+     'PASS', 'FAIL  <-- HARD') AS d1_d4;
