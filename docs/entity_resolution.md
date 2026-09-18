@@ -31,15 +31,16 @@ first or conflate the second.
 | 1 | Company number, bridged via a Contracts Finder award | high | 1,172 | 3,981,459,526.06 |
 | 2 | Exact normalised name against Companies House | high | 4,755 | 15,790,231,297.20 |
 | 3 | Name core + postcode | medium | 54 | 10,164,008,997.88 |
-| 4 | Token-set similarity ≥ 0.85 on the core | **review only** | 1,199 | 3,244,886,577.86 |
-| 5 | Unresolved, with a stated reason | none | 6,197 | 18,149,672,696.38 |
+| 4 | Token-set similarity ≥ 0.85 on the core | **review only** | 1,226 | 3,250,493,817.87 |
+| 5 | Unresolved, with a stated reason | none | 6,170 | 18,144,065,456.37 |
 
 **Tier 1 is a bridge, not a lookup.** Spend files carry no company numbers. A spend supplier
 reaches a buyer-stated number only where its normalised name equals a Contracts Finder name
 that carries one.
 
-**Tier 4 scores** shared tokens ÷ total distinct tokens on the suffix-free core, blocked by
-the first token, with edit distance as a tie-break. Token-set is the right measure for this
+**Tier 4 scores** shared tokens ÷ total distinct tokens on the suffix-free core, blocked by a
+**prefix filter on frequency-ordered tokens** — provably lossless at the candidate floor,
+corrected 2026-09-18 — with edit distance as a tie-break. Token-set is the right measure for this
 data: publishers truncate and reorder supplier names far more often than they misspell them.
 
 **Resolution is tiers 1–3 only: 5,981 names, GBP 29,935,699,821.14 — 58.32% of transaction
@@ -79,7 +80,7 @@ stays countable instead of disappearing.
 `E-3` hides the Contracts Finder company number, runs the tiers on the **name alone**, and
 compares the prediction with the buyer's stated answer across **24,506 measurable awards**.
 
-**95.32% precision, 84.42% recall.** Tier 2 alone 96.99%; tier 4 alone 81.40%; 968
+**95.25% precision, 84.50% recall.** Tier 2 alone 96.99%; tier 4 alone 80.88%; 983
 predictions wrong. Full method, threshold curve and ceilings in `match_precision.md`.
 
 **The threshold was chosen from the measured curve, not assumed.** 0.85 is where the
@@ -87,12 +88,13 @@ precision plateau begins; below 0.70, tier-4 precision collapses.
 
 ## The review queue
 
-**1,404 rows, decisions blank, highest value first** (`review_queue.csv`): 1,199 tier-4
-candidates and the 205 demoted tier-1 names that no other tier confirmed.
+**1,431 rows, highest value first** (`review_queue.csv`): 1,226 tier-4 candidates and the
+205 demoted tier-1 names that no other tier confirmed. One row is decided; the rest are
+blank.
 
 **The most confident batch in that queue — score 1.00 with a single candidate — is correct
-81.34% of the time.** Bulk-accepting it would be wrong about one time in six, and only 43 of
-its 289 errors are explained by the register snapshot missing the answer.
+81.21% of the time.** Bulk-accepting it would be wrong about one time in six, and only 42 of
+its 288 errors are explained by the register snapshot missing the answer.
 
 **The dominant failure mode is a public body matching a private company of the same name.** A
 government department, a passenger transport executive and a transport authority all score

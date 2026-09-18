@@ -65,10 +65,14 @@ SELECT
   q.match_score,
   q.candidate_count,
   s.total_spend,
-  ''                      AS decision,
+  COALESCE(d.decision, '')      AS decision,
+  COALESCE(d.decision_note, '') AS decision_note,
+  CAST(d.decided_on AS STRING)  AS decided_on,
   q.queue_reason
 FROM q
 JOIN spend s USING (supplier_name_norm)
 LEFT JOIN raw_name r
   ON r.supplier_key = TO_HEX(SHA256(CONCAT('NAME|', q.supplier_name_norm)))
+LEFT JOIN `portfolio-508106.portfolio_b.resolved_queue_decisions` d
+  ON d.supplier_name_norm = q.supplier_name_norm
 ORDER BY s.total_spend DESC;

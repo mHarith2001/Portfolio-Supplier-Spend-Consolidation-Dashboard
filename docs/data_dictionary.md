@@ -116,5 +116,6 @@ should be quoted without the VAT caveat** in `limitations.md` `P-2`.
 | `resolved_supplier_match` | The match audit trail, one row per name, with `reject_reason` and notes |
 | `resolved_tier4_candidates` | Every scored (name, company) pair ≥ 0.5 |
 
-`review_queue.csv` publishes the decision-bearing part of the audit trail: 1,404 rows with
-`decision` blank.
+`review_queue.csv` publishes the decision-bearing part of the audit trail: 1,431 rows, one
+decided and the rest blank, each decision carrying its reason and date from
+`38_queue_decisions.sql`.

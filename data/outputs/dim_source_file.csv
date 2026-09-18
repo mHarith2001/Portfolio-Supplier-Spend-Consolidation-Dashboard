@@ -1,63 +1,63 @@
 source_file_id,source_file,entity,transaction_rows
-38,HM_Revenue_and_Customs__2025-02.csv,HM Revenue and Customs,1002
-61,Ministry_of_Justice__2025-01.csv,Ministry of Justice,344
-42,Manchester_City_Council__2024-06.csv,Manchester City Council,10047
-22,Department_for_Transport__2024-10.csv,Department for Transport,2793
 27,HM_Revenue_and_Customs__2024-03.csv,HM Revenue and Customs,1072
 36,HM_Revenue_and_Customs__2024-12.csv,HM Revenue and Customs,1101
 62,Ministry_of_Justice__2025-02.csv,Ministry of Justice,345
-32,HM_Revenue_and_Customs__2024-08.csv,HM Revenue and Customs,891
-10,Bristol_City_Council__2024-12.csv,Bristol City Council,5411
-20,Department_for_Transport__2024-08.csv,Department for Transport,2492
-8,Bristol_City_Council__2024-10.csv,Bristol City Council,5867
-35,HM_Revenue_and_Customs__2024-11.csv,HM Revenue and Customs,955
-26,Department_for_Transport__2025-02.csv,Department for Transport,2586
-31,HM_Revenue_and_Customs__2024-07.csv,HM Revenue and Customs,992
-44,Manchester_City_Council__2024-08.csv,Manchester City Council,6286
-56,Ministry_of_Justice__2024-08.csv,Ministry of Justice,393
-57,Ministry_of_Justice__2024-09.csv,Ministry of Justice,438
 47,Manchester_City_Council__2024-11.csv,Manchester City Council,10698
 58,Ministry_of_Justice__2024-10.csv,Ministry of Justice,381
-60,Ministry_of_Justice__2024-12.csv,Ministry of Justice,496
-2,Bristol_City_Council__2024-04.csv,Bristol City Council,6726
-40,Manchester_City_Council__2024-04.csv,Manchester City Council,10437
-48,Manchester_City_Council__2024-12.csv,Manchester City Council,9879
-12,Bristol_City_Council__2025-02.csv,Bristol City Council,5616
-30,HM_Revenue_and_Customs__2024-06.csv,HM Revenue and Customs,900
-6,Bristol_City_Council__2024-08.csv,Bristol City Council,6076
-14,City_of_York_Council__2024-04.csv,City of York Council,63095
-37,HM_Revenue_and_Customs__2025-01.csv,HM Revenue and Customs,918
+38,HM_Revenue_and_Customs__2025-02.csv,HM Revenue and Customs,1002
+61,Ministry_of_Justice__2025-01.csv,Ministry of Justice,344
+16,Department_for_Transport__2024-04.csv,Department for Transport,3045
+3,Bristol_City_Council__2024-05.csv,Bristol City Council,6573
+7,Bristol_City_Council__2024-09.csv,Bristol City Council,4983
+50,Manchester_City_Council__2025-02.csv,Manchester City Council,7201
 1,Bristol_City_Council__2024-03.csv,Bristol City Council,7167
 18,Department_for_Transport__2024-06.csv,Department for Transport,2599
 46,Manchester_City_Council__2024-10.csv,Manchester City Council,11748
 51,Ministry_of_Justice__2024-03.csv,Ministry of Justice,516
-4,Bristol_City_Council__2024-06.csv,Bristol City Council,5380
-29,HM_Revenue_and_Customs__2024-05.csv,HM Revenue and Customs,875
-53,Ministry_of_Justice__2024-05.csv,Ministry of Justice,409
-9,Bristol_City_Council__2024-11.csv,Bristol City Council,5897
-50,Manchester_City_Council__2025-02.csv,Manchester City Council,7201
+28,HM_Revenue_and_Customs__2024-04.csv,HM Revenue and Customs,987
+45,Manchester_City_Council__2024-09.csv,Manchester City Council,9275
+22,Department_for_Transport__2024-10.csv,Department for Transport,2793
+57,Ministry_of_Justice__2024-09.csv,Ministry of Justice,438
+5,Bristol_City_Council__2024-07.csv,Bristol City Council,5944
+15,Department_for_Transport__2024-03.csv,Department for Transport,3515
 23,Department_for_Transport__2024-11.csv,Department for Transport,2561
 33,HM_Revenue_and_Customs__2024-09.csv,HM Revenue and Customs,889
-3,Bristol_City_Council__2024-05.csv,Bristol City Council,6573
-7,Bristol_City_Council__2024-09.csv,Bristol City Council,4983
 19,Department_for_Transport__2024-07.csv,Department for Transport,2838
 52,Ministry_of_Justice__2024-04.csv,Ministry of Justice,502
-59,Ministry_of_Justice__2024-11.csv,Ministry of Justice,440
-39,Manchester_City_Council__2024-03.csv,Manchester City Council,5355
-55,Ministry_of_Justice__2024-07.csv,Ministry of Justice,376
-11,Bristol_City_Council__2025-01.csv,Bristol City Council,5724
-24,Department_for_Transport__2024-12.csv,Department for Transport,2644
-17,Department_for_Transport__2024-05.csv,Department for Transport,2446
-41,Manchester_City_Council__2024-05.csv,Manchester City Council,7550
-16,Department_for_Transport__2024-04.csv,Department for Transport,3045
 13,City_of_York_Council__2024-03.csv,City of York Council,61708
 25,Department_for_Transport__2025-01.csv,Department for Transport,2556
 54,Ministry_of_Justice__2024-06.csv,Ministry of Justice,428
-49,Manchester_City_Council__2025-01.csv,Manchester City Council,8298
-28,HM_Revenue_and_Customs__2024-04.csv,HM Revenue and Customs,987
-45,Manchester_City_Council__2024-09.csv,Manchester City Council,9275
-5,Bristol_City_Council__2024-07.csv,Bristol City Council,5944
-15,Department_for_Transport__2024-03.csv,Department for Transport,3515
 43,Manchester_City_Council__2024-07.csv,Manchester City Council,10446
-21,Department_for_Transport__2024-09.csv,Department for Transport,2440
+32,HM_Revenue_and_Customs__2024-08.csv,HM Revenue and Customs,891
+11,Bristol_City_Council__2025-01.csv,Bristol City Council,5724
+24,Department_for_Transport__2024-12.csv,Department for Transport,2644
+9,Bristol_City_Council__2024-11.csv,Bristol City Council,5897
+39,Manchester_City_Council__2024-03.csv,Manchester City Council,5355
+60,Ministry_of_Justice__2024-12.csv,Ministry of Justice,496
+8,Bristol_City_Council__2024-10.csv,Bristol City Council,5867
+35,HM_Revenue_and_Customs__2024-11.csv,HM Revenue and Customs,955
+49,Manchester_City_Council__2025-01.csv,Manchester City Council,8298
+2,Bristol_City_Council__2024-04.csv,Bristol City Council,6726
+40,Manchester_City_Council__2024-04.csv,Manchester City Council,10437
+48,Manchester_City_Council__2024-12.csv,Manchester City Council,9879
+17,Department_for_Transport__2024-05.csv,Department for Transport,2446
+41,Manchester_City_Council__2024-05.csv,Manchester City Council,7550
+10,Bristol_City_Council__2024-12.csv,Bristol City Council,5411
+20,Department_for_Transport__2024-08.csv,Department for Transport,2492
+42,Manchester_City_Council__2024-06.csv,Manchester City Council,10047
+12,Bristol_City_Council__2025-02.csv,Bristol City Council,5616
+30,HM_Revenue_and_Customs__2024-06.csv,HM Revenue and Customs,900
+4,Bristol_City_Council__2024-06.csv,Bristol City Council,5380
+29,HM_Revenue_and_Customs__2024-05.csv,HM Revenue and Customs,875
+53,Ministry_of_Justice__2024-05.csv,Ministry of Justice,409
+26,Department_for_Transport__2025-02.csv,Department for Transport,2586
+31,HM_Revenue_and_Customs__2024-07.csv,HM Revenue and Customs,992
+44,Manchester_City_Council__2024-08.csv,Manchester City Council,6286
+56,Ministry_of_Justice__2024-08.csv,Ministry of Justice,393
+55,Ministry_of_Justice__2024-07.csv,Ministry of Justice,376
 34,HM_Revenue_and_Customs__2024-10.csv,HM Revenue and Customs,976
+59,Ministry_of_Justice__2024-11.csv,Ministry of Justice,440
+6,Bristol_City_Council__2024-08.csv,Bristol City Council,6076
+14,City_of_York_Council__2024-04.csv,City of York Council,63095
+37,HM_Revenue_and_Customs__2025-01.csv,HM Revenue and Customs,918
+21,Department_for_Transport__2024-09.csv,Department for Transport,2440

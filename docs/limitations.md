@@ -86,7 +86,7 @@ the unresolved population is beyond **any** method operating on this snapshot, n
 this one.
 
 - **Precision is unaffected** — it asks whether the matches made are correct.
-- **Recall carries the ceiling**, including the 84.42% measured recall and the 58.32%
+- **Recall carries the ceiling**, including the 84.50% measured recall and the 58.32%
   resolution rate.
 - **It is structural and permanent for this snapshot.** Only the full register would lift
   it, which is a data-acquisition change, not a method change.
@@ -119,7 +119,7 @@ GBP 273,975,883.60 to make a date range look tidy.
 
 - **That tier-4 fuzzy matches are resolved.** They are queued for human review with
   decisions blank. Measured against known answers, the queue's most confident batch — score
-  1.00 with a single candidate — is correct **81.34%** of the time. Bulk-accepting it would
+  1.00 with a single candidate — is correct **81.21%** of the time. Bulk-accepting it would
   be wrong about one time in six.
 - **That 58.32% is a good resolution rate or a bad one.** It is the measured rate for these
   six publishers against this snapshot.

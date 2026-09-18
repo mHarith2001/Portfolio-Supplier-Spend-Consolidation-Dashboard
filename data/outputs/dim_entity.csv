@@ -1,7 +1,7 @@
 entity_id,entity,publisher_type,transaction_rows,transaction_value,distinct_suppliers,first_payment,last_payment,source_files
+4,HM Revenue and Customs,central,11558,2282004549.81,460,2024-03-01,2025-02-28,12
+6,Ministry of Justice,central,5068,1273966203,583,2024-02-01,2025-03-02,12
+2,City of York Council,local,124803,532545696.76,3236,2023-04-04,2025-03-31,2
+5,Manchester City Council,local,107220,1247793816.1,5028,2023-10-15,2025-03-19,12
 1,Bristol City Council,local,71364,803454323.66,3225,2023-12-28,2025-02-28,12
 3,Department for Transport,central,32515,45190494506.05,2081,2024-03-01,2025-02-28,12
-6,Ministry of Justice,central,5068,1273966203,583,2024-02-01,2025-03-02,12
-5,Manchester City Council,local,107220,1247793816.1,5028,2023-10-15,2025-03-19,12
-2,City of York Council,local,124803,532545696.76,3236,2023-04-04,2025-03-31,2
-4,HM Revenue and Customs,central,11558,2282004549.81,460,2024-03-01,2025-02-28,12

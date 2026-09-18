@@ -115,29 +115,59 @@ ORDER BY tier;
 -- ---------------------------------------------------------------------------
 -- 3. The recall limit blocking imposes — stated, not hidden
 -- ---------------------------------------------------------------------------
--- Tier 4 compares a name only against companies sharing its first core token.
--- A name whose first token matches no company is never compared at all.
+-- REWRITTEN 2026-09-18 for the prefix filter. The previous version measured
+-- FIRST-TOKEN reachability, which stopped describing the method the day blocking
+-- was corrected. A control that measures a method no longer in use reports a
+-- number that is true of nothing.
+--
+-- Under the prefix filter a name is unreachable only if NONE of its prefix tokens
+-- appears in ANY company's prefix. That is a far smaller population than before,
+-- and it is the honest statement of what blocking now costs.
 
 WITH resolved_23 AS (
   SELECT supplier_name_norm FROM `portfolio-508106.portfolio_b.resolved_match_tier2` WHERE accepted
   UNION DISTINCT SELECT supplier_name_norm FROM `portfolio-508106.portfolio_b.resolved_match_tier3` WHERE accepted
 ),
+ch AS (
+  SELECT company_number,
+         ARRAY(SELECT DISTINCT t FROM UNNEST(SPLIT(
+           `portfolio-508106.portfolio_b.name_core_from_norm`(company_name_norm), ' ')) t WHERE t != '') AS tokens
+  FROM `portfolio-508106.portfolio_b.staging_companies`
+),
+df AS (SELECT tok, COUNT(*) AS n FROM ch, UNNEST(tokens) AS tok GROUP BY tok),
+c_prefix AS (
+  SELECT DISTINCT tok FROM (
+    SELECT c.company_number, tok, ARRAY_LENGTH(c.tokens) AS b,
+           ROW_NUMBER() OVER (PARTITION BY c.company_number ORDER BY COALESCE(df.n, 0), tok) AS rk
+    FROM ch c, UNNEST(c.tokens) AS tok LEFT JOIN df USING (tok)
+  ) WHERE rk <= b - CAST(CEIL(0.5 * b) AS INT64) + 1
+),
 todo AS (
   SELECT n.supplier_name_norm, n.in_spend, n.in_e3, n.spend_value,
-         SPLIT(n.supplier_name_core, ' ')[SAFE_OFFSET(0)] AS block_token
+         ARRAY(SELECT DISTINCT t FROM UNNEST(SPLIT(n.supplier_name_core, ' ')) t WHERE t != '') AS tokens
   FROM `portfolio-508106.portfolio_b.resolved_names` n
   LEFT JOIN resolved_23 r USING (supplier_name_norm)
   WHERE r.supplier_name_norm IS NULL AND n.supplier_name_core IS NOT NULL
 ),
-blocks AS (
-  SELECT SPLIT(`portfolio-508106.portfolio_b.name_core_from_norm`(company_name_norm), ' ')[SAFE_OFFSET(0)] AS block_token,
-         COUNT(*) AS companies
-  FROM `portfolio-508106.portfolio_b.staging_companies` GROUP BY block_token
+n_prefix AS (
+  SELECT supplier_name_norm, in_spend, in_e3, spend_value, tok FROM (
+    SELECT t.supplier_name_norm, t.in_spend, t.in_e3, t.spend_value, tok,
+           ARRAY_LENGTH(t.tokens) AS a,
+           ROW_NUMBER() OVER (PARTITION BY t.supplier_name_norm ORDER BY COALESCE(df.n, 0), tok) AS rk
+    FROM todo t, UNNEST(t.tokens) AS tok LEFT JOIN df USING (tok)
+  ) WHERE rk <= a - CAST(CEIL(0.5 * a) AS INT64) + 1
+),
+reach AS (
+  SELECT n.supplier_name_norm, ANY_VALUE(n.in_spend) AS in_spend, ANY_VALUE(n.in_e3) AS in_e3,
+         ANY_VALUE(n.spend_value) AS spend_value,
+         COUNTIF(c.tok IS NOT NULL) AS matched_prefix_tokens
+  FROM n_prefix n LEFT JOIN c_prefix c USING (tok)
+  GROUP BY n.supplier_name_norm
 )
 SELECT
-  COUNT(*)                                                      AS names_in_tier4_population,
-  COUNTIF(b.block_token IS NULL)                                AS blockless_names,
-  COUNTIF(b.block_token IS NULL AND todo.in_spend)              AS blockless_spend_names,
-  COUNTIF(b.block_token IS NULL AND todo.in_e3)                 AS blockless_e3_names,
-  ROUND(SUM(IF(b.block_token IS NULL, todo.spend_value, 0)), 2) AS blockless_spend_value
-FROM todo LEFT JOIN blocks b USING (block_token);
+  COUNT(*)                                                    AS names_in_tier4_population,
+  COUNTIF(matched_prefix_tokens = 0)                          AS unreachable_names,
+  COUNTIF(matched_prefix_tokens = 0 AND in_spend)             AS unreachable_spend_names,
+  COUNTIF(matched_prefix_tokens = 0 AND in_e3)                AS unreachable_e3_names,
+  ROUND(SUM(IF(matched_prefix_tokens = 0, spend_value, 0)), 2) AS unreachable_spend_value
+FROM reach;

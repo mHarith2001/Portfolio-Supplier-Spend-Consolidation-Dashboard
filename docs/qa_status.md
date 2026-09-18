@@ -18,12 +18,12 @@ them — an unticked box is more useful than a tick that is not true.
 | # | Check | Status |
 |---|---|---|
 | `Q3.1` | Tier distribution by count **and value** | **PASS** — validation report §7.4 |
-| `Q3.2` | No tier-4 auto-merge | **PASS** — 1,510 queue rows, **0 non-blank decisions** |
+| `Q3.2` | No tier-4 auto-merge | **PASS** — 1,431 queue rows, **no auto-accept anywhere**; 1 row decided by hand, with its reason recorded, 1,430 blank |
 | `Q3.3` | Ambiguity surfaced, never auto-accepted | **PASS** — `V3.6`, 0 accepted with `candidate_count > 1` |
 | `Q3.4` | Plausibility applied | **PASS at every tier** — 0 of 175,470 attributed rows precede incorporation, and since 2026-09-18 hard rule 3 also filters tier-4 candidates: **0 impossible candidates remain in the queue** |
 | `Q3.5` | Redacted population reported as a named category | **PASS** — 4 names, 31,508 rows, GBP 113,266,026.75, **0.2207%** of transaction value |
 | `Q3.6` | Precision measured and published | **PASS** — `docs/match_precision.md` |
-| `Q3.7` | Precision reported honestly | **PASS** — 95.25% overall published with tier 4's 80.86%, recall 84.49%, and three ceilings |
+| `Q3.7` | Precision reported honestly | **PASS** — 95.25% overall published with tier 4's 80.88%, recall 84.50%, and four ceilings, including a figure that **fell** when blocking was corrected |
 | `Q3.8` | `name_variant_count` produces the headline | **PASS** — 14,434 vendor records → 5,967 identified suppliers + 7,396 unidentified names |
 
 ### `Q3.4` — how it came to pass at every tier (2026-09-18)
@@ -34,8 +34,9 @@ grounds, carrying GBP 64,259,806.06.
 
 Nothing was ever mis-attributed — tier 4 resolves nothing — so `Q3.4` passed as written
 throughout. It was fixed anyway, because 107 queue entries were costing a reviewer time on a
-company that cannot be the payee. The queue fell to 1,199 tier-4 names and tier-4 precision
-rose from 80.86% to 81.40%. See validation report §7.9.
+company that cannot be the payee. The queue fell to 1,199 tier-4 names. See validation report
+§7.9 — and §7.10, where correcting tier-4 blocking re-measured precision again on a sounder
+basis.
 
 ## Tableau QA (`07` §4) — **BLOCKED**
 
@@ -48,7 +49,7 @@ no workbook has been built. Nothing here is claimed.
 |---|---|---|
 | `E-1` | Multi-source integration | **VERIFIED** — 6 publishers, 62 files, `V1.1` and `V2.1` reconcile to `provenance.csv` |
 | `E-2` | Entity resolution performed | **VERIFIED** — 5 tiers implemented, rules published in `04` |
-| `E-3` | **Match quality measured, not asserted** | **VERIFIED** — 95.25% precision / 84.49% recall on 24,506 known-answer awards |
+| `E-3` | **Match quality measured, not asserted** | **VERIFIED** — 95.25% precision / 84.50% recall on 24,506 known-answer awards |
 | `E-4` | Dimensional model | **VERIFIED** — `V4.2` and `V4.6` pass, grain documented per table |
 | `E-5` | **Spend restated, not altered** | **VERIFIED** — `V3.1`, `V3.2`, `V4.1`: 352,614 rows and GBP 53,886,855,841.10 preserved, difference 0.00 |
 | `E-6` | Reproducibility | **BLOCKED** — no clean-machine rebuild has been run |
