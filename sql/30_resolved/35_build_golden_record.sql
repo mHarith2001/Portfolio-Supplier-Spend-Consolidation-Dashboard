@@ -75,10 +75,19 @@ base AS (
 -- A human accept takes effect ONLY for the exact company that was approved. If a
 -- rebuild changes the tier-4 candidate, the old decision is stale and is NOT
 -- carried across to the new company (see 38).
+-- An accept is valid against EITHER queued population, and only for the exact
+-- company approved:
+--   tier 4  -- the scored candidate, at or above the 0.85 threshold
+--   tier 1  -- the demoted candidate, where the buyer stated a number whose
+--             registered name disagrees (04 §3 hard rule 6)
+-- Anything else is STALE: the approved company is no longer the one on offer.
 judged AS (
   SELECT *,
-    (t4_score >= 0.85 AND d_decision = 'accepted' AND d_num = t4_num)            AS t4_accepted,
-    (d_decision = 'accepted' AND NOT COALESCE(d_num = t4_num AND t4_score >= 0.85, FALSE)) AS stale_accept
+    (t4_score >= 0.85 AND d_decision = 'accepted' AND d_num = t4_num)          AS t4_accepted,
+    (t1_rej = 'register_name_disagrees' AND d_decision = 'accepted' AND d_num = t1_num) AS t1_reviewed,
+    (d_decision = 'accepted'
+     AND NOT COALESCE((t4_score >= 0.85 AND d_num = t4_num)
+                   OR (t1_rej = 'register_name_disagrees' AND d_num = t1_num), FALSE)) AS stale_accept
   FROM base
 )
 SELECT
@@ -87,17 +96,20 @@ SELECT
        WHEN t1_ok            THEN t1_num
        WHEN t2_ok            THEN t2_num
        WHEN t3_ok            THEN t3_num
+       WHEN t1_reviewed      THEN t1_num
        WHEN t4_score >= 0.85 THEN t4_num END                       AS matched_company_number,
   CASE WHEN is_redacted_name THEN 5
        WHEN t1_ok            THEN 1
        WHEN t2_ok            THEN 2
        WHEN t3_ok            THEN 3
+       WHEN t1_reviewed      THEN 1
        WHEN t4_score >= 0.85 THEN 4
        ELSE 5 END                                                  AS match_tier,
   CASE WHEN is_redacted_name THEN 'unresolved'
        WHEN t1_ok            THEN 'company_number'
        WHEN t2_ok            THEN 'exact_name'
        WHEN t3_ok            THEN 'name_postcode'
+       WHEN t1_reviewed      THEN 'company_number'
        WHEN t4_score >= 0.85 THEN 'fuzzy'
        ELSE 'unresolved' END                                       AS match_method,
   IF(NOT is_redacted_name AND NOT t1_ok AND NOT t2_ok AND NOT t3_ok, t4_score, NULL)
@@ -106,6 +118,7 @@ SELECT
        WHEN t1_ok            THEN 'high'
        WHEN t2_ok            THEN 'high'
        WHEN t3_ok            THEN 'medium'
+       WHEN t1_reviewed      THEN 'reviewed'
        WHEN t4_accepted      THEN 'reviewed'
        WHEN t4_score >= 0.85 THEN 'review'
        ELSE 'none' END                                             AS match_confidence,
@@ -113,6 +126,7 @@ SELECT
        WHEN t1_ok            THEN 1
        WHEN t2_ok            THEN t2_cnt
        WHEN t3_ok            THEN t3_cnt
+       WHEN t1_reviewed      THEN 1
        WHEN t4_score >= 0.85 THEN t4_cnt
        ELSE 1 END                                                  AS candidate_count,
   IF(NOT is_redacted_name AND NOT t1_ok AND NOT t2_ok AND NOT t3_ok AND t4_score >= 0.85,
@@ -135,12 +149,14 @@ SELECT
        'no tier-4 candidate: no company reaches the 0.5 floor under the prefix filter', NULL),
     IF(t4_accepted, CONCAT('tier 4 ACCEPTED on recorded human review, ', CAST(d_date AS STRING),
                            ' - basis in 38_queue_decisions.sql'), NULL),
+    IF(t1_reviewed, CONCAT('tier 1 demotion ACCEPTED on recorded human review, ',
+                           CAST(d_date AS STRING), ' - basis in 38_queue_decisions.sql'), NULL),
     IF(d_decision = 'rejected', CONCAT('tier 4 candidate REJECTED on recorded human review, ',
                                        CAST(d_date AS STRING)), NULL),
     IF(stale_accept, 'STALE DECISION: the accepted company is no longer the tier-4 candidate - not applied', NULL)
   ]) x WHERE x IS NOT NULL), ' | ')                                AS resolution_notes,
   CASE WHEN is_redacted_name                                  THEN 'redacted'
-       WHEN t1_ok OR t2_ok OR t3_ok OR t4_accepted            THEN NULL
+       WHEN t1_ok OR t2_ok OR t3_ok OR t4_accepted OR t1_reviewed THEN NULL
        WHEN t4_score >= 0.85                                  THEN 'review'
        WHEN t1_rej = 'register_name_disagrees'                THEN 'ambiguous'
        WHEN COALESCE(t1_rej, t2_rej, t3_rej) = 'ambiguous'    THEN 'ambiguous'
@@ -148,7 +164,8 @@ SELECT
        ELSE 'no_match' END                                         AS unresolved_reason,
   -- THE one resolved/unresolved verdict. Golden record, resolved_spend and
   -- dim_supplier all read this column rather than re-deriving it.
-  (NOT is_redacted_name AND (t1_ok OR t2_ok OR t3_ok OR COALESCE(t4_accepted, FALSE))) AS is_resolved,
+  (NOT is_redacted_name AND (t1_ok OR t2_ok OR t3_ok
+                             OR COALESCE(t4_accepted, FALSE) OR COALESCE(t1_reviewed, FALSE))) AS is_resolved,
   COALESCE(stale_accept, FALSE)                                    AS has_stale_decision
 FROM judged;
 

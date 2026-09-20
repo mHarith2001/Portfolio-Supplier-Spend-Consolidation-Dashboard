@@ -586,11 +586,12 @@ Transaction rows only (`row_role = 'transaction'`).
 | Tier | Supplier names | Transaction rows | Value (GBP) | % of value |
 |---|---:|---:|---:|---:|
 | 1 — company number | 1,172 | 50,129 | 3,981,459,526.06 | 7.76% |
+| 1 — demoted, **accepted on recorded review** | 1 | 2,249 | 349,037,030.64 | 0.68% |
 | 2 — exact normalised name | 4,755 | 123,926 | 15,790,231,297.20 | 30.76% |
 | 3 — name core + postcode | 54 | 1,415 | 10,164,008,997.88 | 19.80% |
 | 4 — fuzzy, **accepted on recorded review** | 1 | 120 | 870,427,482.80 | 1.70% |
 | 4 — fuzzy, **review only, not resolved** | 1,225 | 41,517 | 2,380,066,335.07 | 4.64% |
-| 5 — unresolved | 6,170 | 135,421 | 18,144,065,456.37 | 35.35% |
+| 5 — unresolved | 6,169 | 133,172 | 17,795,028,425.73 | 34.67% |
 
 **Resolved is tiers 1–3: 5,981 names, GBP 29,935,699,821.14 — 58.32% of transaction
 value.** Tier 4 is *not* counted as resolved anywhere in this project. Counting the still-unreviewed
@@ -604,7 +605,7 @@ queue would raise the total to 64.65% on the strength of 80.88% precision
 | `no_match` — no candidate at any tier | 1,802 | 10,370,301,942.78 |
 | `below_threshold` — best fuzzy score under 0.85 | 4,214 | 6,986,288,357.72 |
 | `review` — tier-4 queue, decision pending | 1,225 | 2,380,066,335.07 |
-| `ambiguous` — more than one candidate, or the register disagrees | 150 | 674,209,129.12 |
+| `ambiguous` — more than one candidate, or the register disagrees | 149 | 325,172,098.48 |
 | `redacted` — payee withheld at source | 4 | 113,266,026.75 |
 
 **A large unresolved share is expected and is not a defect.** Public bodies name
@@ -690,7 +691,7 @@ names. Per `04` §8, plus `queue_reason` — because a reviewer looking at a row
 
 **Decisions are recorded in `sql/30_resolved/38_queue_decisions.sql` as literals under
 version control**, and joined in by the generator, so regenerating the queue never loses
-them and every decision carries its reason. **Two rows are decided so far** (§7.10, §7.11); the rest
+them and every decision carries its reason. **Three rows are decided so far** (§7.10–§7.12), and a decided row stays in the queue; the rest
 are blank, which remains the honest presentation.
 
 The first row is `GREAT WESTERN RAILWAY` → `GREAT WESTERN RAILWAY LIMITED`, score 1.00,
@@ -830,6 +831,63 @@ the golden record's `NAME|` key, and an accepted name no longer has one — it m
 company's `CH|` key. The first regeneration blanked the label of exactly the row just decided.
 Labels now come from the spend files directly (`37`), and the regenerated queue has **0**
 empty labels.
+
+### 7.12 Row 3, and decisions extended to demoted tier-1 rows (2026-09-20)
+
+**Queue row 3 approved:** `CAPGEMINI` → `CAPGEMINI UK PLC` (`00943935`), GBP 349,037,030.64.
+This is a **demoted tier-1** row, not a fuzzy one: a buyer stated a number whose registered
+name differs from the name the payer used (`04` §3 hard rule 6).
+
+**Name similarity did not decide it, and could not.** The best tier-4 score is **0.50** —
+below the candidate floor — and it **ties** with `03953511 CAPGEMINI OLDCO LTD`. The register
+holds three active Capgemini companies, all SIC 62020.
+
+**What decided it: the payer's own award notices.** HMRC names Capgemini on **8 of its own
+Contracts Finder awards**, dated 2024-04-08 to 2025-02-28 — inside the spend window — and
+states `00943935` on **all 8**, with no other number and no blanks. One of those awards
+spells the supplier `CapGemini`, the same short form its spend file uses. Corroborated across
+payers: DfT's and MOJ's `CAPGEMINI UK PLC` resolve at tier 2, high confidence, to the same
+company.
+
+**The class statistic did not govern the row.** Measured for demoted names: where tiers 2–3
+later resolved them independently, the buyer's stated number was right **10 times out of 27 —
+37.04%** (small sample, and biased toward disagreement). That is the reason a single
+assertion never carries a row; it is not evidence about *this* row, which has eight
+consistent statements from the payer itself.
+
+**The mechanism, extended on the same rails.** A demoted tier-1 row can now be accepted
+exactly as a tier-4 row can: same versioned literals in `38_queue_decisions.sql`, same
+per-row protocol, **no auto-accept**, and the same stale guard — an accept applies only while
+the approved company is still the candidate on offer, whether that candidate comes from
+tier 4's scoring or tier 1's buyer statement.
+
+**The basis split is keyed on `match_confidence`, not on tier.** An accepted demoted row keeps
+`match_tier = 1`, because tier 1 is how it was found — but it is **reviewed**, not method.
+Splitting on the tier number would have quietly banked a human decision as though the rule
+had made it.
+
+**Resolution by basis, after three decisions:**
+
+| Basis | Names | Rows | Value (GBP) | % of value |
+|---|---:|---:|---:|---:|
+| **Method** — tiers 1–3, by rule | 5,981 | 175,470 | 29,935,699,821.14 | **58.32%** |
+| **Reviewed** — accepted on a recorded decision | 2 | 2,369 | 1,219,464,513.44 | **2.38%** |
+| **Total resolved** | **5,983** | **177,839** | **31,155,164,334.58** | **60.70%** |
+| Unresolved | 7,394 | 174,689 | 20,175,094,760.80 | 39.30% |
+
+**The method's claim has not moved through any of this: 58.32%.** That is the point of
+reporting the two separately.
+
+**A second defect the accept exposed, and fixed:** an accepted demoted row resolves at
+tier 1, so the queue's `match_tier >= 4` filter dropped it — taking its recorded decision out
+of the published log. The queue is the **decision log**, not only the to-do list, so a name
+now stays if it is open **or** if a decision has been recorded against it. Regenerated: 1,431
+rows, all three decisions visible, 0 empty labels.
+
+All `V3`, `V4` and `D.1`–`D.4` controls pass: 3 decisions, 0 orphan, **0 stale**, 0 not
+applied, 0 `reviewed` without an accept. `E-3` is untouched — 95.25% precision, tier 4
+**80.88%** — because precision is measured on the method's own tables, never on human
+decisions.
 
 ---
 

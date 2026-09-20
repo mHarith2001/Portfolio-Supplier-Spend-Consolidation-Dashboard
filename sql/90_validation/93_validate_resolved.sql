@@ -326,11 +326,16 @@ FROM `portfolio-508106.portfolio_b.resolved_match_tier1`;
 --   REVIEWED  tier-4 candidates accepted on a recorded human decision (38),
 --             each with a basis beyond the score
 -- 58.32% was the method's claim before the queue was worked. It still is.
+--
+-- THE SPLIT IS ON match_confidence, NOT ON TIER. A demoted tier-1 row accepted on
+-- review keeps match_tier 1 -- tier 1 is how it was found -- but it is REVIEWED,
+-- not method. Splitting on the tier number would quietly bank a human decision as
+-- if the rule had made it.
 
 SELECT
   CASE
-    WHEN m.is_resolved AND m.match_tier <= 3 THEN '1 METHOD — tiers 1-3'
-    WHEN m.is_resolved                       THEN '2 REVIEWED — tier 4 accepted on recorded decision'
+    WHEN m.is_resolved AND m.match_confidence != 'reviewed' THEN '1 METHOD — tiers 1-3, by rule'
+    WHEN m.is_resolved                                      THEN '2 REVIEWED — accepted on a recorded decision'
     ELSE                                          '3 UNRESOLVED'
   END                                                           AS basis,
   COUNT(DISTINCT m.supplier_name_norm)                          AS supplier_names,
@@ -349,7 +354,9 @@ ORDER BY basis;
 -- D.1 every decision names a name that exists in the audit trail
 -- D.2 no decision is STALE — an accept is of a specific company; if a rebuild
 --     changes the tier-4 candidate the approval must not follow the name
--- D.3 every accept resolves its name; every reject leaves it unresolved
+-- D.3 every accept resolves its name; no reject is resolved BY REVIEW (a rejected
+--     name may still be resolved later by method evidence -- that is the rule
+--     working, not the decision leaking)
 -- D.4 'reviewed' confidence exists only where an accept exists
 
 WITH d AS (SELECT * FROM `portfolio-508106.portfolio_b.resolved_queue_decisions`),
@@ -363,14 +370,14 @@ SELECT
   (SELECT COUNTIF(has_stale_decision) FROM m)                                     AS stale_decisions,
   (SELECT COUNT(*) FROM d JOIN m USING (supplier_name_norm)
     WHERE (d.decision = 'accepted' AND NOT m.is_resolved)
-       OR (d.decision = 'rejected' AND m.is_resolved AND m.match_tier = 4))       AS decisions_not_applied,
+       OR (d.decision = 'rejected' AND m.match_confidence = 'reviewed'))          AS decisions_not_applied,
   (SELECT COUNT(*) FROM m LEFT JOIN d USING (supplier_name_norm)
     WHERE m.match_confidence = 'reviewed' AND COALESCE(d.decision, '') != 'accepted') AS reviewed_without_accept,
   IF((SELECT COUNT(*) FROM d LEFT JOIN m USING (supplier_name_norm) WHERE m.supplier_name_norm IS NULL) = 0
      AND (SELECT COUNTIF(has_stale_decision) FROM m) = 0
      AND (SELECT COUNT(*) FROM d JOIN m USING (supplier_name_norm)
            WHERE (d.decision = 'accepted' AND NOT m.is_resolved)
-              OR (d.decision = 'rejected' AND m.is_resolved AND m.match_tier = 4)) = 0
+              OR (d.decision = 'rejected' AND m.match_confidence = 'reviewed')) = 0
      AND (SELECT COUNT(*) FROM m LEFT JOIN d USING (supplier_name_norm)
            WHERE m.match_confidence = 'reviewed' AND COALESCE(d.decision, '') != 'accepted') = 0,
      'PASS', 'FAIL  <-- HARD') AS d1_d4;

@@ -68,7 +68,14 @@ q AS (
   JOIN m USING (supplier_name_norm)
   LEFT JOIN `portfolio-508106.portfolio_b.staging_companies` c
     ON c.company_number = t1.candidate_company_number
+  -- A DECIDED ROW NEVER LEAVES THE QUEUE. An accepted demoted row resolves at
+  -- tier 1, so a bare `match_tier >= 4` test would drop it -- and take its
+  -- recorded decision out of the published log with it. The queue is the decision
+  -- LOG, not only the to-do list: a name stays if it is still open OR if a
+  -- decision has been recorded against it. (Found 2026-09-20 on row 3.)
   WHERE m.match_tier >= 4
+     OR EXISTS (SELECT 1 FROM `portfolio-508106.portfolio_b.resolved_queue_decisions` dd
+                 WHERE dd.supplier_name_norm = t1.supplier_name_norm)
 )
 SELECT
   r.display_name          AS supplier_name_raw,

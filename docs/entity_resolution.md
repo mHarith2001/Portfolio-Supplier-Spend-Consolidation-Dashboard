@@ -5,7 +5,7 @@ The intellectual core of this project. Every figure measured 2026-09-18.
 ## The problem
 
 Six public bodies publish spend independently. **14,434 distinct raw vendor spellings**
-appear across their files. They describe **at most 5,967 identified companies plus 7,395
+appear across their files. They describe **at most 5,967 identified companies plus 7,394
 names that could not be identified**. One supplier alone is spelled **16** different ways.
 
 Nobody can answer "how much did the public sector pay this company?" until those spellings
@@ -29,10 +29,12 @@ first or conflate the second.
 | Tier | Method | Confidence | Names | Value (GBP) |
 |---|---|---|---:|---:|
 | 1 | Company number, bridged via a Contracts Finder award | high | 1,172 | 3,981,459,526.06 |
+| 1 | …demoted, then accepted on recorded review | **reviewed** | 1 | 349,037,030.64 |
 | 2 | Exact normalised name against Companies House | high | 4,755 | 15,790,231,297.20 |
 | 3 | Name core + postcode | medium | 54 | 10,164,008,997.88 |
-| 4 | Token-set similarity ≥ 0.85 on the core | **review**; resolves only on a recorded human accept | 1,226 | 3,250,493,817.87 |
-| 5 | Unresolved, with a stated reason | none | 6,170 | 18,144,065,456.37 |
+| 4 | Token-set similarity ≥ 0.85 on the core | **review**; resolves only on a recorded human accept | 1,225 | 2,380,066,335.07 |
+| 4 | …accepted on recorded review | **reviewed** | 1 | 870,427,482.80 |
+| 5 | Unresolved, with a stated reason | none | 6,169 | 17,795,028,425.73 |
 
 **Tier 1 is a bridge, not a lookup.** Spend files carry no company numbers. A spend supplier
 reaches a buyer-stated number only where its normalised name equals a Contracts Finder name
@@ -45,8 +47,8 @@ data: publishers truncate and reorder supplier names far more often than they mi
 
 **Resolution by method is tiers 1–3: 5,981 names, GBP 29,935,699,821.14 — 58.32% of transaction
 value.** Human review adds tier-4 names accepted on a recorded decision, reported
-**separately** so one kind of evidence never borrows the other's credibility: so far 1 name,
-GBP 870,427,482.80, 1.70% — **60.02% in total**.
+**separately** so one kind of evidence never borrows the other's credibility: so far 2 names,
+GBP 1,219,464,513.44, 2.38% — **60.70% in total**.
 
 ## Seven hard rules
 
@@ -63,7 +65,10 @@ GBP 870,427,482.80, 1.70% — **60.02% in total**.
 6. **Tier-1 register disagreement is demoted to review.** Where a buyer states a number whose
    *registered* name disagrees with the supplier name, the match does not stand on the
    buyer's assertion alone. **232 names demoted**; 27 were later confirmed by tier 2 or 3 on
-   their own evidence, and **0 remained resolved at tier 1**.
+   their own evidence, and **0 were resolved at tier 1 by the rule**. A demoted name resolves
+   only on a recorded human decision, on the same rails as tier 4. Measured: where independent
+   evidence exists, the buyer's stated number was right 10 times of 27 — **37.04%**, which is
+   why the assertion alone never carries a row.
 7. **Suffix-conflict guard.** A candidate is rejected where both names carry a legal suffix
    and the suffixes differ — a `PLC` supplier against a `LIMITED` company. Without it, the
    suffix-free core re-introduces exactly the conflation the core key exists to avoid:
@@ -93,8 +98,9 @@ precision plateau begins; below 0.70, tier-4 precision collapses.
 ## The review queue
 
 **1,431 rows, highest value first** (`review_queue.csv`): 1,226 tier-4 candidates and the
-205 demoted tier-1 names that no other tier confirmed. Two rows are decided — one rejected, one
-accepted — and the rest are blank.
+205 demoted tier-1 names that no other tier confirmed. Three rows are decided — two accepted,
+one rejected — and the rest are blank. **A decided row stays in the queue**: it is the
+decision log, not only the to-do list.
 
 **The most confident batch in that queue — score 1.00 with a single candidate — is correct
 81.21% of the time.** Bulk-accepting it would be wrong about one time in six, and only 42 of

@@ -5,7 +5,7 @@ tables behind them. Measured 2026-09-18.
 
 ---
 
-## `fact_spend.csv` — 175,590 rows
+## `fact_spend.csv` — 177,839 rows
 
 One payment line to a **resolved** supplier.
 
@@ -22,7 +22,7 @@ One payment line to a **resolved** supplier.
 | `is_grant_in_aid` | BOOL | Grant-in-aid transfers, which are not procurement |
 | `transaction_number` | STRING | The publisher's own reference, as published |
 
-## `fact_spend_unresolved.csv` — 176,938 rows
+## `fact_spend_unresolved.csv` — 174,689 rows
 
 Identical grain and columns, plus:
 
@@ -36,7 +36,7 @@ subset to be ignored.
 
 ---
 
-## `dim_supplier.csv` — 13,362 rows
+## `dim_supplier.csv` — 13,361 rows
 
 | Column | Type | Notes |
 |---|---|---|
@@ -48,10 +48,10 @@ subset to be ignored.
 | `company_status` | STRING | 14 values, **all live — the snapshot holds no `Dissolved` companies** |
 | `incorporation_date` | DATE | Used by the plausibility rule |
 | `name_variant_count` | INT64 | **How many raw spellings collapsed into this record.** Max observed: 16 |
-| `is_resolved` | BOOL | TRUE for tiers 1–3, and for a tier-4 name accepted on a recorded review decision |
+| `is_resolved` | BOOL | TRUE for tiers 1–3, and for a queued name — tier 4, or a demoted tier 1 — accepted on a recorded review decision |
 | `unresolved_reason` | STRING | NULL where resolved |
 | `match_tier` | INT64 | 1–5. The **best** tier that reached this entity |
-| `match_confidence` | STRING | `high` · `medium` · `reviewed` · `review` · `none`. **`reviewed`** = a tier-4 candidate accepted on a recorded human decision; **`review`** = still queued |
+| `match_confidence` | STRING | `high` · `medium` · `reviewed` · `review` · `none`. **`reviewed`** = a queued candidate accepted on a recorded human decision, whatever tier found it; **`review`** = still queued |
 | `resolution_state` | STRING | Reader-facing label |
 | `is_individual_withheld` | BOOL | TRUE where the name was withheld |
 
@@ -116,6 +116,6 @@ should be quoted without the VAT caveat** in `limitations.md` `P-2`.
 | `resolved_supplier_match` | The match audit trail, one row per name, with `reject_reason` and notes |
 | `resolved_tier4_candidates` | Every scored (name, company) pair ≥ 0.5 |
 
-`review_queue.csv` publishes the decision-bearing part of the audit trail: 1,431 rows, two
-decided (one rejected, one accepted) and the rest blank, each decision carrying its reason and date from
+`review_queue.csv` publishes the decision-bearing part of the audit trail: 1,431 rows, three
+decided (two accepted, one rejected) and the rest blank, each decision carrying its reason and date from
 `38_queue_decisions.sql`.

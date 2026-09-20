@@ -61,5 +61,26 @@ SELECT * FROM UNNEST([
       'prefix-filter blocking, 09860466 WEST MIDLANDS TRAINS LIMITED scores 1.00 ',
       'while all 99 other candidates score 0.50; SIC 49100 passenger rail; ',
       'active; incorporated 2015-11-06, before the first payment on 2024-03-20.')
+  ),
+  STRUCT(
+    'CAPGEMINI',
+    '00943935',
+    'accepted',
+    DATE '2026-09-20',
+    CONCAT(
+      'A DEMOTED TIER-1 ROW, decided on the own records of the payer rather than ',
+      'on the single assertion that caused the demotion. HMRC names Capgemini on ',
+      '8 of its own Contracts Finder awards dated 2024-04-08 to 2025-02-28, ',
+      'inside the spend window, and states 00943935 on ALL 8 -- no other number ',
+      'and no blanks -- including one award spelling the supplier CapGemini, the ',
+      'same short form its spend file uses. Corroborated across payers: DfT and ',
+      'MOJ write CAPGEMINI UK PLC, which resolves at TIER 2, high confidence, to ',
+      '00943935. The demotion was a name-string difference (trading name against ',
+      'registered name CAPGEMINI UK PLC), not a different company. Name ',
+      'similarity alone does NOT decide this row: the best tier-4 score is 0.50, ',
+      'below the floor, and ties with 03953511 CAPGEMINI OLDCO LTD. The class ',
+      'statistic for demoted rows -- the stated number agreed with independent ',
+      'evidence 10 times of 27, 37.04% -- is why a single assertion is not ',
+      'enough, and is not what decided this row.')
   )
 ]);
