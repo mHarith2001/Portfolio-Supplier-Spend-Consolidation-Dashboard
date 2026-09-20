@@ -104,9 +104,10 @@ precision plateau begins; below 0.70, tier-4 precision collapses.
 
 ## The review queue
 
-**1,419 rows, highest value first** (`review_queue.csv`): 1,215 tier-4 candidates and the
-204 demoted tier-1 names that no other tier confirmed. Four rows are decided — two accepted,
-two rejected — and the rest are blank. **A decided row stays in the queue**: it is the
+**1,420 rows, highest value first** (`review_queue.csv`): 1,215 tier-4 candidates, 204
+demoted tier-1 names that no other tier confirmed, and 1 decided name whose candidate was
+later withdrawn from matching. Four rows are decided — two accepted, two rejected — and the
+rest are blank. **A decided row stays in the queue**: it is the
 decision log, not only the to-do list.
 
 **The most confident batch in that queue — score 1.00 with a single candidate — is correct

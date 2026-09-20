@@ -18,7 +18,7 @@ them — an unticked box is more useful than a tick that is not true.
 | # | Check | Status |
 |---|---|---|
 | `Q3.1` | Tier distribution by count **and value** | **PASS** — validation report §7.4 |
-| `Q3.2` | No tier-4 auto-merge | **PASS** — 1,419 queue rows, **no auto-accept anywhere**; 4 rows decided by hand — two accepted, two rejected, each with its basis recorded — 1,415 blank |
+| `Q3.2` | No tier-4 auto-merge | **PASS** — 1,420 queue rows, **no auto-accept anywhere**; 4 rows decided by hand — two accepted, two rejected, each with its basis recorded — 1,416 blank |
 | `Q3.3` | Ambiguity surfaced, never auto-accepted | **PASS** — `V3.6`, 0 accepted with `candidate_count > 1` |
 | `Q3.4` | Plausibility applied | **PASS at every tier** — 0 of 178,216 attributed rows precede incorporation, and since 2026-09-18 hard rule 3 also filters tier-4 candidates: **0 impossible candidates remain in the queue** |
 | `Q3.5` | Redacted population reported as a named category | **PASS** — 4 names, 31,508 rows, GBP 113,266,026.75, **0.2207%** of transaction value |

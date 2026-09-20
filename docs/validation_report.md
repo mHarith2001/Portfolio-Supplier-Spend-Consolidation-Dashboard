@@ -684,8 +684,8 @@ still resolved. The remaining **205 enter the review queue**.
 
 ### 7.8 The review queue — `docs/review_queue.csv`
 
-**1,431 rows, highest value first**: 1,226 tier-4 candidates and the 205 demoted tier-1
-names. Per `04` §8, plus `queue_reason` — because a reviewer looking at a row with no
+**1,420 rows, highest value first**: 1,215 tier-4 candidates, 204 demoted tier-1 names, and
+1 decided name whose candidate was later withdrawn from matching (§7.14). Per `04` §8, plus `queue_reason` — because a reviewer looking at a row with no
 `match_score` needs to know it arrived by demotion rather than by similarity — and, since
 2026-09-18, `decision`, `decision_note` and `decided_on`.
 
@@ -956,6 +956,24 @@ can record that with its basis — which is exactly the protocol used for rows 2
 
 All `V3`, `V4` and `D.1`–`D.4` controls pass: 4 decisions, 0 orphan, **0 stale**, 0 not
 applied. `V4.1` reconciles to the penny.
+
+### 7.14 The same bug twice — the decision log is now complete by construction
+
+The queue is built from names that are **open**. A decided name is normally open too, so it
+appears — until something removes its candidate.
+
+**It happened twice in two days, and the first fix was too narrow.** On 2026-09-20 an accepted
+*demoted* row resolved at tier 1 and fell out of a `match_tier >= 4` filter; that branch was
+patched. Hours later the **`OE` exclusion removed `NEXUS`'s tier-4 candidate**, dropping it to
+tier 5 — and the *other* branch, unpatched, deleted the published record of its **rejection**.
+A queue that loses a rejection is worse than one that loses a to-do: the decision was taken,
+and the artefact no longer showed it.
+
+`37` now has a third branch that re-adds **any** decided name the open branches missed,
+carrying the company from the **decision record** rather than from a candidate table that no
+longer offers one. Verified after regeneration: **1,420 rows, 4 of 4 decisions published, 0
+empty labels.** `NEXUS` reads `decided; candidate withdrawn from matching` — which is what
+actually happened to it.
 
 ---
 

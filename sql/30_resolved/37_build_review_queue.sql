@@ -45,7 +45,7 @@ t1 AS (
   FROM `portfolio-508106.portfolio_b.resolved_match_tier1`
   WHERE reject_reason = 'register_name_disagrees'
 ),
-q AS (
+q_open AS (
   SELECT
     m.supplier_name_norm,
     m.review_candidate_name        AS candidate_company_name,
@@ -76,6 +76,35 @@ q AS (
   WHERE m.match_tier >= 4
      OR EXISTS (SELECT 1 FROM `portfolio-508106.portfolio_b.resolved_queue_decisions` dd
                  WHERE dd.supplier_name_norm = t1.supplier_name_norm)
+),
+-- EVERY DECISION APPEARS, WHATEVER HAPPENED TO ITS CANDIDATE AFTERWARDS.
+-- The two branches above list names that are OPEN. A decided name usually also
+-- sits in one of them, but not always: NEXUS was rejected, and the later OE class
+-- exclusion removed its tier-4 candidate, so it fell to tier 5 and vanished from
+-- the queue -- deleting the published record of its rejection. (Found 2026-09-20,
+-- the second time this shape of bug appeared; the first was patched on the
+-- demoted branch alone, which is why it came back.)
+--
+-- This branch is the general fix: it re-adds any decided name the branches above
+-- missed, carrying the company from the DECISION rather than from a candidate
+-- table that no longer offers one.
+q_decided AS (
+  SELECT
+    d.supplier_name_norm,
+    c.company_name                 AS candidate_company_name,
+    d.candidate_company_number,
+    CAST(NULL AS FLOAT64)          AS match_score,
+    1                              AS candidate_count,
+    'decided; candidate withdrawn from matching' AS queue_reason
+  FROM `portfolio-508106.portfolio_b.resolved_queue_decisions` d
+  LEFT JOIN `portfolio-508106.portfolio_b.staging_companies` c
+    ON c.company_number = d.candidate_company_number
+  WHERE d.supplier_name_norm NOT IN (SELECT supplier_name_norm FROM q_open)
+),
+q AS (
+  SELECT * FROM q_open
+  UNION ALL
+  SELECT * FROM q_decided
 )
 SELECT
   r.display_name          AS supplier_name_raw,
