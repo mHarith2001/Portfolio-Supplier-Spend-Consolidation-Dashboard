@@ -86,7 +86,7 @@ the unresolved population is beyond **any** method operating on this snapshot, n
 this one.
 
 - **Precision is unaffected** — it asks whether the matches made are correct.
-- **Recall carries the ceiling**, including the 84.50% measured recall and the 58.32%
+- **Recall carries the ceiling**, including the 84.48% measured recall and the 58.43%
   resolution rate.
 - **It is structural and permanent for this snapshot.** Only the full register would lift
   it, which is a data-acquisition change, not a method change.
@@ -111,7 +111,7 @@ GBP 273,975,883.60 to make a date range look tidy.
 | Transaction value | GBP 51,330,259,095.38 |
 | Excluded non-payment value | GBP 2,556,596,745.72 |
 | In-window transactions | 289,950 (+ 24 annex duplicates + 16 out-of-scope section rows = 289,990) |
-| Vendor spellings → identified suppliers | 14,434 → 5,967, plus 7,394 unidentified names |
+| Vendor spellings → identified suppliers | 14,434 → 5,970, plus 7,391 unidentified names |
 
 ---
 
@@ -119,11 +119,11 @@ GBP 273,975,883.60 to make a date range look tidy.
 
 - **That tier-4 fuzzy matches are resolved.** They are queued for human review with
   decisions blank. Measured against known answers, the queue's most confident batch — score
-  1.00 with a single candidate — is correct **81.21%** of the time. Bulk-accepting it would
+  1.00 with a single candidate — is correct **81.23%** of the time. Bulk-accepting it would
   be wrong about one time in six.
-- **That 58.32% is a good resolution rate or a bad one.** It is the method's measured rate for
+- **That 58.43% is a good resolution rate or a bad one.** It is the method's measured rate for
   these six publishers against this snapshot. Human review adds 2.38% so far, reported
-  separately, for 60.70% in total.
+  separately, for 60.81% in total.
 - **That the unresolved population is small.** It is 39.30% of transaction value, reported
   with its reasons and its value.
 - **That any named supplier has done anything wrong.** This is payment-line data.

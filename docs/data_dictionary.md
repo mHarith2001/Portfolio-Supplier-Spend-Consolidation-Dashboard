@@ -5,7 +5,7 @@ tables behind them. Measured 2026-09-18.
 
 ---
 
-## `fact_spend.csv` — 177,839 rows
+## `fact_spend.csv` — 178,216 rows
 
 One payment line to a **resolved** supplier.
 
@@ -22,7 +22,7 @@ One payment line to a **resolved** supplier.
 | `is_grant_in_aid` | BOOL | Grant-in-aid transfers, which are not procurement |
 | `transaction_number` | STRING | The publisher's own reference, as published |
 
-## `fact_spend_unresolved.csv` — 174,689 rows
+## `fact_spend_unresolved.csv` — 174,312 rows
 
 Identical grain and columns, plus:
 
@@ -43,7 +43,7 @@ subset to be ignored.
 | `supplier_id` | INT64 | Export key |
 | `supplier_key` | STRING | Warehouse key — the bridge back to BigQuery |
 | `supplier_name` | STRING | Registered name where resolved; most frequent raw spelling where not. **154 individual-looking unresolved names read "Individual — name withheld"** |
-| `company_number` | STRING | Companies House. NULL where unresolved |
+| `company_number` | STRING | Companies House. NULL where unresolved. **Never an `OE` overseas-entity registration** — those are excluded from matching (`04` §3 hard rule 8) |
 | `legal_name` | STRING | Companies House. NULL where unresolved |
 | `company_status` | STRING | 14 values, **all live — the snapshot holds no `Dissolved` companies** |
 | `incorporation_date` | DATE | Used by the plausibility rule |
@@ -116,6 +116,6 @@ should be quoted without the VAT caveat** in `limitations.md` `P-2`.
 | `resolved_supplier_match` | The match audit trail, one row per name, with `reject_reason` and notes |
 | `resolved_tier4_candidates` | Every scored (name, company) pair ≥ 0.5 |
 
-`review_queue.csv` publishes the decision-bearing part of the audit trail: 1,431 rows, three
-decided (two accepted, one rejected) and the rest blank, each decision carrying its reason and date from
+`review_queue.csv` publishes the decision-bearing part of the audit trail: 1,419 rows, four
+decided (two accepted, two rejected) and the rest blank, each decision carrying its reason and date from
 `38_queue_decisions.sql`.

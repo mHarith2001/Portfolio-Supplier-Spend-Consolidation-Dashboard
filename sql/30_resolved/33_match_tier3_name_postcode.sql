@@ -29,7 +29,7 @@ WITH ch AS (
     company_number, company_status, incorporation_date,
     `portfolio-508106.portfolio_b.name_core_from_norm`(company_name_norm) AS core,
     UPPER(REGEXP_REPLACE(postcode, r'\s', ''))                           AS pc
-  FROM `portfolio-508106.portfolio_b.staging_companies`
+  FROM `portfolio-508106.portfolio_b.resolved_company_universe`
   WHERE postcode IS NOT NULL AND company_name_norm IS NOT NULL
 ),
 sp AS (

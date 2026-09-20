@@ -5,7 +5,7 @@ The intellectual core of this project. Every figure measured 2026-09-18.
 ## The problem
 
 Six public bodies publish spend independently. **14,434 distinct raw vendor spellings**
-appear across their files. They describe **at most 5,967 identified companies plus 7,394
+appear across their files. They describe **at most 5,970 identified companies plus 7,391
 names that could not be identified**. One supplier alone is spelled **16** different ways.
 
 Nobody can answer "how much did the public sector pay this company?" until those spellings
@@ -30,11 +30,11 @@ first or conflate the second.
 |---|---|---|---:|---:|
 | 1 | Company number, bridged via a Contracts Finder award | high | 1,172 | 3,981,459,526.06 |
 | 1 | …demoted, then accepted on recorded review | **reviewed** | 1 | 349,037,030.64 |
-| 2 | Exact normalised name against Companies House | high | 4,755 | 15,790,231,297.20 |
+| 2 | Exact normalised name against Companies House | high | 4,758 | 15,846,552,637.36 |
 | 3 | Name core + postcode | medium | 54 | 10,164,008,997.88 |
-| 4 | Token-set similarity ≥ 0.85 on the core | **review**; resolves only on a recorded human accept | 1,225 | 2,380,066,335.07 |
+| 4 | Token-set similarity ≥ 0.85 on the core | **review**; resolves only on a recorded human accept | 1,214 | 2,216,774,873.40 |
 | 4 | …accepted on recorded review | **reviewed** | 1 | 870,427,482.80 |
-| 5 | Unresolved, with a stated reason | none | 6,169 | 17,795,028,425.73 |
+| 5 | Unresolved, with a stated reason | none | 6,177 | 17,901,998,547.24 |
 
 **Tier 1 is a bridge, not a lookup.** Spend files carry no company numbers. A spend supplier
 reaches a buyer-stated number only where its normalised name equals a Contracts Finder name
@@ -45,12 +45,12 @@ that carries one.
 corrected 2026-09-18 — with edit distance as a tie-break. Token-set is the right measure for this
 data: publishers truncate and reorder supplier names far more often than they misspell them.
 
-**Resolution by method is tiers 1–3: 5,981 names, GBP 29,935,699,821.14 — 58.32% of transaction
+**Resolution by method is tiers 1–3: 5,984 names, GBP 29,992,021,161.30 — 58.43% of transaction
 value.** Human review adds tier-4 names accepted on a recorded decision, reported
 **separately** so one kind of evidence never borrows the other's credibility: so far 2 names,
-GBP 1,219,464,513.44, 2.38% — **60.70% in total**.
+GBP 1,219,464,513.44, 2.38% — **60.81% in total**.
 
-## Seven hard rules
+## Eight hard rules
 
 1. **Tier 4 never auto-merges.** It populates a review queue with its score and candidate
    count. A tier-4 name resolves **only** on a recorded human decision whose basis is evidence
@@ -73,6 +73,13 @@ GBP 1,219,464,513.44, 2.38% — **60.70% in total**.
    and the suffixes differ — a `PLC` supplier against a `LIMITED` company. Without it, the
    suffix-free core re-introduces exactly the conflation the core key exists to avoid:
    measured at 4 names, GBP 39,014,117.12.
+8. **Only company registrations are candidates** (added 2026-09-20). The snapshot holds
+   **30,199 `OE` Register of Overseas Entities registrations** — a foreign body recorded as
+   owning UK land, not a UK company. They are excluded at candidate generation, in one shared
+   view every tier reads. Found on a row where a statutory transport executive scored 1.00
+   against an overseas property registration. The exclusion **raised** method resolution, from
+   58.32% to 58.43%: names where a real company and an `OE` entry shared a name had been
+   rejected as ambiguous, and removing the `OE` entry left a single candidate.
 
 ## Survivorship
 
@@ -89,7 +96,7 @@ stays countable instead of disappearing.
 `E-3` hides the Contracts Finder company number, runs the tiers on the **name alone**, and
 compares the prediction with the buyer's stated answer across **24,506 measurable awards**.
 
-**95.25% precision, 84.50% recall.** Tier 2 alone 96.99%; tier 4 alone 80.88%; 983
+**95.27% precision, 84.48% recall.** Tier 2 alone 96.93%; tier 4 alone 81.24%; 979
 predictions wrong. Full method, threshold curve and ceilings in `match_precision.md`.
 
 **The threshold was chosen from the measured curve, not assumed.** 0.85 is where the
@@ -97,14 +104,14 @@ precision plateau begins; below 0.70, tier-4 precision collapses.
 
 ## The review queue
 
-**1,431 rows, highest value first** (`review_queue.csv`): 1,226 tier-4 candidates and the
-205 demoted tier-1 names that no other tier confirmed. Three rows are decided — two accepted,
-one rejected — and the rest are blank. **A decided row stays in the queue**: it is the
+**1,419 rows, highest value first** (`review_queue.csv`): 1,215 tier-4 candidates and the
+204 demoted tier-1 names that no other tier confirmed. Four rows are decided — two accepted,
+two rejected — and the rest are blank. **A decided row stays in the queue**: it is the
 decision log, not only the to-do list.
 
 **The most confident batch in that queue — score 1.00 with a single candidate — is correct
-81.21% of the time.** Bulk-accepting it would be wrong about one time in six, and only 42 of
-its 288 errors are explained by the register snapshot missing the answer.
+81.23% of the time.** Bulk-accepting it would be wrong about one time in six, and only 42 of
+its 288 errors are explained by the matchable universe missing the answer.
 
 **The dominant failure mode is a public body matching a private company of the same name.** A
 government department, a passenger transport executive and a transport authority all score

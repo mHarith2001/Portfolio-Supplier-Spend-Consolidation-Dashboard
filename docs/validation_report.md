@@ -587,11 +587,11 @@ Transaction rows only (`row_role = 'transaction'`).
 |---|---:|---:|---:|---:|
 | 1 — company number | 1,172 | 50,129 | 3,981,459,526.06 | 7.76% |
 | 1 — demoted, **accepted on recorded review** | 1 | 2,249 | 349,037,030.64 | 0.68% |
-| 2 — exact normalised name | 4,755 | 123,926 | 15,790,231,297.20 | 30.76% |
+| 2 — exact normalised name | 4,758 | 124,303 | 15,846,552,637.36 | 30.87% |
 | 3 — name core + postcode | 54 | 1,415 | 10,164,008,997.88 | 19.80% |
 | 4 — fuzzy, **accepted on recorded review** | 1 | 120 | 870,427,482.80 | 1.70% |
-| 4 — fuzzy, **review only, not resolved** | 1,225 | 41,517 | 2,380,066,335.07 | 4.64% |
-| 5 — unresolved | 6,169 | 133,172 | 17,795,028,425.73 | 34.67% |
+| 4 — fuzzy, **review only, not resolved** | 1,214 | 41,070 | 2,216,774,873.40 | 4.32% |
+| 5 — unresolved | 6,177 | 133,242 | 17,901,998,547.24 | 34.88% |
 
 **Resolved is tiers 1–3: 5,981 names, GBP 29,935,699,821.14 — 58.32% of transaction
 value.** Tier 4 is *not* counted as resolved anywhere in this project. Counting the still-unreviewed
@@ -602,9 +602,9 @@ queue would raise the total to 64.65% on the strength of 80.88% precision
 
 | Reason | Names | Value (GBP) |
 |---|---:|---:|
-| `no_match` — no candidate at any tier | 1,802 | 10,370,301,942.78 |
-| `below_threshold` — best fuzzy score under 0.85 | 4,214 | 6,986,288,357.72 |
-| `review` — tier-4 queue, decision pending | 1,225 | 2,380,066,335.07 |
+| `no_match` — no candidate at any tier | 1,821 | 10,378,013,159.51 |
+| `below_threshold` — best fuzzy score under 0.85 | 4,203 | 7,085,547,262.50 |
+| `review` — tier-4 queue, decision pending | 1,214 | 2,216,774,873.40 |
 | `ambiguous` — more than one candidate, or the register disagrees | 149 | 325,172,098.48 |
 | `redacted` — payee withheld at source | 4 | 113,266,026.75 |
 
@@ -691,7 +691,7 @@ names. Per `04` §8, plus `queue_reason` — because a reviewer looking at a row
 
 **Decisions are recorded in `sql/30_resolved/38_queue_decisions.sql` as literals under
 version control**, and joined in by the generator, so regenerating the queue never loses
-them and every decision carries its reason. **Three rows are decided so far** (§7.10–§7.12), and a decided row stays in the queue; the rest
+them and every decision carries its reason. **Four rows are decided so far** (§7.10–§7.13), and a decided row stays in the queue; the rest
 are blank, which remains the honest presentation.
 
 The first row is `GREAT WESTERN RAILWAY` → `GREAT WESTERN RAILWAY LIMITED`, score 1.00,
@@ -888,6 +888,74 @@ All `V3`, `V4` and `D.1`–`D.4` controls pass: 3 decisions, 0 orphan, **0 stale
 applied, 0 `reviewed` without an accept. `E-3` is untouched — 95.25% precision, tier 4
 **80.88%** — because precision is measured on the method's own tables, never on human
 decisions.
+
+### 7.13 Row 4 rejected, and a whole class of candidate excluded (2026-09-20)
+
+**Queue row 4 rejected:** `NEXUS` → `NEXUS LIMITED` (`OE007963`), GBP 106,362,560.99, score
+1.00 against 99 rivals at 0.50.
+
+**The evidence contradicted the score**, so the row-1 precedent applied:
+
+- **The payer names the real entity itself.** DfT also pays `NEXUS (TYNE & WEAR)` — 2 rows,
+  GBP 786,000 — with the **same first payment date, 2024-03-26**. Nexus is the Tyne and Wear
+  passenger transport executive, a statutory body with no company number at all.
+- **The candidate was not a company.** `OE007963` is a Register of Overseas Entities
+  registration: a foreign body recorded as owning UK land, with no SIC.
+
+**That made it a class problem, not a row problem.** The snapshot holds **30,199 `OE`
+registrations**, and matching pointed at them **9 times**. `OE` entries are now excluded at
+**candidate generation**, through one shared view (`30_match_universe.sql`) that tiers 1–4
+all read — not by deleting register rows, which would break `V1.5` and destroy the audit
+trail, and not as four copies of a predicate in four files. Tier 1 inherits it: a buyer
+stating an `OE` number now reads as `number_not_in_register`. Recorded as `04` §3 hard rule 8.
+
+| | Before | After |
+|---|---:|---:|
+| Match universe | 5,695,372 | **5,665,173** (−30,199) |
+| Tier-2 acceptances | 13,488 | **13,504** |
+| Matches pointing at an `OE` entry | 9 | **0** |
+| Method resolution | 58.32% | **58.43%** |
+| Tier-4 precision (`E-3`) | 80.88% | **81.24%** |
+| Overall precision (`E-3`) | 95.25% | **95.27%** |
+
+**The exclusion raised resolution rather than lowering it**, which was not the expected
+direction. Names where a real company and an `OE` registration shared a name had been
+rejected as **ambiguous**; removing the `OE` entry left a single candidate, and 3 more names
+resolved — GBP 56,321,340.16 of spend that a register-semantics error had been holding back.
+
+**The six exact-name `OE` resolutions, re-reviewed before the exclusion landed:**
+
+| Name | `OE` entry | Payer | Value (GBP) |
+|---|---|---|---:|
+| MAPLEDURHAM PROPERTIES LTD | OE016602 | HMRC | 402,000.00 |
+| CORNISH GATEWAY SERVICES LTD | OE006974 | DfT | 110,967.46 |
+| CPE MANCHESTER 01 S.À R.L. | OE026070 | Manchester | 16,033.83 |
+| AHS LTD | OE012016 | Bristol | 8,711.21 |
+| UNITEX TRADING LTD | OE005460 | Manchester | 5,346.90 |
+| GGC POLYGON MANCHESTER LTD | OE015161 | Manchester | 506.00 |
+
+**All six were exact-name matches, and no non-`OE` company carries any of those names.** They
+were therefore **right entity, wrong identifier class** — not wrong-entity errors. Every `OE`
+registration involved was created between 2022-11-28 and 2023-02-13, the Register of Overseas
+Entities window, and the names read like property-holding vehicles, which is what that
+register records.
+
+All six are now **unresolved** (`below_threshold`, except `GGC POLYGON MANCHESTER LTD` at
+`no_match`), carrying GBP 543,565.40. **They are surfaced, not quietly dropped:** if the
+handler judges the overseas entity to be the genuine payee, the per-row decision mechanism
+can record that with its basis — which is exactly the protocol used for rows 2 and 3.
+
+**Resolution by basis, after four decisions:**
+
+| Basis | Names | Value (GBP) | % of value |
+|---|---:|---:|---:|
+| **Method** — tiers 1–3, by rule | 5,984 | 29,992,021,161.30 | **58.43%** |
+| **Reviewed** — accepted on a recorded decision | 2 | 1,219,464,513.44 | **2.38%** |
+| **Total resolved** | **5,986** | **31,211,485,674.74** | **60.81%** |
+| Unresolved | 7,391 | 20,118,773,420.64 | 39.19% |
+
+All `V3`, `V4` and `D.1`–`D.4` controls pass: 4 decisions, 0 orphan, **0 stale**, 0 not
+applied. `V4.1` reconciles to the penny.
 
 ---
 

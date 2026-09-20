@@ -82,5 +82,23 @@ SELECT * FROM UNNEST([
       'statistic for demoted rows -- the stated number agreed with independent ',
       'evidence 10 times of 27, 37.04% -- is why a single assertion is not ',
       'enough, and is not what decided this row.')
+  ),
+  STRUCT(
+    'NEXUS',
+    'OE007963',
+    'rejected',
+    DATE '2026-09-20',
+    CONCAT(
+      'Evidence contradicts the score. The same payer, DfT, also pays NEXUS ',
+      '(TYNE & WEAR) -- 2 rows, GBP 786,000 -- with the SAME first payment date, ',
+      '2024-03-26. Nexus is the Tyne and Wear passenger transport executive, a ',
+      'statutory public body, which has no Companies House number at all. The ',
+      'candidate OE007963 is an OE-prefixed Register of Overseas Entities ',
+      'registration dated 2022-12-14 with no SIC -- a foreign body recorded as ',
+      'owning UK land, structurally implausible as the payee of transport ',
+      'funding. No Contracts Finder award links this payer to any company number ',
+      'for NEXUS. Score 1.00 against 99 rivals at 0.50 counts for nothing against ',
+      'that: the class it belongs to is measured at 81.21% precision. This row ',
+      'also prompted the OE class exclusion (30_match_universe.sql).')
   )
 ]);

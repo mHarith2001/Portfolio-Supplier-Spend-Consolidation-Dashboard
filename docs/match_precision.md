@@ -1,12 +1,16 @@
 # Match precision — the `E-3` measurement
 
-**Measured 2026-09-18** by `sql/90_validation/95_measure_match_precision.sql`, on the
-**corrected blocking**. Published whether or not it flatters the method.
+**Re-measured 2026-09-20** by `sql/90_validation/95_measure_match_precision.sql`, on the
+corrected blocking **and the OE-free match universe**. Published whether or not it flatters the method.
 
 > **This figure went down when the method got better, and that is the point.** Tier-4
 > precision read 81.40% under first-token blocking, which excluded register rivals from the
-> comparison. Under the prefix filter, which provably excludes none, it reads **80.88%**. The
+> comparison. Under the prefix filter, which provably excludes none, it read **80.88%**. The
 > earlier number was not better; it was measured with the rivals hidden.
+>
+> **It reads 81.24% since 2026-09-20**, when 30,199 overseas-entity registrations were removed
+> from candidacy (`04` §3 hard rule 8). That is a different method again, so it is a different
+> measurement — not a revision of the same one.
 
 ## What is measured
 
@@ -27,12 +31,12 @@ Contracts Finder publishes none. So `E-3` measures **tiers 2 and 4**.
 
 | Tier | Method | Matches made | Correct | Wrong | Precision |
 |---|---|---:|---:|---:|---:|
-| 2 | Exact normalised name | 18,469 | 17,914 | 555 | **96.99%** |
-| 4 | Token-set similarity, review only | 2,239 | 1,811 | 428 | **80.88%** |
+| 2 | Exact normalised name | 18,512 | 17,944 | 568 | **96.93%** |
+| 4 | Token-set similarity, review only | 2,191 | 1,780 | 411 | **81.24%** |
 | — | No match | 0 | — | — | — |
-| **All** | | **20,708** | **19,725** | **983** | **95.25%** |
+| **All** | | **20,703** | **19,724** | **979** | **95.27%** |
 
-**Recall: 20,708 of 24,506 = 84.50%.** 3,798 awards receive no match at all.
+**Recall: 20,703 of 24,506 = 84.48%.** 3,803 awards receive no match at all.
 
 **Tier 4 never auto-accepts** (`04` §3 hard rule 1). Its matches are counted here as
 predictions so the method can be measured; in the resolved data they populate a review queue
@@ -62,11 +66,14 @@ So **no candidate that could reach the floor is excluded.** Measured over this r
 |---|---:|---|
 | Any shared token + length bound | 936,444,356 | Lossless, but 46% of pairs sit in one token |
 | First token (original) | 99,930 scored | **None** |
-| **Prefix filter (current)** | **86,927,511 → 997,229 scored** | **Lossless at the 0.5 floor** |
+| **Prefix filter (current)** | **86,927,511 → 991,640 scored** | **Lossless at the 0.5 floor** |
 
-**What changed as a result:** the tier-4 population went from 7,513 names to **8,922**, and
-names flagged ambiguous above threshold went from 61 to **102**. `candidate_count` was
-understating ambiguity by a factor of roughly 1.7.
+The two blocking-cost figures were measured 2026-09-18, before the OE exclusion; the scored
+count is current.
+
+**What changed as a result:** the tier-4 population went from 7,513 names to **8,883**, and
+names flagged ambiguous above threshold went from 61 to **75**. `candidate_count` was
+understating ambiguity.
 
 **What it does not fix.** The filter is lossless with respect to the **0.5 candidate floor**,
 not with respect to reality. `GREAT WESTERN RAILWAY` and `FIRST GREATER WESTERN` share one
@@ -78,21 +85,21 @@ That is the scoring function's limit, and it is why tier 4 is reviewed and never
 
 | Threshold | Matches | Precision | Recall | Tier-4 precision |
 |---:|---:|---:|---:|---:|
-| 0.50 | 23,572 | 86.83% | 96.19% | 50.03% |
-| 0.65 | 22,061 | 91.18% | 90.02% | 61.28% |
-| 0.70 | 21,135 | 94.19% | 86.24% | 74.76% |
-| 0.80 | 20,818 | 94.99% | 84.95% | 79.18% |
-| **0.85** | **20,708** | **95.25%** | **84.50%** | **80.88%** |
-| 1.00 | 20,698 | 95.26% | 84.46% | 80.84% |
+| 0.50 | 23,548 | 86.92% | 96.09% | 50.10% |
+| 0.65 | 22,053 | 91.21% | 89.99% | 61.28% |
+| 0.70 | 21,129 | 94.21% | 86.22% | 74.97% |
+| 0.80 | 20,812 | 95.01% | 84.93% | 79.52% |
+| **0.85** | **20,703** | **95.27%** | **84.48%** | **81.24%** |
+| 1.00 | 20,694 | 95.27% | 84.44% | 81.16% |
 
-Above 0.85 the curve is flat — only **34** names sit between 0.85 and 0.99, because **2,682**
+Above 0.85 the curve is flat — only **33** names sit between 0.85 and 0.99, because **2,655**
 of the best candidates score exactly 1.00, where the token sets are identical and the
 difference is word order or truncation rather than spelling. Below 0.70, tier-4 precision
 falls away sharply.
 
-**0.85 is the precision plateau that still leaves a queue worth reviewing: 2,716 names, 102
-of them ambiguous**, with 6,206 scoring below it. Lowering to 0.70 would add 822 names and
-cost 6.12 percentage points of tier-4 precision — a trade available on the evidence above.
+**0.85 is the precision plateau that still leaves a queue worth reviewing: 2,688 names, 75
+of them ambiguous**, with 6,195 scoring below it. Lowering to 0.70 would add 821 names and
+cost 6.27 percentage points of tier-4 precision — a trade available on the evidence above.
 
 ## A warning about the queue
 
@@ -101,13 +108,13 @@ known answers, on the corrected blocking:
 
 | Queue batch | Names | Correct | Wrong | Precision |
 |---|---:|---:|---:|---:|
-| Score 1.00, single candidate | 1,533 | 1,245 | 288 | **81.21%** |
-| Score 1.00, ambiguous | 73 | 46 | 27 | 63.01% |
-| Score 0.85–0.99 | 9 | 8 | 1 | 88.89% |
+| Score 1.00, single candidate | 1,534 | 1,246 | 288 | **81.23%** |
+| Score 1.00, ambiguous | 48 | 31 | 17 | 64.58% |
+| Score 0.85–0.99 | 8 | 8 | 0 | 100.00% |
 
-Only **42** of those 288 errors are explained by the answer being absent from the snapshot
-(`P-12`); **246 are genuine wrong matches with the correct company present in the register**.
-Precision on reachable cases is **83.50%** — roughly one in six wrong.
+Only **42** of those 288 errors are explained by the answer being absent from the matchable
+universe (`P-12`); **246 are genuine wrong matches with the correct company present in it**.
+Precision on reachable cases is **83.51%** — roughly one in six wrong.
 
 **The dominant failure mode is a public body matching a private company of the same name.** A
 government department, a passenger transport executive and a transport authority all score
@@ -118,7 +125,7 @@ That is what the review queue is for.
 
 1. **496 of the 11,593 distinct known-answer companies are absent from the Companies House
    snapshot.** No method could reach them: at most 23,883 of the 24,507 awards are reachable.
-2. **282 names are unreachable under blocking** — none of their prefix tokens appears in any
+2. **283 names are unreachable under blocking** — none of their prefix tokens appears in any
    company prefix — covering GBP 181,361,789.01 of spend. Under first-token blocking this was
    608 names and GBP 450,408,335.70, so the correction **more than halved** the blocking
    ceiling as well as removing the exclusion defect.
@@ -128,9 +135,30 @@ That is what the review queue is for.
 4. **The snapshot contains no dissolved companies**, so a supplier that has since dissolved is
    unreachable at every tier — `limitations.md` `P-16`.
 
+## The match universe — `OE` entries excluded (2026-09-20)
+
+The snapshot carries **30,199 `OE`-prefixed Register of Overseas Entities registrations**. An
+overseas entity is a foreign body recorded as owning UK land; it is not a UK company and its
+`OE` number is not a company number. Matching a supplier to one is a **register-semantics
+mismatch, not a scoring error**, so `OE` entries are excluded at candidate generation (`04`
+§3 hard rule 8).
+
+**Found on the `NEXUS` row**, where a statutory transport executive scored 1.00 against an
+overseas property registration for GBP 106,362,560.99.
+
+**The exclusion raised method resolution rather than lowering it.** Tier-2 acceptances went
+from 13,488 to **13,504**: names where a real company and an `OE` registration shared a name
+had been rejected as *ambiguous*, and removing the `OE` entry left a single candidate.
+Resolution by method rose from 58.32% to **58.43%**.
+
+**What it cost, measured before the change:** 6 names had resolved to an `OE` registration by
+exact name (GBP 543,565.40) — and **no non-`OE` company carries any of those names**, so they
+were right-entity / wrong-identifier-class rather than wrong-entity errors. They are now
+unresolved and surfaced for decision, not quietly dropped.
+
 ## What is not claimed
 
 - That the tier-4 matches are resolved. They are queued for review, with decisions blank.
-- That 95.25% applies to the spend files. It is measured on Contracts Finder awards, which
+- That 95.27% applies to the spend files. It is measured on Contracts Finder awards, which
   name suppliers in their own way.
 - That the unresolved population is small. It is reported with its count and value.

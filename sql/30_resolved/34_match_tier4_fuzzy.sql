@@ -89,7 +89,7 @@ ch AS (
     REGEXP_EXTRACT(company_name_norm, r'\s(LTD|PLC|LLP)$')                  AS name_suffix
   FROM (
     SELECT *, `portfolio-508106.portfolio_b.name_core_from_norm`(company_name_norm) AS core
-    FROM `portfolio-508106.portfolio_b.staging_companies`
+    FROM `portfolio-508106.portfolio_b.resolved_company_universe`
   )
   WHERE core IS NOT NULL
 ),

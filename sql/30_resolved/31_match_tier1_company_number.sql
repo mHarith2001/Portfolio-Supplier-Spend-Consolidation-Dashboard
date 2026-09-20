@@ -124,6 +124,6 @@ SELECT
    AND COALESCE(c.company_name_norm = n.supplier_name_norm, FALSE))       AS accepted
 FROM `portfolio-508106.portfolio_b.resolved_names` n
 JOIN cf USING (supplier_name_norm)
-LEFT JOIN `portfolio-508106.portfolio_b.staging_companies` c
+LEFT JOIN `portfolio-508106.portfolio_b.resolved_company_universe` c
   ON c.company_number = IF(cf.candidate_count = 1, cf.any_number, NULL)
 WHERE n.in_spend;

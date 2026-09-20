@@ -68,11 +68,12 @@ them inflates a total.
 
 | Table | Grain |
 |---|---|
+| `resolved_company_universe` | One matchable register entry — `staging_companies` minus 30,199 `OE` overseas-entity registrations (a view) |
 | `resolved_names` | One normalised supplier name — the matching universe, spend and `E-3` together |
 | `resolved_match_tier1`–`tier4` | One name per tier, with `accepted`, `candidate_count` and `reject_reason` |
 | `resolved_tier4_candidates` | One (name, company) pair scoring ≥ 0.5 |
 | `resolved_supplier_match` | One name, with its winning tier, method, confidence and notes |
-| `resolved_supplier_golden` | One supplier entity — 5,967 resolved + 7,394 unresolved buckets |
+| `resolved_supplier_golden` | One supplier entity — 5,970 resolved + 7,391 unresolved buckets |
 | `resolved_spend` | **Every** `staging_spend` row, carrying `row_role` and a `supplier_key` |
 
 **`resolved_spend` holds exactly as many rows and exactly the same `SUM(amount)` as
@@ -97,8 +98,8 @@ from every aggregate.
 | `dim_entity` | One publishing body | 6 |
 | `dim_date` | One day | 728 |
 | `dim_category` | One (`entity`, `expense_type_raw`) pair + `uncategorised` | 1,637 |
-| `fact_spend` | One payment line to a **resolved** supplier | 177,839 |
-| `fact_spend_unresolved` | One payment line, supplier **not** resolved | 174,689 |
+| `fact_spend` | One payment line to a **resolved** supplier | 178,216 |
+| `fact_spend_unresolved` | One payment line, supplier **not** resolved | 174,312 |
 
 **Two fact tables, one grain.** The split exists so the unresolved population is a reportable
 category rather than a silent omission. Together they are every transaction row:

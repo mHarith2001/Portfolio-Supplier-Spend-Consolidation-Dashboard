@@ -18,13 +18,13 @@ them — an unticked box is more useful than a tick that is not true.
 | # | Check | Status |
 |---|---|---|
 | `Q3.1` | Tier distribution by count **and value** | **PASS** — validation report §7.4 |
-| `Q3.2` | No tier-4 auto-merge | **PASS** — 1,431 queue rows, **no auto-accept anywhere**; 3 rows decided by hand — two accepted, one rejected, each with its basis recorded — 1,428 blank |
+| `Q3.2` | No tier-4 auto-merge | **PASS** — 1,419 queue rows, **no auto-accept anywhere**; 4 rows decided by hand — two accepted, two rejected, each with its basis recorded — 1,415 blank |
 | `Q3.3` | Ambiguity surfaced, never auto-accepted | **PASS** — `V3.6`, 0 accepted with `candidate_count > 1` |
-| `Q3.4` | Plausibility applied | **PASS at every tier** — 0 of 177,839 attributed rows precede incorporation, and since 2026-09-18 hard rule 3 also filters tier-4 candidates: **0 impossible candidates remain in the queue** |
+| `Q3.4` | Plausibility applied | **PASS at every tier** — 0 of 178,216 attributed rows precede incorporation, and since 2026-09-18 hard rule 3 also filters tier-4 candidates: **0 impossible candidates remain in the queue** |
 | `Q3.5` | Redacted population reported as a named category | **PASS** — 4 names, 31,508 rows, GBP 113,266,026.75, **0.2207%** of transaction value |
 | `Q3.6` | Precision measured and published | **PASS** — `docs/match_precision.md` |
-| `Q3.7` | Precision reported honestly | **PASS** — 95.25% overall published with tier 4's 80.88%, recall 84.50%, and four ceilings, including a figure that **fell** when blocking was corrected |
-| `Q3.8` | `name_variant_count` produces the headline | **PASS** — 14,434 vendor records → 5,967 identified suppliers + 7,394 unidentified names |
+| `Q3.7` | Precision reported honestly | **PASS** — 95.27% overall published with tier 4's 81.24%, recall 84.48%, and four ceilings, including a figure that **fell** when blocking was corrected |
+| `Q3.8` | `name_variant_count` produces the headline | **PASS** — 14,434 vendor records → 5,970 identified suppliers + 7,391 unidentified names |
 
 ### `Q3.4` — how it came to pass at every tier (2026-09-18)
 
@@ -49,7 +49,7 @@ no workbook has been built. Nothing here is claimed.
 |---|---|---|
 | `E-1` | Multi-source integration | **VERIFIED** — 6 publishers, 62 files, `V1.1` and `V2.1` reconcile to `provenance.csv` |
 | `E-2` | Entity resolution performed | **VERIFIED** — 5 tiers implemented, rules published in `04` |
-| `E-3` | **Match quality measured, not asserted** | **VERIFIED** — 95.25% precision / 84.50% recall on 24,506 known-answer awards |
+| `E-3` | **Match quality measured, not asserted** | **VERIFIED** — 95.27% precision / 84.48% recall on 24,506 known-answer awards |
 | `E-4` | Dimensional model | **VERIFIED** — `V4.2` and `V4.6` pass, grain documented per table |
 | `E-5` | **Spend restated, not altered** | **VERIFIED** — `V3.1`, `V3.2`, `V4.1`: 352,614 rows and GBP 53,886,855,841.10 preserved, difference 0.00 |
 | `E-6` | Reproducibility | **BLOCKED** — no clean-machine rebuild has been run |

@@ -33,7 +33,7 @@ WITH ch AS (
     ANY_VALUE(company_number)                      AS any_number,
     ANY_VALUE(company_status)                      AS any_status,
     ANY_VALUE(incorporation_date)                  AS any_incorporation
-  FROM `portfolio-508106.portfolio_b.staging_companies`
+  FROM `portfolio-508106.portfolio_b.resolved_company_universe`
   WHERE company_name_norm IS NOT NULL
   GROUP BY company_name_norm
 )
