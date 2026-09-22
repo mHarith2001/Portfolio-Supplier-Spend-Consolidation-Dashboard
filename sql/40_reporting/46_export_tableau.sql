@@ -74,6 +74,7 @@ SELECT
   match_tier,
   match_confidence,
   resolution_state,
+  resolution_basis,
   (NOT is_resolved
    AND (REGEXP_CONTAINS(UPPER(supplier_name), r'^(MR|MRS|MS|MISS|DR|PROF)[ .]')
         OR REGEXP_CONTAINS(supplier_name, r'@')))          AS is_individual_withheld
@@ -135,7 +136,8 @@ SELECT
   dv.vat_basis_id,
   f.amount,
   f.is_grant_in_aid,
-  f.transaction_number
+  f.transaction_number,
+  f.resolution_basis
 FROM `portfolio-508106.portfolio_b.fact_spend` f
 JOIN `portfolio-508106.portfolio_b.export_dim_supplier`    ds USING (supplier_key)
 JOIN `portfolio-508106.portfolio_b.export_dim_entity`      de USING (entity)

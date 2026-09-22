@@ -111,7 +111,7 @@ GBP 273,975,883.60 to make a date range look tidy.
 | Transaction value | GBP 51,330,259,095.38 |
 | Excluded non-payment value | GBP 2,556,596,745.72 |
 | In-window transactions | 289,950 (+ 24 annex duplicates + 16 out-of-scope section rows = 289,990) |
-| Vendor spellings → identified suppliers | 14,434 → 5,970, plus 7,391 unidentified names |
+| Vendor spellings → identified suppliers | 14,434 → 5,970, plus 7,336 unidentified names |
 
 ---
 
@@ -122,10 +122,52 @@ GBP 273,975,883.60 to make a date range look tidy.
   1.00 with a single candidate — is correct **81.23%** of the time. Bulk-accepting it would
   be wrong about one time in six.
 - **That 58.43% is a good resolution rate or a bad one.** It is the method's measured rate for
-  these six publishers against this snapshot. Human review adds 2.38% so far, reported
-  separately, for 60.81% in total.
-- **That the unresolved population is small.** It is 39.30% of transaction value, reported
+  these six publishers against this snapshot. User review adds 2.38% and delegated review
+  0.0021% so far, each reported separately, for 60.81% in total.
+- **That the unresolved population is small.** It is 39.19% of transaction value, reported
   with its reasons and its value.
 - **That any named supplier has done anything wrong.** This is payment-line data.
   Concentration and variance are legitimate readings; impropriety is not supported by spend
   data alone.
+
+---
+
+## 6. Open human-review register (from 2026-09-22)
+
+Tier-4 fuzzy matches and demoted tier-1 matches are **never resolved by the method**. They are
+queued for a human decision, and the queue is worked by value under a tiered protocol. What
+remains open is a limitation of this build, not a finding about the suppliers, and it is
+published as such.
+
+| Tier | Band | How it is decided | Open rows | Open value (GBP) |
+|---|---|---|---:|---:|
+| **A** | ≥ GBP 10m | Per-row user decision | 14 | 306,479,966.62 |
+| **B** | GBP 100k – < 10m | User-approved evidence batches | 403 | 362,810,394.71 |
+| **C** | < GBP 100k | Delegated to the builder on established evidence classes | 874 | 16,784,662.85 |
+| **Total** | | | **1,291** | **686,075,024.18** |
+
+**Decided so far: 60.** 5 by the user (2 accepted, 3 rejected) and 55 by the builder under the
+Tier C authorisation (all accepted, all on the same-payer-bridge class, each reviewed
+individually). Every decision is recorded with its basis and is published in
+`review_queue.csv`; a user decision always overrides a delegated one.
+
+**How much the open queue could move the headline, and how little it can.** Resolution by
+method is **58.43%**. The open queue holds GBP 686,075,024.18 — **1.34%** of transaction value.
+Even if every open row were eventually accepted, the resolution rate could rise by at most that
+much. Most of the unresolved 39.19% is not in the queue at all: it is `no_match` and
+`below_threshold` names that no candidate reaches.
+
+**Three ceilings sit under the open queue:**
+
+- **Evidence is unevenly available by payer.** The payer's own award notices are a decisive
+  evidence class, but only three of the six publishers state company numbers in Contracts
+  Finder. **DfT has no awards in this extract; Bristol and Manchester state no company number
+  on any award.** Rows paid by those three cannot be corroborated that way.
+- **The register records previous company names, and matching does not use them.** Hard rule 6
+  compares a buyer's number to the company's **current** name. For **53 demoted rows**, the
+  supplier's name is the company's **own earlier registered name**. That evidence is measured
+  and proposed, not applied — a new evidence class is a user decision.
+- **Public bodies do not all lack company numbers.** Some government-owned bodies are
+  registered companies (National Highways Limited is one), so "looks like a public body" is
+  not a safe structural reason to reject. It is used only on a per-row decision, never as a
+  delegated rule.

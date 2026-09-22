@@ -14,6 +14,12 @@
 --     with the reasoning rather than just with the outcome;
 --   * `git log` shows who decided what and when, which a spreadsheet does not.
 --
+-- WHO DECIDED. Every row here is a USER decision (decided_by = 'user'). Decisions
+-- the builder takes under the standing Tier C authorisation live in a separate
+-- file, 39_queue_delegated_decisions.sql, with decided_by = 'builder (Tier C)',
+-- and a user decision on the same name always takes precedence over a delegated
+-- one. The two are never merged, so a reader can always tell them apart.
+--
 -- HOW A DECISION TAKES EFFECT (from 2026-09-18, row 2).
 --   rejected  -> the name stays unresolved; the decision is shown in the queue.
 --   accepted  -> 35 resolves the name to the candidate, with match_confidence
@@ -30,7 +36,7 @@
 -- beyond the score -- a score alone is wrong about one time in six at 1.00.
 
 CREATE OR REPLACE TABLE `portfolio-508106.portfolio_b.resolved_queue_decisions` AS
-SELECT * FROM UNNEST([
+SELECT *, 'user' AS decided_by FROM UNNEST([
   STRUCT(
     'GREAT WESTERN RAILWAY'                     AS supplier_name_norm,
     '01759457'                                  AS candidate_company_number,
@@ -100,5 +106,23 @@ SELECT * FROM UNNEST([
       'for NEXUS. Score 1.00 against 99 rivals at 0.50 counts for nothing against ',
       'that: the class it belongs to is measured at 81.21% precision. This row ',
       'also prompted the OE class exclusion (30_match_universe.sql).')
+  ),
+  STRUCT(
+    'CABINET OFFICE',
+    '05756325',
+    'rejected',
+    DATE '2026-09-22',
+    CONCAT(
+      'Evidence contradicts the score, on four independent counts. SIX public ',
+      'bodies pay this name -- MOJ, HMRC, DfT and the York, Bristol and ',
+      'Manchester councils -- which is not the payment pattern of a single small ',
+      'company. The candidate 05756325 THE CABINET OFFICE LTD is a private ',
+      'company in Derbyshire, SIC 82990 other business support, incorporated ',
+      '2006; the Cabinet Office is a government department. The payer names the ',
+      'real body itself: DfT separately pays Cabinet Office (GPA), the ',
+      'Government Property Agency, GBP 17,386,508.52. And Contracts Finder names ',
+      'the Cabinet Office as SUPPLIER on 9 awards with no company number on any ',
+      'of them. The fourth instance of the documented failure mode: a public ',
+      'body scoring 1.00 against a private company of the same name.')
   )
 ]);

@@ -335,8 +335,9 @@ FROM `portfolio-508106.portfolio_b.resolved_match_tier1`;
 SELECT
   CASE
     WHEN m.is_resolved AND m.match_confidence != 'reviewed' THEN '1 METHOD — tiers 1-3, by rule'
-    WHEN m.is_resolved                                      THEN '2 REVIEWED — accepted on a recorded decision'
-    ELSE                                          '3 UNRESOLVED'
+    WHEN m.is_resolved AND m.review_decided_by = 'user'     THEN '2 REVIEWED BY USER — per-row decision'
+    WHEN m.is_resolved                                      THEN '3 REVIEWED BY BUILDER — Tier C, delegated'
+    ELSE                                                         '4 UNRESOLVED'
   END                                                           AS basis,
   COUNT(DISTINCT m.supplier_name_norm)                          AS supplier_names,
   COUNT(*)                                                      AS transaction_rows,
@@ -359,7 +360,7 @@ ORDER BY basis;
 --     working, not the decision leaking)
 -- D.4 'reviewed' confidence exists only where an accept exists
 
-WITH d AS (SELECT * FROM `portfolio-508106.portfolio_b.resolved_queue_decisions`),
+WITH d AS (SELECT * FROM `portfolio-508106.portfolio_b.resolved_queue_all_decisions`),
 m AS (SELECT * FROM `portfolio-508106.portfolio_b.resolved_supplier_match`)
 SELECT
   (SELECT COUNT(*) FROM d)                                                        AS decisions,
@@ -381,3 +382,42 @@ SELECT
      AND (SELECT COUNT(*) FROM m LEFT JOIN d USING (supplier_name_norm)
            WHERE m.match_confidence = 'reviewed' AND COALESCE(d.decision, '') != 'accepted') = 0,
      'PASS', 'FAIL  <-- HARD') AS d1_d4;
+
+-- ===========================================================================
+-- D.5-D.8  Delegated (Tier C) decisions stay inside their authorisation  HARD
+-- ===========================================================================
+-- D.5 every delegated decision is on a Tier C name (total spend < GBP 100k) --
+--     the authorisation covers that band and nothing above it
+-- D.6 every delegated ACCEPT rests on an accept class (corroboration / payer
+--     records) and every delegated REJECT on a structural class
+-- D.7 one decision in force per name -- a user decision and a delegated one on
+--     the same name can both exist, but only the user's may apply
+-- D.8 every delegated decision states its basis in words, not only a class code
+
+WITH dd AS (SELECT * FROM `portfolio-508106.portfolio_b.resolved_queue_delegated`),
+sp AS (
+  SELECT supplier_name_norm, SUM(amount) AS total_spend
+  FROM `portfolio-508106.portfolio_b.resolved_spend`
+  WHERE row_role = 'transaction'
+  GROUP BY supplier_name_norm
+),
+v AS (SELECT * FROM `portfolio-508106.portfolio_b.resolved_queue_all_decisions`)
+SELECT
+  (SELECT COUNT(*) FROM dd)                                                      AS delegated_decisions,
+  (SELECT COUNTIF(decision = 'accepted') FROM dd)                                AS delegated_accepts,
+  (SELECT COUNTIF(decision = 'rejected') FROM dd)                                AS delegated_rejects,
+  (SELECT COUNT(*) FROM dd LEFT JOIN sp USING (supplier_name_norm)
+    WHERE sp.total_spend IS NULL OR sp.total_spend >= 100000)                    AS outside_tier_c,
+  (SELECT COUNT(*) FROM dd
+    WHERE NOT ((decision = 'accepted' AND STARTS_WITH(evidence_class, 'ACCEPT-'))
+            OR (decision = 'rejected' AND STARTS_WITH(evidence_class, 'REJECT-')))) AS wrong_class_for_decision,
+  (SELECT COUNT(*) - COUNT(DISTINCT supplier_name_norm) FROM v)                  AS names_with_two_decisions_in_force,
+  (SELECT COUNTIF(decision_note IS NULL OR LENGTH(decision_note) < 40) FROM dd)  AS delegated_without_basis,
+  IF((SELECT COUNT(*) FROM dd LEFT JOIN sp USING (supplier_name_norm)
+       WHERE sp.total_spend IS NULL OR sp.total_spend >= 100000) = 0
+     AND (SELECT COUNT(*) FROM dd
+       WHERE NOT ((decision = 'accepted' AND STARTS_WITH(evidence_class, 'ACCEPT-'))
+               OR (decision = 'rejected' AND STARTS_WITH(evidence_class, 'REJECT-')))) = 0
+     AND (SELECT COUNT(*) - COUNT(DISTINCT supplier_name_norm) FROM v) = 0
+     AND (SELECT COUNTIF(decision_note IS NULL OR LENGTH(decision_note) < 40) FROM dd) = 0,
+     'PASS', 'FAIL  <-- HARD') AS d5_d8;

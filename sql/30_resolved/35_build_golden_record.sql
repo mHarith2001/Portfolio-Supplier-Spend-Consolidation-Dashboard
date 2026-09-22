@@ -63,14 +63,15 @@ base AS (
     t4.candidate_count                    AS t4_cnt,
     d.decision                            AS d_decision,
     d.candidate_company_number            AS d_num,
-    d.decided_on                          AS d_date
+    d.decided_on                          AS d_date,
+    d.decided_by                          AS d_by
   FROM spend_names n
   LEFT JOIN redacted_names r USING (supplier_name_norm)
   LEFT JOIN `portfolio-508106.portfolio_b.resolved_match_tier1` t1 USING (supplier_name_norm)
   LEFT JOIN `portfolio-508106.portfolio_b.resolved_match_tier2` t2 USING (supplier_name_norm)
   LEFT JOIN `portfolio-508106.portfolio_b.resolved_match_tier3` t3 USING (supplier_name_norm)
   LEFT JOIN `portfolio-508106.portfolio_b.resolved_match_tier4` t4 USING (supplier_name_norm)
-  LEFT JOIN `portfolio-508106.portfolio_b.resolved_queue_decisions` d USING (supplier_name_norm)
+  LEFT JOIN `portfolio-508106.portfolio_b.resolved_queue_all_decisions` d USING (supplier_name_norm)
 ),
 -- A human accept takes effect ONLY for the exact company that was approved. If a
 -- rebuild changes the tier-4 candidate, the old decision is stale and is NOT
@@ -166,7 +167,9 @@ SELECT
   -- dim_supplier all read this column rather than re-deriving it.
   (NOT is_redacted_name AND (t1_ok OR t2_ok OR t3_ok
                              OR COALESCE(t4_accepted, FALSE) OR COALESCE(t1_reviewed, FALSE))) AS is_resolved,
-  COALESCE(stale_accept, FALSE)                                    AS has_stale_decision
+  COALESCE(stale_accept, FALSE)                                    AS has_stale_decision,
+  -- who took the decision in force on this name: 'user' or 'builder (Tier C)'
+  d_by                                                             AS review_decided_by
 FROM judged;
 
 -- ===========================================================================

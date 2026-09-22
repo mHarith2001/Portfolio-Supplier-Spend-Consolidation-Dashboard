@@ -684,14 +684,14 @@ still resolved. The remaining **205 enter the review queue**.
 
 ### 7.8 The review queue — `docs/review_queue.csv`
 
-**1,420 rows, highest value first**: 1,215 tier-4 candidates, 204 demoted tier-1 names, and
+**1,351 rows, one per name, highest value first** (§7.15) — superseding the counts below: 1,215 tier-4 candidates, 204 demoted tier-1 names, and
 1 decided name whose candidate was later withdrawn from matching (§7.14). Per `04` §8, plus `queue_reason` — because a reviewer looking at a row with no
 `match_score` needs to know it arrived by demotion rather than by similarity — and, since
 2026-09-18, `decision`, `decision_note` and `decided_on`.
 
 **Decisions are recorded in `sql/30_resolved/38_queue_decisions.sql` as literals under
 version control**, and joined in by the generator, so regenerating the queue never loses
-them and every decision carries its reason. **Four rows are decided so far** (§7.10–§7.13), and a decided row stays in the queue; the rest
+them and every decision carries its reason. **Sixty rows are decided so far** — five by the user (§7.10–§7.13), fifty-five delegated (§7.15) — and a decided row stays in the queue; the rest
 are blank, which remains the honest presentation.
 
 The first row is `GREAT WESTERN RAILWAY` → `GREAT WESTERN RAILWAY LIMITED`, score 1.00,
@@ -974,6 +974,59 @@ carrying the company from the **decision record** rather than from a candidate t
 longer offers one. Verified after regeneration: **1,420 rows, 4 of 4 decisions published, 0
 empty labels.** `NEXUS` reads `decided; candidate withdrawn from matching` — which is what
 actually happened to it.
+
+### 7.15 The tiered protocol, the first delegated batch, and three things it exposed (2026-09-22)
+
+**Row 5 rejected by the user:** `CABINET OFFICE` → `05756325`. Six public bodies pay the name,
+the candidate is a Derbyshire business-support company, DfT separately pays
+`Cabinet Office (GPA)`, and Contracts Finder names the Cabinet Office as supplier on 9 awards
+with no company number on any.
+
+**1. The queue double-counted 69 names.** A name both demoted at tier 1 and carrying a tier-4
+candidate satisfied both queue routes and appeared twice. The protocol was sized on those
+counts. One row per name now: **1,351 rows**, and where both routes fire the row says whether
+they **AGREE** (51 names) or **CONFLICT** (18), keeping the buyer's company in
+`alternative_company_number`.
+
+| Tier | Band | Open rows | Open value (GBP) |
+|---|---|---:|---:|
+| A | ≥ GBP 10m | 14 | 306,479,966.62 |
+| B | GBP 100k – < 10m | 403 | 362,810,394.71 |
+| C | < GBP 100k | 874 | 16,784,662.85 |
+
+**2. The first delegated batch: 55 Tier C accepts, every one reviewed.** Detectors ran only the
+established classes. Of 929 Tier C rows: **55 accepted** on the same-payer bridge (the payer
+writes the supplier with and without a legal suffix, and the suffixed spelling resolves by rule
+to the same company), **11 escalated** (10 conflicts, 1 ambiguous), and **863 left open** — no
+established class reaches them. Every accept was read before it was frozen as a literal in
+`39_queue_delegated_decisions.sql`. New controls `D.5`–`D.8` hold them inside the authorisation:
+0 outside Tier C, 0 on the wrong class, 0 names with two decisions in force, 0 without a
+written basis.
+
+**3. Basis belongs on the payment, not the supplier.** `dim_supplier.resolution_basis` read
+`method` for **every** resolved entity, because accepted short spellings join companies already
+reached by rule through a longer spelling. The dashboard would have shown GBP 1.2bn attributed
+on user decisions as method. `fact_spend.resolution_basis` now records who stands behind each
+payment row:
+
+| Basis | Rows | Value (GBP) | % of value |
+|---|---:|---:|---:|
+| Method — tiers 1–3, by rule | 175,847 | 29,992,021,161.30 | 58.43% |
+| User review | 2,369 | 1,219,464,513.44 | 2.38% |
+| Delegated review — Tier C | 238 | 1,103,498.71 | 0.0021% |
+| **Total resolved** | **178,454** | **31,212,589,173.45** | **60.81%** |
+
+The row-level split reconciles exactly with the name-level split in `93`, and `V4.1` and
+`V4.6` still pass after the new join.
+
+**A finding for the handler — the register records previous names, and matching ignores them.**
+Tier A row 1, `LENDLEASE CONSTRUCTION EUROPE LTD`, was demoted because `00467006` is registered
+as `BOVIS CONSTRUCTION (EUROPE) LIMITED`. The register's own history shows it was **LENDLEASE
+CONSTRUCTION (EUROPE) LIMITED until 2025-04-01** — covering every payment, 2024-03-18 to
+2025-02-21. Across the open queue, **67 rows (GBP 90,896,550.91)** carry a supplier name equal
+to a previous registered name of their candidate, **53 of them demoted tier-1 rows**. Hard rule 6
+compares only against the current name. A new evidence class is the handler's decision, so it
+is measured and proposed, not applied.
 
 ---
 

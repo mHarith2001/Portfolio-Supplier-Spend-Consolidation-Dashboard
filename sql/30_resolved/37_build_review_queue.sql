@@ -17,6 +17,13 @@
 -- honest presentation -- it shows the work a production implementation would
 -- require without pretending it was done.
 
+-- From 2026-09-22 this builds a TABLE, so the tiered protocol can be queried and
+-- controlled; scripts/07_export_outputs.ps1 writes the CSV from it, ordered.
+--
+-- review_tier follows the protocol ruled 2026-09-22, on the name's total
+-- transaction spend: A >= GBP 10m, B >= GBP 100k, C below.
+
+CREATE OR REPLACE TABLE `portfolio-508106.portfolio_b.resolved_review_queue` AS
 WITH spend AS (
   SELECT supplier_name_norm, ROUND(SUM(amount), 2) AS total_spend
   FROM `portfolio-508106.portfolio_b.resolved_spend`
@@ -45,25 +52,21 @@ t1 AS (
   FROM `portfolio-508106.portfolio_b.resolved_match_tier1`
   WHERE reject_reason = 'register_name_disagrees'
 ),
-q_open AS (
+t4b AS (
   SELECT
     m.supplier_name_norm,
     m.review_candidate_name        AS candidate_company_name,
     m.matched_company_number       AS candidate_company_number,
     m.match_score,
-    m.candidate_count,
-    'tier 4 fuzzy'                 AS queue_reason
+    m.candidate_count
   FROM m WHERE m.match_tier = 4
-
-  UNION ALL
-
+),
+t1b AS (
   SELECT
     t1.supplier_name_norm,
-    c.company_name,
+    c.company_name                 AS candidate_company_name,
     t1.candidate_company_number,
-    CAST(NULL AS FLOAT64),
-    t1.candidate_count,
-    'tier 1 demoted: register name disagrees'
+    t1.candidate_count
   FROM t1
   JOIN m USING (supplier_name_norm)
   LEFT JOIN `portfolio-508106.portfolio_b.staging_companies` c
@@ -74,8 +77,39 @@ q_open AS (
   -- LOG, not only the to-do list: a name stays if it is still open OR if a
   -- decision has been recorded against it. (Found 2026-09-20 on row 3.)
   WHERE m.match_tier >= 4
-     OR EXISTS (SELECT 1 FROM `portfolio-508106.portfolio_b.resolved_queue_decisions` dd
+     OR EXISTS (SELECT 1 FROM `portfolio-508106.portfolio_b.resolved_queue_all_decisions` dd
                  WHERE dd.supplier_name_norm = t1.supplier_name_norm)
+),
+-- ONE ROW PER NAME. Until 2026-09-22 the two branches were UNIONed, so a name
+-- that was BOTH demoted at tier 1 AND had a tier-4 candidate appeared twice: 69
+-- names, double-counted in every published queue count and value, including the
+-- tier sizes the review protocol was ruled on. The branches are now JOINED, and
+-- when both fire they say something the separate rows hid:
+--   * same company from both routes -> the fuzzy score and the buyer's statement
+--     independently agree, which is evidence, and is labelled as such;
+--   * different companies           -> a genuine conflict, labelled CONFLICT, with
+--     the buyer's company kept in alternative_company_number rather than dropped.
+q_open AS (
+  SELECT
+    COALESCE(a.supplier_name_norm, b.supplier_name_norm)             AS supplier_name_norm,
+    COALESCE(a.candidate_company_name, b.candidate_company_name)     AS candidate_company_name,
+    COALESCE(a.candidate_company_number, b.candidate_company_number) AS candidate_company_number,
+    a.match_score,
+    COALESCE(a.candidate_count, b.candidate_count)                   AS candidate_count,
+    CASE
+      WHEN a.supplier_name_norm IS NOT NULL AND b.supplier_name_norm IS NOT NULL
+           AND a.candidate_company_number = b.candidate_company_number
+        THEN 'tier 4 fuzzy and tier 1 buyer statement AGREE'
+      WHEN a.supplier_name_norm IS NOT NULL AND b.supplier_name_norm IS NOT NULL
+        THEN 'CONFLICT: tier 4 and tier 1 name different companies'
+      WHEN a.supplier_name_norm IS NOT NULL
+        THEN 'tier 4 fuzzy'
+      ELSE 'tier 1 demoted: register name disagrees'
+    END                                                              AS queue_reason,
+    IF(a.candidate_company_number != b.candidate_company_number,
+       b.candidate_company_number, NULL)                             AS alternative_company_number
+  FROM t4b a
+  FULL OUTER JOIN t1b b USING (supplier_name_norm)
 ),
 -- EVERY DECISION APPEARS, WHATEVER HAPPENED TO ITS CANDIDATE AFTERWARDS.
 -- The two branches above list names that are OPEN. A decided name usually also
@@ -95,8 +129,9 @@ q_decided AS (
     d.candidate_company_number,
     CAST(NULL AS FLOAT64)          AS match_score,
     1                              AS candidate_count,
-    'decided; candidate withdrawn from matching' AS queue_reason
-  FROM `portfolio-508106.portfolio_b.resolved_queue_decisions` d
+    'decided; candidate withdrawn from matching' AS queue_reason,
+    CAST(NULL AS STRING)           AS alternative_company_number
+  FROM `portfolio-508106.portfolio_b.resolved_queue_all_decisions` d
   LEFT JOIN `portfolio-508106.portfolio_b.staging_companies` c
     ON c.company_number = d.candidate_company_number
   WHERE d.supplier_name_norm NOT IN (SELECT supplier_name_norm FROM q_open)
@@ -117,11 +152,16 @@ SELECT
   COALESCE(d.decision, '')      AS decision,
   COALESCE(d.decision_note, '') AS decision_note,
   CAST(d.decided_on AS STRING)  AS decided_on,
-  q.queue_reason
+  q.queue_reason,
+  q.alternative_company_number,
+  CASE WHEN s.total_spend >= 10000000 THEN 'A'
+       WHEN s.total_spend >= 100000   THEN 'B'
+       ELSE 'C' END                 AS review_tier,
+  COALESCE(d.decided_by, '')      AS decided_by,
+  COALESCE(d.evidence_class, '')  AS evidence_class
 FROM q
 JOIN spend s USING (supplier_name_norm)
 LEFT JOIN raw_name r
   ON r.supplier_name_norm = q.supplier_name_norm
-LEFT JOIN `portfolio-508106.portfolio_b.resolved_queue_decisions` d
-  ON d.supplier_name_norm = q.supplier_name_norm
-ORDER BY s.total_spend DESC;
+LEFT JOIN `portfolio-508106.portfolio_b.resolved_queue_all_decisions` d
+  ON d.supplier_name_norm = q.supplier_name_norm;

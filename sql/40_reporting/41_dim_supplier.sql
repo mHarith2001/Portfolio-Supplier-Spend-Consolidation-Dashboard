@@ -30,7 +30,10 @@ WITH tier AS (
     -- confidence of the STRONGEST evidence reaching the entity, not a mapping
     -- from tier: a tier-4 accept is 'reviewed', which no tier number expresses
     ARRAY_AGG(match_confidence ORDER BY match_tier, match_confidence LIMIT 1)[OFFSET(0)]
-                                                             AS match_confidence
+                                                             AS match_confidence,
+    LOGICAL_OR(is_resolved AND match_confidence != 'reviewed')              AS any_method,
+    LOGICAL_OR(is_resolved AND match_confidence = 'reviewed'
+               AND review_decided_by = 'user')                             AS any_user_review
   FROM `portfolio-508106.portfolio_b.resolved_supplier_match`
   GROUP BY supplier_key
 )
@@ -52,6 +55,17 @@ SELECT
     WHEN g.unresolved_reason = 'review'    THEN 'Awaiting review'
     WHEN g.unresolved_reason = 'redacted'  THEN 'Redacted at source'
     ELSE                                        'Unresolved'
-  END                               AS resolution_state
+  END                               AS resolution_state,
+  -- The STRONGEST evidence reaching the ENTITY: method, then user review, then
+  -- delegated. This is an entity-level fact and it usually reads 'method', because
+  -- an accepted short spelling tends to join a company already reached by rule.
+  -- The basis for each PAYMENT is on fact_spend.resolution_basis, which is where
+  -- a reader must look to see money attributed on a human decision.
+  CASE
+    WHEN NOT g.is_resolved THEN 'unresolved'
+    WHEN t.any_method      THEN 'method'
+    WHEN t.any_user_review THEN 'user_review'
+    ELSE                        'delegated_review'
+  END                               AS resolution_basis
 FROM `portfolio-508106.portfolio_b.resolved_supplier_golden` g
 LEFT JOIN tier t USING (supplier_key);

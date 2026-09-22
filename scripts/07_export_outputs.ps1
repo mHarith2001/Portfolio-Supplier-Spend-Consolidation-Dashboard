@@ -37,8 +37,9 @@ foreach ($t in $tables) {
 }
 
 # The review queue is a published artefact too, so it is produced HERE rather than
-# by hand. Its order is set inside 37 (highest value first).
-cmd /c "bq query --use_legacy_sql=false --format=csv --max_rows=100000 < sql\30_resolved\37_build_review_queue.sql > docs\review_queue.csv" 2>$null
+# by hand. 37 builds it as a table; the order is set here: highest value first,
+# name as tie-break so equal values cannot reorder between runs.
+cmd /c "bq query --use_legacy_sql=false --format=csv --max_rows=100000 ""SELECT * FROM $Project.$Dataset.resolved_review_queue ORDER BY total_spend DESC, supplier_name_norm"" > docs\review_queue.csv" 2>$null
 if ($LASTEXITCODE -ne 0) { throw 'export failed: review_queue' }
 '{0,-24} {1,9:N0} rows' -f 'review_queue', ((Get-Content docs\review_queue.csv | Measure-Object -Line).Lines - 1)
 
