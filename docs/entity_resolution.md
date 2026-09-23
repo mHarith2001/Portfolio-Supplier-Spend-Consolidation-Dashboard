@@ -1,11 +1,11 @@
 # Entity resolution — how a supplier name becomes a supplier
 
-The intellectual core of this project. Every figure measured 2026-09-18.
+The intellectual core of this project. Figures measured 2026-09-18; resolution, tier and queue figures re-measured 2026-09-24.
 
 ## The problem
 
 Six public bodies publish spend independently. **14,434 distinct raw vendor spellings**
-appear across their files. They describe **at most 5,983 identified companies plus 7,299
+appear across their files. They describe **at most 6,012 identified companies plus 7,255
 names that could not be identified**. One supplier alone is spelled **16** different ways.
 
 Nobody can answer "how much did the public sector pay this company?" until those spellings
@@ -29,12 +29,12 @@ first or conflate the second.
 | Tier | Method | Confidence | Names | Value (GBP) |
 |---|---|---|---:|---:|
 | 1 | Company number, bridged via a Contracts Finder award | high | 1,172 | 3,981,459,526.06 |
-| 1 | …demoted, then accepted on recorded review | **reviewed** | 1 | 349,037,030.64 |
+| 1 | …demoted, then accepted on recorded review | **reviewed** | 64 | 449,368,609.99 |
 | 2 | Exact normalised name against Companies House | high | 4,758 | 15,846,552,637.36 |
 | 3 | Name core + postcode | medium | 54 | 10,164,008,997.88 |
-| 4 | Token-set similarity ≥ 0.85 on the core | **review**; resolves only on a recorded human accept | 1,214 | 2,216,774,873.40 |
-| 4 | …accepted on recorded review | **reviewed** | 1 | 870,427,482.80 |
-| 5 | Unresolved, with a stated reason | none | 6,177 | 17,901,998,547.24 |
+| 4 | Token-set similarity ≥ 0.85 on the core | **review**; resolves only on a recorded human accept | 1,120 | 2,185,636,253.41 |
+| 4 | …accepted on recorded review | **reviewed** | 74 | 888,885,190.32 |
+| 5 | Unresolved, with a stated reason | none | 6,135 | 17,814,347,880.36 |
 
 **Tier 1 is a bridge, not a lookup.** Spend files carry no company numbers. A spend supplier
 reaches a buyer-stated number only where its normalised name equals a Contracts Finder name
@@ -47,9 +47,9 @@ data: publishers truncate and reorder supplier names far more often than they mi
 
 **Resolution by method is tiers 1–3: 5,984 names, GBP 29,992,021,161.30 — 58.43% of transaction
 value.** Human review adds tier-4 names accepted on a recorded decision, reported
-**separately** so one kind of evidence never borrows the other's credibility: so far 29 names by
-the user, GBP 1,289,774,240.94 (2.51%), and 65 names by the builder under the Tier C
-authorisation, GBP 1,295,348.75 (0.0025%) — **60.94% in total**.
+**separately** so one kind of evidence never borrows the other's credibility: so far 73 names by
+the user, GBP 1,336,958,451.56 (2.60%), and 65 names by the builder under the Tier C
+authorisation, GBP 1,295,348.75 (0.0025%) — **61.04% in total**.
 
 ## Eight hard rules
 
@@ -58,7 +58,10 @@ authorisation, GBP 1,295,348.75 (0.0025%) — **60.94% in total**.
    beyond the score, and only for the exact company approved — a rebuild that changes the
    candidate makes the decision stale, and it is not carried across.
 2. **`candidate_count > 1` is never accepted at any tier.** A name matching three active
-   companies is not resolved because one was returned first.
+   companies is not resolved because one was returned first. **Two scoped exceptions, both user
+   decisions (2026-09-24):** `S J ENGINEERING` and `INTERNATIONAL MOTORS` tie at 1.00 through word
+   order, and the payer's own other spelling of each resolves by rule to one of the two. The user
+   authorised those two names and no others; control `D.10` fails on any other reviewed accept of a tie.
 3. **No match where the payment precedes incorporation.** Applied at every tier — tier 4
    included, since 2026-09-18.
 4. **Redacted names never enter matching.** They go straight to tier 5, reason `redacted`.
@@ -108,7 +111,8 @@ precision plateau begins; below 0.70, tier-4 precision collapses.
 **1,351 rows, one per name, highest value first** (`review_queue.csv`). Worked by value in
 three tiers: A (≥ GBP 10m) per-row by the user, B (GBP 100k–10m) in user-approved evidence
 batches, C (< GBP 100k) delegated to the builder where the evidence fits an established
-class. **97 decided** — 32 by the user, 65 delegated — and **1,254 open**, GBP 615,573,446.64.
+class. **145 decisions recorded** — 80 by the user, 65 delegated — and **1,209 rows open**, GBP 523,066,032.95,
+including 3 the user reviewed and ruled left open.
 Three evidence classes may support an accept: the same-payer bridge, the payer's own awards, and (from 2026-09-23) the register's **previous names**, cited only where the payer's spelling is the company's registered name for the whole period it was paid. **A decided row stays in the queue**: it is the
 decision log, not only the to-do list.
 

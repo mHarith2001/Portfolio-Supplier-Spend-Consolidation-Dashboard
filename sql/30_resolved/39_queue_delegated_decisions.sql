@@ -118,8 +118,12 @@ FROM UNNEST(ARRAY<STRUCT<
 -- One view of every decision in force. 35, 37 and 93 read this, never the two
 -- tables directly, so precedence is defined in exactly one place.
 CREATE OR REPLACE VIEW `portfolio-508106.portfolio_b.resolved_queue_all_decisions` AS
+-- A user decision's class is the one its basis cites ('ACCEPT-... (the ...'), so D.9
+-- checks a user's previous-name accept exactly as it checks a delegated one. A basis
+-- citing no class stays 'user_review'. (2026-09-24)
 SELECT supplier_name_norm, candidate_company_number, decision, decided_on,
-       'user_review' AS evidence_class, decision_note, decided_by
+       COALESCE(REGEXP_EXTRACT(decision_note, r'((?:ACCEPT|REJECT)-[A-Z-]+) \(the'), 'user_review') AS evidence_class,
+       decision_note, decided_by
 FROM `portfolio-508106.portfolio_b.resolved_queue_decisions`
 UNION ALL
 SELECT supplier_name_norm, candidate_company_number, decision, decided_on,

@@ -366,6 +366,7 @@ SELECT
   (SELECT COUNT(*) FROM d)                                                        AS decisions,
   (SELECT COUNTIF(decision = 'accepted') FROM d)                                  AS accepted,
   (SELECT COUNTIF(decision = 'rejected') FROM d)                                  AS rejected,
+  (SELECT COUNTIF(decision = 'left_open') FROM d)                                 AS left_open,
   (SELECT COUNT(*) FROM d LEFT JOIN m USING (supplier_name_norm)
     WHERE m.supplier_name_norm IS NULL)                                           AS orphan_decisions,
   (SELECT COUNTIF(has_stale_decision) FROM m)                                     AS stale_decisions,
@@ -445,3 +446,22 @@ SELECT
        AND e.company_number     = d.candidate_company_number
       WHERE d.evidence_class = 'ACCEPT-PREVIOUS-NAME' AND e.supplier_name_norm IS NULL) = 0,
      'PASS', 'FAIL  <-- HARD') AS d9;
+
+-- ===========================================================================
+-- D.10  a TIED candidate is accepted only where the user authorised it by name HARD
+-- ===========================================================================
+-- Hard rule 2: candidate_count > 1 blocks acceptance. On 2026-09-24 the user
+-- authorised a scoped override -- two names, each tie resolved on same-payer
+-- evidence (38). Any OTHER reviewed accept of a tied candidate, or either of the
+-- two decided by anyone but the user, fails here.
+
+SELECT
+  COUNTIF(match_confidence = 'reviewed' AND candidate_count > 1)            AS reviewed_tie_accepts,
+  COUNTIF(match_confidence = 'reviewed' AND candidate_count > 1
+          AND NOT (review_decided_by = 'user'
+                   AND supplier_name_norm IN ('S J ENGINEERING', 'INTERNATIONAL MOTORS'))) AS unauthorised,
+  IF(COUNTIF(match_confidence = 'reviewed' AND candidate_count > 1
+             AND NOT (review_decided_by = 'user'
+                      AND supplier_name_norm IN ('S J ENGINEERING', 'INTERNATIONAL MOTORS'))) = 0,
+     'PASS', 'FAIL  <-- HARD') AS d10
+FROM `portfolio-508106.portfolio_b.resolved_supplier_match`;

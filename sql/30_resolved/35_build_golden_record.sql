@@ -154,6 +154,8 @@ SELECT
                            CAST(d_date AS STRING), ' - basis in 38_queue_decisions.sql'), NULL),
     IF(d_decision = 'rejected', CONCAT('tier 4 candidate REJECTED on recorded human review, ',
                                        CAST(d_date AS STRING)), NULL),
+    IF(d_decision = 'left_open', CONCAT('LEFT OPEN on recorded human review, ', CAST(d_date AS STRING),
+                                        ' - the evidence does not separate the candidates'), NULL),
     IF(stale_accept, 'STALE DECISION: the accepted company is no longer the tier-4 candidate - not applied', NULL)
   ]) x WHERE x IS NOT NULL), ' | ')                                AS resolution_notes,
   CASE WHEN is_redacted_name                                  THEN 'redacted'

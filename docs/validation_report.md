@@ -1078,6 +1078,47 @@ All `V3`, `V4` and `D.1`–`D.9` controls pass: 97 decisions (94 accepted, 3 rej
 95.27%, tier 4 81.24%. **`07` §8 sections 2 and 3 were signed off by the user** and recorded in
 the checklist with a dated backup.
 
+
+### 7.17 Tier A row 2, the batch-2 escalations, batch 3, and a scoped hard-rule-2 override (2026-09-24)
+
+**48 user decisions applied, generated from the two approved documents rather than re-typed**:
+Tier A row 2 rejected (`MERSEYTRAVEL` — the payer renamed the payee mid-window to a combined
+authority, which has no company number; the only candidate is a non-trading company), 16
+batch-2 accepts, 3 batch-2 names **left open**, 27 batch-3 previous-name accepts and
+`INOVEM LTD`. Before anything was written, every approved row was re-checked against the
+current build: none would be stale, and no batch-3 basis had failed — so nothing was struck.
+
+**`left_open` is a third decision value.** The user reviewed the name and ruled that the evidence
+cannot separate its candidates. Nothing is attributed and the name stays in the open count;
+the ruling and its basis are published in the queue like any other decision.
+
+**Hard rule 2, overridden by name, not by class.** `S J ENGINEERING` and `INTERNATIONAL MOTORS`
+tie at 1.00 through word order; each payer's other spelling resolves by rule to one of the two.
+The user authorised those two ties and no others. `V3.6` only ever inspected method accepts, so
+a new control holds the line: **`D.10` fails on any reviewed accept of a tied candidate outside
+the authorised names, or decided by anyone but the user.**
+
+**A user decision now carries the class its basis cites**, so `D.9` checks a user's
+previous-name accept exactly as it checks a delegated one: 38 previous-name decisions in force,
+0 unbacked.
+
+**Resolution by basis, after 145 decisions:**
+
+| Basis | Names | Rows | Value (GBP) | % of value |
+|---|---:|---:|---:|---:|
+| Method — tiers 1–3, by rule | 5,984 | 175,847 | 29,992,021,161.30 | 58.43% |
+| User review | 73 | 5,859 | 1,336,958,451.56 | 2.60% |
+| Delegated review — Tier C | 65 | 281 | 1,295,348.75 | 0.0025% |
+| **Total resolved** | | **181,987** | **31,330,274,961.61** | **61.04%** |
+| Unresolved | 7,255 | 170,541 | 19,999,984,133.77 | 38.96% |
+
+**Open queue: 1,209 rows, GBP 523,066,032.95 (1.02% of transaction value)** — A
+12, B 341, C 856. All `V3`, `V4` and `D.1`–`D.10` controls pass; `E-3` is unchanged at
+95.27%, tier 4 81.24%.
+
+**`03` §2 now records the `raw_companies_house` typing exception** (user-approved, dated backup),
+cross-referenced to `08` §5.3 line 665 — the H-4 finding of §7.16, closed.
+
 ---
 
 ## 8. Layer 4 — the star schema (`94_validate_reporting.sql`)

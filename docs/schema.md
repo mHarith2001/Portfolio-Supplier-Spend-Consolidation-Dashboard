@@ -23,7 +23,10 @@ wrongly, the evidence is still in `raw_`.
 
 ## L1 — `raw_`
 
-One table per publisher, because their schemas differ. Every column `STRING`.
+One table per publisher, because their schemas differ. Every column `STRING` — **except
+`raw_companies_house`**, loaded with schema autodetect as `08` §5.3 authorises, which typed 19
+of its 55 columns (11 `DATE`, 8 `INT64`). The typed dates are load-bearing for the previous-name
+validity window; the exception is recorded in `03` §2 (2026-09-24).
 
 | Table | Rows |
 |---|---:|
@@ -75,10 +78,10 @@ them inflates a total.
 | `resolved_company_previous_names` | One registered previous name of a matchable company, with its validity window |
 | `resolved_prev_name_evidence` | One (name, candidate) pair where the payer's spelling was the candidate's registered name for the whole payment window |
 | `resolved_supplier_match` | One name, with its winning tier, method, confidence and notes |
-| `resolved_supplier_golden` | One supplier entity — 5,983 resolved + 7,299 unresolved buckets |
+| `resolved_supplier_golden` | One supplier entity — 6,012 resolved + 7,255 unresolved buckets |
 | `resolved_spend` | **Every** `staging_spend` row, carrying `row_role` and a `supplier_key` |
 | `resolved_review_queue` | One queued name — tier-4 candidates and demoted tier-1 names — with `review_tier` and any decision |
-| `resolved_queue_decisions` | One **user** decision, as a versioned literal with its basis |
+| `resolved_queue_decisions` | One **user** decision — `accepted`, `rejected` or `left_open` — as a versioned literal with its basis |
 | `resolved_queue_delegated` | One **builder** decision under the Tier C authorisation, frozen with its evidence class and basis |
 | `resolved_queue_all_decisions` | The decisions in force — user overriding delegated (a view) |
 
@@ -100,12 +103,12 @@ from every aggregate.
 
 | Table | Grain | Rows |
 |---|---|---:|
-| `dim_supplier` | One supplier entity, **including the unresolved bucket** | 13,282 |
+| `dim_supplier` | One supplier entity, **including the unresolved bucket** | 13,267 |
 | `dim_entity` | One publishing body | 6 |
 | `dim_date` | One day | 728 |
 | `dim_category` | One (`entity`, `expense_type_raw`) pair + `uncategorised` | 1,637 |
-| `fact_spend` | One payment line to a **resolved** supplier, with its `resolution_basis` | 179,284 |
-| `fact_spend_unresolved` | One payment line, supplier **not** resolved | 173,244 |
+| `fact_spend` | One payment line to a **resolved** supplier, with its `resolution_basis` | 181,987 |
+| `fact_spend_unresolved` | One payment line, supplier **not** resolved | 170,541 |
 
 **Two fact tables, one grain.** The split exists so the unresolved population is a reportable
 category rather than a silent omission. Together they are every transaction row:
