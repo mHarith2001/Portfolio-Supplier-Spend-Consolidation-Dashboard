@@ -167,7 +167,16 @@ SELECT
             ' to ', CAST(pe.last_payment AS STRING)))                 AS previous_name_evidence,
   IF(pa.prev_name IS NULL, '',
      CONCAT(pa.prev_name, ' valid ', CAST(pa.valid_from AS STRING), ' to ',
-            CAST(pa.valid_to AS STRING)))                            AS alternative_previous_name_evidence
+            CAST(pa.valid_to AS STRING)))                            AS alternative_previous_name_evidence,
+  -- ACCEPT-OTHER-BUYER-AWARDS evidence (34c): buyers stating the tier-4
+  -- candidate's number, and whether any states another
+  CASE WHEN ob.qualifies THEN
+         CONCAT(CAST(ob.awards_for AS STRING), ' award(s) state ', ob.company_number,
+                ' (', ob.buyers_for, '); none states another number')
+       WHEN ob.awards_for > 0 THEN
+         CONCAT('CONFLICTING: ', CAST(ob.awards_for AS STRING), ' award(s) state ', ob.company_number,
+                ', ', CAST(ob.awards_other AS STRING), ' state ', ob.other_numbers)
+       ELSE '' END                                                     AS other_buyer_award_evidence
 FROM q
 JOIN spend s USING (supplier_name_norm)
 LEFT JOIN raw_name r
@@ -179,4 +188,7 @@ LEFT JOIN `portfolio-508106.portfolio_b.resolved_prev_name_evidence` pe
  AND pe.company_number     = q.candidate_company_number
 LEFT JOIN `portfolio-508106.portfolio_b.resolved_prev_name_evidence` pa
   ON pa.supplier_name_norm = q.supplier_name_norm
- AND pa.company_number     = q.alternative_company_number;
+ AND pa.company_number     = q.alternative_company_number
+LEFT JOIN `portfolio-508106.portfolio_b.resolved_other_buyer_award_evidence` ob
+  ON ob.supplier_name_norm = q.supplier_name_norm
+ AND ob.company_number     = q.candidate_company_number;

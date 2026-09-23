@@ -465,3 +465,25 @@ SELECT
                       AND supplier_name_norm IN ('S J ENGINEERING', 'INTERNATIONAL MOTORS'))) = 0,
      'PASS', 'FAIL  <-- HARD') AS d10
 FROM `portfolio-508106.portfolio_b.resolved_supplier_match`;
+-- ===========================================================================
+-- D.11  every ACCEPT-OTHER-BUYER-AWARDS decision is backed by a qualifying pair HARD
+-- ===========================================================================
+-- The class is scoped (04 §8.1, adopted 2026-09-24): tier-4 candidate, single
+-- candidate, at least one award from any buyer stating its number under the same
+-- name, none stating another. 34c holds exactly the qualifying pairs. A decision
+-- citing the class for any other pair has cited evidence that does not exist.
+
+SELECT
+  (SELECT COUNT(*) FROM `portfolio-508106.portfolio_b.resolved_queue_all_decisions`
+    WHERE evidence_class = 'ACCEPT-OTHER-BUYER-AWARDS')                     AS other_buyer_decisions,
+  (SELECT COUNT(*) FROM `portfolio-508106.portfolio_b.resolved_queue_all_decisions` d
+    LEFT JOIN `portfolio-508106.portfolio_b.resolved_other_buyer_award_evidence` e
+      ON e.supplier_name_norm = d.supplier_name_norm
+     AND e.company_number     = d.candidate_company_number AND e.qualifies
+    WHERE d.evidence_class = 'ACCEPT-OTHER-BUYER-AWARDS' AND e.supplier_name_norm IS NULL) AS unbacked,
+  IF((SELECT COUNT(*) FROM `portfolio-508106.portfolio_b.resolved_queue_all_decisions` d
+      LEFT JOIN `portfolio-508106.portfolio_b.resolved_other_buyer_award_evidence` e
+        ON e.supplier_name_norm = d.supplier_name_norm
+       AND e.company_number     = d.candidate_company_number AND e.qualifies
+      WHERE d.evidence_class = 'ACCEPT-OTHER-BUYER-AWARDS' AND e.supplier_name_norm IS NULL) = 0,
+     'PASS', 'FAIL  <-- HARD') AS d11;

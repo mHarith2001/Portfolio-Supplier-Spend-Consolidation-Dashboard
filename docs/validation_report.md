@@ -1119,6 +1119,46 @@ previous-name accept exactly as it checks a delegated one: 38 previous-name deci
 **`03` §2 now records the `raw_companies_house` typing exception** (user-approved, dated backup),
 cross-referenced to `08` §5.3 line 665 — the H-4 finding of §7.16, closed.
 
+
+### 7.18 Tier A row 3, a fourth evidence class, and two scopes recorded (2026-09-24, second ruling)
+
+**Tier A row 3 accepted by the user:** `NEWCASTLE ESTATE PARTNERSHIP` → `03124864`, on the payer's
+own expense coding — the bulk of HMRC's payments to it are coded as a PFI unitary charge,
+identifying a PFI estate-partnership vehicle whose registered name the payer used.
+
+**`ACCEPT-OTHER-BUYER-AWARDS`, adopted and implemented** (`04` §8.1, dated backup;
+`sql/30_resolved/34c_other_buyer_award_evidence.sql`). On tier-4 rows only: a Contracts Finder
+award from **any** buyer, naming the supplier under the same suffix-free name, states the
+candidate's number, and none states another. An award without a number supplies nothing. The
+measured reach reproduced exactly on the rebuilt queue — Tier B 31 rows, Tier C
+78 rows.
+
+**Realized in Tier C, under the standing authorisation, each row read first:** 74 accepts, GBP
+2,132,129.81. **4 escalated, not decided**, GBP 245,751.83: three where the buyer-stated
+company is dormant or non-trading — a company that cannot be the payee of trading payments —
+and one where the payer's own other spellings resolve by rule to a different company. That last
+check was run across every class row, not only the one that prompted it; it also holds one
+Tier B row out of the batch recommendation. New control **`D.11`**: 74 decisions cite the class,
+0 unbacked.
+
+**Scopes recorded, each with a dated backup:** hard rule 2's user-authorised exception at `04`
+hard rule 2 (the two named ties, enforced by `D.10`); and the load-metadata columns scoped to the
+six spend tables in `03` §2 and `05` `V1.3`, with the reference tables' provenance located in
+their own records — `docs/provenance.csv` for the register, the header of
+`13_create_raw_contracts_finder.sql` for Contracts Finder, which now also records the source
+file's SHA-256 and its corrected script path.
+
+| Basis | Names | Rows | Value (GBP) | % of value |
+|---|---:|---:|---:|---:|
+| Method — tiers 1–3, by rule | 5,984 | 175,847 | 29,992,021,161.30 | 58.43% |
+| User review | 74 | 5,896 | 1,379,489,906.93 | 2.69% |
+| Delegated review — Tier C | 139 | 1,041 | 3,427,478.56 | 0.0067% |
+| **Total resolved** | | **182,784** | **31,374,938,546.79** | **61.12%** |
+| Unresolved | 7,180 | 169,744 | 19,955,320,548.59 | 38.88% |
+
+**Open queue: 1,134 rows, GBP 478,402,447.77 (0.93%)** — A 11, B 341, C 782.
+220 decisions, 0 stale; `V3`, `V4` and `D.1`–`D.11` pass; `E-3` unchanged at 95.27%, tier 4 81.24%.
+
 ---
 
 ## 8. Layer 4 — the star schema (`94_validate_reporting.sql`)

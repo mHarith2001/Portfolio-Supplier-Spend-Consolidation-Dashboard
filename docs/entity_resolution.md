@@ -5,7 +5,7 @@ The intellectual core of this project. Figures measured 2026-09-18; resolution, 
 ## The problem
 
 Six public bodies publish spend independently. **14,434 distinct raw vendor spellings**
-appear across their files. They describe **at most 6,012 identified companies plus 7,255
+appear across their files. They describe **at most 6,066 identified companies plus 7,180
 names that could not be identified**. One supplier alone is spelled **16** different ways.
 
 Nobody can answer "how much did the public sector pay this company?" until those spellings
@@ -29,11 +29,11 @@ first or conflate the second.
 | Tier | Method | Confidence | Names | Value (GBP) |
 |---|---|---|---:|---:|
 | 1 | Company number, bridged via a Contracts Finder award | high | 1,172 | 3,981,459,526.06 |
-| 1 | …demoted, then accepted on recorded review | **reviewed** | 64 | 449,368,609.99 |
+| 1 | …demoted, then accepted on recorded review | **reviewed** | 91 | 450,098,591.70 |
 | 2 | Exact normalised name against Companies House | high | 4,758 | 15,846,552,637.36 |
 | 3 | Name core + postcode | medium | 54 | 10,164,008,997.88 |
-| 4 | Token-set similarity ≥ 0.85 on the core | **review**; resolves only on a recorded human accept | 1,120 | 2,185,636,253.41 |
-| 4 | …accepted on recorded review | **reviewed** | 74 | 888,885,190.32 |
+| 4 | Token-set similarity ≥ 0.85 on the core | **review**; resolves only on a recorded human accept | 1,045 | 2,140,972,668.23 |
+| 4 | …accepted on recorded review | **reviewed** | 122 | 932,818,793.79 |
 | 5 | Unresolved, with a stated reason | none | 6,135 | 17,814,347,880.36 |
 
 **Tier 1 is a bridge, not a lookup.** Spend files carry no company numbers. A spend supplier
@@ -47,9 +47,9 @@ data: publishers truncate and reorder supplier names far more often than they mi
 
 **Resolution by method is tiers 1–3: 5,984 names, GBP 29,992,021,161.30 — 58.43% of transaction
 value.** Human review adds tier-4 names accepted on a recorded decision, reported
-**separately** so one kind of evidence never borrows the other's credibility: so far 73 names by
-the user, GBP 1,336,958,451.56 (2.60%), and 65 names by the builder under the Tier C
-authorisation, GBP 1,295,348.75 (0.0025%) — **61.04% in total**.
+**separately** so one kind of evidence never borrows the other's credibility: so far 74 names by
+the user, GBP 1,379,489,906.93 (2.69%), and 139 names by the builder under the Tier C
+authorisation, GBP 3,427,478.56 (0.0067%) — **61.12% in total**.
 
 ## Eight hard rules
 
@@ -111,9 +111,9 @@ precision plateau begins; below 0.70, tier-4 precision collapses.
 **1,351 rows, one per name, highest value first** (`review_queue.csv`). Worked by value in
 three tiers: A (≥ GBP 10m) per-row by the user, B (GBP 100k–10m) in user-approved evidence
 batches, C (< GBP 100k) delegated to the builder where the evidence fits an established
-class. **145 decisions recorded** — 80 by the user, 65 delegated — and **1,209 rows open**, GBP 523,066,032.95,
+class. **220 decisions recorded** — 81 by the user, 139 delegated — and **1,134 rows open**, GBP 478,402,447.77,
 including 3 the user reviewed and ruled left open.
-Three evidence classes may support an accept: the same-payer bridge, the payer's own awards, and (from 2026-09-23) the register's **previous names**, cited only where the payer's spelling is the company's registered name for the whole period it was paid. **A decided row stays in the queue**: it is the
+Four evidence classes may support an accept: the same-payer bridge, the payer's own awards, (from 2026-09-23) the register's **previous names**, cited only where the payer's spelling is the company's registered name for the whole period it was paid, and (from 2026-09-24, tier-4 rows only) **other buyers' awards** — a Contracts Finder award from any buyer stating the candidate's number, with none stating another. An award without a number supplies nothing. **A decided row stays in the queue**: it is the
 decision log, not only the to-do list.
 
 **The most confident batch in that queue — score 1.00 with a single candidate — is correct

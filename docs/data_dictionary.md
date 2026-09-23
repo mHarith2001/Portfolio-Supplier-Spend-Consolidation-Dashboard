@@ -5,7 +5,7 @@ tables behind them. Measured 2026-09-18.
 
 ---
 
-## `fact_spend.csv` — 181,987 rows
+## `fact_spend.csv` — 182,784 rows
 
 One payment line to a **resolved** supplier.
 
@@ -23,7 +23,7 @@ One payment line to a **resolved** supplier.
 | `transaction_number` | STRING | The publisher's own reference, as published |
 | `resolution_basis` | STRING | **Who stands behind this row's attribution**: `method` (tiers 1–3, by rule), `user_review` (a per-row user decision) or `delegated_review` (a builder decision under the Tier C authorisation). Recorded **per payment row**, because it belongs to the spelling that routed the money |
 
-## `fact_spend_unresolved.csv` — 170,541 rows
+## `fact_spend_unresolved.csv` — 169,744 rows
 
 Identical grain and columns, plus:
 
@@ -37,7 +37,7 @@ subset to be ignored.
 
 ---
 
-## `dim_supplier.csv` — 13,267 rows
+## `dim_supplier.csv` — 13,246 rows
 
 | Column | Type | Notes |
 |---|---|---|
@@ -118,6 +118,6 @@ should be quoted without the VAT caveat** in `limitations.md` `P-2`.
 | `resolved_supplier_match` | The match audit trail, one row per name, with `reject_reason` and notes |
 | `resolved_tier4_candidates` | Every scored (name, company) pair ≥ 0.5 |
 
-`review_queue.csv` publishes the decision-bearing part of the audit trail: 1,351 rows — one per name — 145
-carrying a recorded decision (80 by the user, 65 delegated under the Tier C authorisation) and the rest blank. A decision is `accepted`, `rejected` or `left_open` — the last meaning a user reviewed the name and ruled that the evidence cannot separate its candidates, so it stays open; each decision carrying its reason and date from
-`38_queue_decisions.sql`.
+`review_queue.csv` publishes the decision-bearing part of the audit trail: 1,351 rows — one per name — 220
+carrying a recorded decision (81 by the user, 139 delegated under the Tier C authorisation) and the rest blank. A decision is `accepted`, `rejected` or `left_open` — the last meaning a user reviewed the name and ruled that the evidence cannot separate its candidates, so it stays open; each decision carrying its reason and date from
+`38_queue_decisions.sql`. Evidence columns show the facts behind the accept classes: `previous_name_evidence` (the register's previous names, 2026-09-23) and `other_buyer_award_evidence` (buyers' awards stating the tier-4 candidate's number, 2026-09-24).

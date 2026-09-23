@@ -5,8 +5,11 @@
 -- EXECUTED 2026-09-16. These are the statements that ran, not a description.
 --
 -- Source: Contracts Finder award notices, OCDS releases flattened to CSV by
---         scripts/04-measure-q15-v2.ps1 during acquisition (B-DS-04).
+--         <VAULT>/06_ACTIVE_BUILD/portfolio-b/04-measure-q15-v2.ps1 during
+--         acquisition (B-DS-04). (Path corrected 2026-09-24: the script is in the
+--         vault build folder, not in this repository's scripts/.)
 --         <VAULT>/06_ACTIVE_BUILD/portfolio-b/data/q15-v2/q15-awards.csv
+--         SHA-256 CE90343043EC478B9347C28DE38473F1C5A08EC08235A013D087C784A9549693 (recorded 2026-09-24)
 --         14,643,256 bytes — under BigQuery's 100 MB local-upload limit, so it
 --         is loaded directly per 08 §5.4, not staged to Cloud Storage.
 --
