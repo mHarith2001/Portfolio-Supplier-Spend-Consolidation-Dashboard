@@ -111,7 +111,7 @@ GBP 273,975,883.60 to make a date range look tidy.
 | Transaction value | GBP 51,330,259,095.38 |
 | Excluded non-payment value | GBP 2,556,596,745.72 |
 | In-window transactions | 289,950 (+ 24 annex duplicates + 16 out-of-scope section rows = 289,990) |
-| Vendor spellings → identified suppliers | 14,434 → 5,970, plus 7,336 unidentified names |
+| Vendor spellings → identified suppliers | 14,434 → 5,983, plus 7,299 unidentified names |
 
 ---
 
@@ -122,9 +122,9 @@ GBP 273,975,883.60 to make a date range look tidy.
   1.00 with a single candidate — is correct **81.23%** of the time. Bulk-accepting it would
   be wrong about one time in six.
 - **That 58.43% is a good resolution rate or a bad one.** It is the method's measured rate for
-  these six publishers against this snapshot. User review adds 2.38% and delegated review
-  0.0021% so far, each reported separately, for 60.81% in total.
-- **That the unresolved population is small.** It is 39.19% of transaction value, reported
+  these six publishers against this snapshot. User review adds 2.51% and delegated review
+  0.0025% so far, each reported separately, for 60.94% in total.
+- **That the unresolved population is small.** It is 39.06% of transaction value, reported
   with its reasons and its value.
 - **That any named supplier has done anything wrong.** This is payment-line data.
   Concentration and variance are legitimate readings; impropriety is not supported by spend
@@ -141,20 +141,20 @@ published as such.
 
 | Tier | Band | How it is decided | Open rows | Open value (GBP) |
 |---|---|---|---:|---:|
-| **A** | ≥ GBP 10m | Per-row user decision | 14 | 306,479,966.62 |
-| **B** | GBP 100k – < 10m | User-approved evidence batches | 403 | 362,810,394.71 |
-| **C** | < GBP 100k | Delegated to the builder on established evidence classes | 874 | 16,784,662.85 |
-| **Total** | | | **1,291** | **686,075,024.18** |
+| **A** | ≥ GBP 10m | Per-row user decision | 13 | 256,914,034.31 |
+| **B** | GBP 100k – < 10m | User-approved evidence batches | 377 | 342,066,599.52 |
+| **C** | < GBP 100k | Delegated to the builder on established evidence classes | 864 | 16,592,812.81 |
+| **Total** | | | **1,254** | **615,573,446.64** |
 
-**Decided so far: 60.** 5 by the user (2 accepted, 3 rejected) and 55 by the builder under the
-Tier C authorisation (all accepted, all on the same-payer-bridge class, each reviewed
-individually). Every decision is recorded with its basis and is published in
+**Decided so far: 97.** 32 by the user (29 accepted, 3 rejected) and 65 by the builder under
+the Tier C authorisation (all accepted — 55 on the same-payer bridge, 10 on the register's
+previous names — each reviewed individually). Every decision is recorded with its basis and is published in
 `review_queue.csv`; a user decision always overrides a delegated one.
 
 **How much the open queue could move the headline, and how little it can.** Resolution by
-method is **58.43%**. The open queue holds GBP 686,075,024.18 — **1.34%** of transaction value.
+method is **58.43%**. The open queue holds GBP 615,573,446.64 — **1.20%** of transaction value.
 Even if every open row were eventually accepted, the resolution rate could rise by at most that
-much. Most of the unresolved 39.19% is not in the queue at all: it is `no_match` and
+much. Most of the unresolved 39.06% is not in the queue at all: it is `no_match` and
 `below_threshold` names that no candidate reaches.
 
 **Three ceilings sit under the open queue:**
@@ -163,10 +163,12 @@ much. Most of the unresolved 39.19% is not in the queue at all: it is `no_match`
   evidence class, but only three of the six publishers state company numbers in Contracts
   Finder. **DfT has no awards in this extract; Bristol and Manchester state no company number
   on any award.** Rows paid by those three cannot be corroborated that way.
-- **The register records previous company names, and matching does not use them.** Hard rule 6
-  compares a buyer's number to the company's **current** name. For **53 demoted rows**, the
-  supplier's name is the company's **own earlier registered name**. That evidence is measured
-  and proposed, not applied — a new evidence class is a user decision.
+- **Previous names help only inside their validity window** (adopted 2026-09-23). Hard rule 6
+  compares a buyer's number to the company's **current** name, so a renamed company is demoted.
+  The register's previous names are now evidence — but only where the payer's spelling was the
+  company's registered name for the **whole** period it was paid. Of 67 open rows whose name
+  matches a previous name, **29 fall outside the window**: the payers kept using a brand after
+  the legal rename (Click Travel is the clearest case). Those rows need a per-row decision.
 - **Public bodies do not all lack company numbers.** Some government-owned bodies are
   registered companies (National Highways Limited is one), so "looks like a public body" is
   not a safe structural reason to reject. It is used only on a per-row decision, never as a

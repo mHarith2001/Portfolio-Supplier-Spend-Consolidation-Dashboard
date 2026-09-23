@@ -1028,6 +1028,56 @@ to a previous registered name of their candidate, **53 of them demoted tier-1 ro
 compares only against the current name. A new evidence class is the handler's decision, so it
 is measured and proposed, not applied.
 
+### 7.16 The previous-name class, 37 decisions, and a register-typing finding (2026-09-23)
+
+**User decisions applied:** Tier A row 1 (`LENDLEASE CONSTRUCTION EUROPE LTD` → `00467006`,
+decided on the register's own previous-name record) and Tier B batch 1 (26 accepts), each in
+`38_queue_decisions.sql` with its basis. The batch was generated from the detector table and
+checked against the approved count and total before it was written.
+
+**The previous-name class, as adopted.** `34b_previous_name_evidence.sql` reads the register's
+up-to-ten previous names and gives each a **validity window**: from the date the older name
+was changed (or incorporation, for the oldest) until its own change date. A queued candidate
+may cite a previous name only where the payer's spelling equals it **and the whole payment
+window lies inside that validity period**. It is an evidence class inside the tiered protocol,
+not a rule that resolves by itself.
+
+| | Rows |
+|---|---:|
+| Open rows whose name matches a registered previous name of a candidate | 67 |
+| — inside the validity window: the class applies | **38** |
+| — outside it: the payer kept a brand after the legal rename | 29 |
+| Applied in Tier C under the standing authorisation, each reviewed | 10 |
+| Presented to the user as Tier B batch 3 | 27 + `INOVEM LTD` held per-row |
+
+**The window assumption was tested, not assumed:** across 647,343 previous names, a name's
+start is never after its end (0 inverted windows).
+
+**Two defects caught before they ran.** The register's `CONDATE` columns 1–4 were typed DATE at
+load but 5–10 are day-first strings; a bare cast would have nulled every one of those 1,355+
+names without an error. And `WINDOW` is a reserved word.
+
+**A finding for the handler (H-4).** `raw_companies_house` holds 19 typed columns (11 DATE, 8
+INTEGER), because `08` §5.3 authorises autodetect for this load alone — while `03` §2 says
+every Layer 1 column lands as STRING. **The two prep-package documents disagree, and the build
+follows `08`.** The typed dates are sound: 3,426,845 of 5,695,465 incorporation dates have a day
+above 12, which a month-first parse would have rejected at load. Proposed: record the
+exception in `03` §2. Not written — a locked document.
+
+**Resolution by basis, after 97 decisions:**
+
+| Basis | Rows | Value (GBP) | % of value |
+|---|---:|---:|---:|
+| Method — tiers 1–3, by rule | 175,847 | 29,992,021,161.30 | 58.43% |
+| User review | 3,156 | 1,289,774,240.94 | 2.51% |
+| Delegated review — Tier C | 281 | 1,295,348.75 | 0.0025% |
+| **Total resolved** | **179,284** | **31,283,090,750.99** | **60.94%** |
+
+All `V3`, `V4` and `D.1`–`D.9` controls pass: 97 decisions (94 accepted, 3 rejected), 0 stale,
+0 orphan, 10 previous-name decisions all backed by qualifying evidence. `E-3` is unchanged —
+95.27%, tier 4 81.24%. **`07` §8 sections 2 and 3 were signed off by the user** and recorded in
+the checklist with a dated backup.
+
 ---
 
 ## 8. Layer 4 — the star schema (`94_validate_reporting.sql`)

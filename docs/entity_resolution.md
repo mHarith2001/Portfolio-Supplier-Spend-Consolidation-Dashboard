@@ -5,7 +5,7 @@ The intellectual core of this project. Every figure measured 2026-09-18.
 ## The problem
 
 Six public bodies publish spend independently. **14,434 distinct raw vendor spellings**
-appear across their files. They describe **at most 5,970 identified companies plus 7,336
+appear across their files. They describe **at most 5,983 identified companies plus 7,299
 names that could not be identified**. One supplier alone is spelled **16** different ways.
 
 Nobody can answer "how much did the public sector pay this company?" until those spellings
@@ -47,9 +47,9 @@ data: publishers truncate and reorder supplier names far more often than they mi
 
 **Resolution by method is tiers 1–3: 5,984 names, GBP 29,992,021,161.30 — 58.43% of transaction
 value.** Human review adds tier-4 names accepted on a recorded decision, reported
-**separately** so one kind of evidence never borrows the other's credibility: so far 2 names by
-the user, GBP 1,219,464,513.44 (2.38%), and 55 names by the builder under the Tier C
-authorisation, GBP 1,103,498.71 (0.0021%) — **60.81% in total**.
+**separately** so one kind of evidence never borrows the other's credibility: so far 29 names by
+the user, GBP 1,289,774,240.94 (2.51%), and 65 names by the builder under the Tier C
+authorisation, GBP 1,295,348.75 (0.0025%) — **60.94% in total**.
 
 ## Eight hard rules
 
@@ -108,7 +108,8 @@ precision plateau begins; below 0.70, tier-4 precision collapses.
 **1,351 rows, one per name, highest value first** (`review_queue.csv`). Worked by value in
 three tiers: A (≥ GBP 10m) per-row by the user, B (GBP 100k–10m) in user-approved evidence
 batches, C (< GBP 100k) delegated to the builder where the evidence fits an established
-class. **60 decided** — 5 by the user, 55 delegated — and **1,291 open**, GBP 686,075,024.18. **A decided row stays in the queue**: it is the
+class. **97 decided** — 32 by the user, 65 delegated — and **1,254 open**, GBP 615,573,446.64.
+Three evidence classes may support an accept: the same-payer bridge, the payer's own awards, and (from 2026-09-23) the register's **previous names**, cited only where the payer's spelling is the company's registered name for the whole period it was paid. **A decided row stays in the queue**: it is the
 decision log, not only the to-do list.
 
 **The most confident batch in that queue — score 1.00 with a single candidate — is correct

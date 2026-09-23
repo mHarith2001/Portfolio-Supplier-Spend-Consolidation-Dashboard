@@ -421,3 +421,27 @@ SELECT
      AND (SELECT COUNT(*) - COUNT(DISTINCT supplier_name_norm) FROM v) = 0
      AND (SELECT COUNTIF(decision_note IS NULL OR LENGTH(decision_note) < 40) FROM dd) = 0,
      'PASS', 'FAIL  <-- HARD') AS d5_d8;
+
+-- ===========================================================================
+-- D.9  every ACCEPT-PREVIOUS-NAME decision is backed by qualifying evidence HARD
+-- ===========================================================================
+-- The class is scoped (04 §8.1, adopted 2026-09-23): the payer's spelling must
+-- equal a registered previous name of THIS company, and the whole payment window
+-- must lie inside that name's validity period. 34b computes exactly those pairs.
+-- A decision citing the class for a pair 34b does not hold has cited evidence
+-- that does not exist -- and fails here.
+
+SELECT
+  (SELECT COUNT(*) FROM `portfolio-508106.portfolio_b.resolved_queue_all_decisions`
+    WHERE evidence_class = 'ACCEPT-PREVIOUS-NAME')                          AS previous_name_decisions,
+  (SELECT COUNT(*) FROM `portfolio-508106.portfolio_b.resolved_queue_all_decisions` d
+    LEFT JOIN `portfolio-508106.portfolio_b.resolved_prev_name_evidence` e
+      ON e.supplier_name_norm = d.supplier_name_norm
+     AND e.company_number     = d.candidate_company_number
+    WHERE d.evidence_class = 'ACCEPT-PREVIOUS-NAME' AND e.supplier_name_norm IS NULL) AS unbacked,
+  IF((SELECT COUNT(*) FROM `portfolio-508106.portfolio_b.resolved_queue_all_decisions` d
+      LEFT JOIN `portfolio-508106.portfolio_b.resolved_prev_name_evidence` e
+        ON e.supplier_name_norm = d.supplier_name_norm
+       AND e.company_number     = d.candidate_company_number
+      WHERE d.evidence_class = 'ACCEPT-PREVIOUS-NAME' AND e.supplier_name_norm IS NULL) = 0,
+     'PASS', 'FAIL  <-- HARD') AS d9;

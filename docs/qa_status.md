@@ -18,13 +18,13 @@ them — an unticked box is more useful than a tick that is not true.
 | # | Check | Status |
 |---|---|---|
 | `Q3.1` | Tier distribution by count **and value** | **PASS** — validation report §7.4 |
-| `Q3.2` | No tier-4 auto-merge | **PASS** — 1,351 queue rows, one per name, **no auto-accept anywhere**; 60 decisions, each with its basis recorded — 5 by the user, 55 delegated under the Tier C authorisation and controlled by `D.5`–`D.8` — and 1,291 open |
+| `Q3.2` | No tier-4 auto-merge | **PASS** — 1,351 queue rows, one per name, **no auto-accept anywhere**; 97 decisions, each with its basis recorded — 32 by the user, 65 delegated under the Tier C authorisation and controlled by `D.5`–`D.9` — and 1,254 open |
 | `Q3.3` | Ambiguity surfaced, never auto-accepted | **PASS** — `V3.6`, 0 accepted with `candidate_count > 1` |
-| `Q3.4` | Plausibility applied | **PASS at every tier** — 0 of 178,454 attributed rows precede incorporation, and since 2026-09-18 hard rule 3 also filters tier-4 candidates: **0 impossible candidates remain in the queue** |
+| `Q3.4` | Plausibility applied | **PASS at every tier** — 0 of 179,284 attributed rows precede incorporation, and since 2026-09-18 hard rule 3 also filters tier-4 candidates: **0 impossible candidates remain in the queue** |
 | `Q3.5` | Redacted population reported as a named category | **PASS** — 4 names, 31,508 rows, GBP 113,266,026.75, **0.2207%** of transaction value |
 | `Q3.6` | Precision measured and published | **PASS** — `docs/match_precision.md` |
 | `Q3.7` | Precision reported honestly | **PASS** — 95.27% overall published with tier 4's 81.24%, recall 84.48%, and four ceilings, including a figure that **fell** when blocking was corrected |
-| `Q3.8` | `name_variant_count` produces the headline | **PASS** — 14,434 vendor records → 5,970 identified suppliers + 7,336 unidentified names |
+| `Q3.8` | `name_variant_count` produces the headline | **PASS** — 14,434 vendor records → 5,983 identified suppliers + 7,299 unidentified names |
 
 ### `Q3.4` — how it came to pass at every tier (2026-09-18)
 
@@ -65,15 +65,16 @@ no workbook has been built. Nothing here is claimed.
 | PUBLISH | **PARTIAL** — GitHub is public and carries no raw register. Tableau Public not published |
 | EXPLAIN | Not attempted — `07` §7 |
 
-**`07` §8 sign-off is not ticked here.** That is a locked document, and `H-8` is explicit:
-no token upgrade on the builder's say-so.
+**`07` §8: §2 and §3 were signed off by the user on 2026-09-23** and are recorded in the locked
+checklist with a dated backup. The remaining items are not ticked, and `H-8` stands: no token
+upgrade on the builder's say-so.
 
 ## What is ready for the handler to sign, and what is not (2026-09-22)
 
 | `07` §8 item | Builder's reading |
 |---|---|
-| §2 per-layer validation | **Ready** — all four layers pass, re-run after every rebuild this week |
-| §3 entity-resolution QA | **Ready** — `Q3.1`–`Q3.8` pass; the open queue is published as a limitation, not hidden |
+| §2 per-layer validation | **☑ Signed off by the user, 2026-09-23** |
+| §3 entity-resolution QA | **☑ Signed off by the user, 2026-09-23** — the open queue stays published as a limitation |
 | §4 Tableau QA | **Not ready** — no workbook |
 | §5 evidence matrix | **Partly** — `E-1`–`E-5` verified; `E-6` blocked, `E-7` partial |
 | §6 completion gate | **Not ready** — RUN and EXPLAIN outstanding, PUBLISH partial |

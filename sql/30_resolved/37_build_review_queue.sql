@@ -158,10 +158,25 @@ SELECT
        WHEN s.total_spend >= 100000   THEN 'B'
        ELSE 'C' END                 AS review_tier,
   COALESCE(d.decided_by, '')      AS decided_by,
-  COALESCE(d.evidence_class, '')  AS evidence_class
+  COALESCE(d.evidence_class, '')  AS evidence_class,
+  -- ACCEPT-PREVIOUS-NAME evidence (34b), shown so a reviewer can see it: the
+  -- candidate's registered previous name the payer used, and its validity window.
+  IF(pe.prev_name IS NULL, '',
+     CONCAT(pe.prev_name, ' valid ', CAST(pe.valid_from AS STRING), ' to ',
+            CAST(pe.valid_to AS STRING), '; paid ', CAST(pe.first_payment AS STRING),
+            ' to ', CAST(pe.last_payment AS STRING)))                 AS previous_name_evidence,
+  IF(pa.prev_name IS NULL, '',
+     CONCAT(pa.prev_name, ' valid ', CAST(pa.valid_from AS STRING), ' to ',
+            CAST(pa.valid_to AS STRING)))                            AS alternative_previous_name_evidence
 FROM q
 JOIN spend s USING (supplier_name_norm)
 LEFT JOIN raw_name r
   ON r.supplier_name_norm = q.supplier_name_norm
 LEFT JOIN `portfolio-508106.portfolio_b.resolved_queue_all_decisions` d
-  ON d.supplier_name_norm = q.supplier_name_norm;
+  ON d.supplier_name_norm = q.supplier_name_norm
+LEFT JOIN `portfolio-508106.portfolio_b.resolved_prev_name_evidence` pe
+  ON pe.supplier_name_norm = q.supplier_name_norm
+ AND pe.company_number     = q.candidate_company_number
+LEFT JOIN `portfolio-508106.portfolio_b.resolved_prev_name_evidence` pa
+  ON pa.supplier_name_norm = q.supplier_name_norm
+ AND pa.company_number     = q.alternative_company_number;
