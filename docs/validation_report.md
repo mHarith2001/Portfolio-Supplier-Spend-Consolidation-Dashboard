@@ -1182,6 +1182,48 @@ class basis intact — and `D.11` backs all 74 delegated and 28 user decisions c
 **Open queue: 1,106 rows, GBP 445,659,477.26 (0.87%)** — A 11, B 313, C 782.
 249 decisions, 0 stale; `V3`, `V4` and `D.1`–`D.11` pass; `E-3` unchanged at 95.27%, tier 4 81.24%.
 
+
+### 7.20 Duplicate Northern Ireland registrations excluded, and the tier-4 figure re-adopted (2026-09-28)
+
+**The rule, adopted by the user after review** (`04` §3 hard rule 8, dated backup; `30_match_universe.sql`): an
+`NF`-prefixed register entry whose normalised name is also carried by a non-`NF`, non-`OE` company is excluded
+from candidacy; `NF` entries with no such twin remain candidates. 73 entries excluded. **Measured first in a
+shadow run** (`trial_nf_*` tables, dropped after verification), **reproduced exactly on rebuild**: the production
+universe matched the trial universe number for number, and every `95` result row matched.
+
+**`LAND SECURITIES PROPERTIES LTD` now resolves by rule at tier 2 to `00961477`** and has left the queue. Five other
+names the twin had blocked at tier 2 were already resolved by tier 1 or 3 to the same company; no name lost a
+match, no company changed, and no decision went stale.
+
+| `E-3` | Before | After |
+|---|---:|---:|
+| Overall precision | 95.27% | 95.28% |
+| Recall | 84.48% | 84.69% |
+| Tier 2 | 18,512 awards, 96.93% | 18,586 awards, 96.94% |
+| **Tier 4 — the quotable figure** | 2,191 awards, 81.24% | **2,169 awards, 81.05%** |
+
+**Why the tier-4 figure fell — composition, not error.** Tier 2 gained 74 award predictions, 73 of them right.
+Tier 4 gave up 22, and **all 22 were right**: names tier 4 had been matching correctly now match at tier 2,
+because the `NF` twin no longer makes them ambiguous. Tier 4's wrong predictions are unchanged at 411.
+Removing correct matches from a smaller pool lowers its rate without any new mistake — the same measurement on a
+different method, which is why **81.05% is adopted as the quotable tier-4 figure from 2026-09-28**.
+
+**A stale table found and replaced.** `match_precision.md`'s queue-batch table had been measured before the `OE`
+exclusion and never refreshed. Re-derived name by name (a name is correct when its tier-4 candidate is among its
+buyers' stated numbers — the definition that reproduces the old table's correct count): score 1.00 with a single
+candidate is right **83.24%** of the time, 1,498 names.
+
+| Basis | Names | Rows | Value (GBP) | % of value |
+|---|---:|---:|---:|---:|
+| Method — tiers 1–3, by rule | 5,985 | 175,851 | 30,011,990,138.30 | 58.47% |
+| User review | 102 | 10,892 | 1,412,232,877.44 | 2.75% |
+| Delegated review — Tier C | 139 | 1,041 | 3,427,478.56 | 0.0067% |
+| **Total resolved** | | **187,784** | **31,427,650,494.30** | **61.23%** |
+| Unresolved | 7,151 | 164,744 | 19,902,608,601.08 | 38.77% |
+
+**Open queue: 1,105 rows, GBP 425,690,500.26 (0.83%)** — A 10, B 313, C 782.
+249 decisions, 0 stale; `V3`, `V4` and `D.1`–`D.11` pass.
+
 ---
 
 ## 8. Layer 4 — the star schema (`94_validate_reporting.sql`)

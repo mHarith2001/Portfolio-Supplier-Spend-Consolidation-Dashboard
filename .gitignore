@@ -224,3 +224,7 @@ CLAUDE.md
 #
 # If a future edit makes one of these ignored, E-1, E-3 or E-7 loses its
 # evidence. Check `git status --ignored` after any change to this file.
+
+# Local knowledge-graph output (graphify, added 2026-09-28): a working tool's cache,
+# not project evidence. Ignored, never deleted.
+graphify-out/

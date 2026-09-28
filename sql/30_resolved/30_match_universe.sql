@@ -1,7 +1,8 @@
 -- 30_match_universe.sql
 -- Layer: L3 resolved_ -- the company universe every matching tier reads
 --
--- EXECUTED 2026-09-20. Run from a file on standard input, before 31-34.
+-- EXECUTED 2026-09-20; re-executed 2026-09-28 with the NF-twin extension below.
+-- Run from a file on standard input, before 31-34.
 --
 -- ===========================================================================
 -- WHICH REGISTER ENTRIES CAN BE A PAYEE AT ALL
@@ -35,7 +36,30 @@
 --     overseas property registration.
 --   * 1,619 candidate pairs across 586 names lose an OE option at tier 4.
 
+--
+-- ===========================================================================
+-- EXTENDED 2026-09-28 (user decision): DUPLICATE NORTHERN IRELAND REGISTRATIONS
+-- ===========================================================================
+-- An NF-prefixed entry whose normalised name is also carried by a non-NF,
+-- non-OE company is excluded; an NF entry with NO such twin stays a candidate.
+-- Every NF entry carries no SIC, none had ever been the method's match, and each
+-- twin was registered after its operating company was incorporated -- read as a
+-- later Northern Ireland registration of the same company (an assumption: the
+-- register does not link the two). The twin made tier 2 reject its operating
+-- company as ambiguous. Measured first in a shadow run (trial_nf_* tables, since
+-- dropped): 73 of 508 NF entries excluded; LAND SECURITIES PROPERTIES LTD
+-- resolves by rule; five other blocked names were already resolved by tier 1 or 3
+-- to the same company; no decision went stale.
+
 CREATE OR REPLACE VIEW `portfolio-508106.portfolio_b.resolved_company_universe` AS
-SELECT *
-FROM `portfolio-508106.portfolio_b.staging_companies`
-WHERE NOT STARTS_WITH(company_number, 'OE');
+SELECT c.*
+FROM `portfolio-508106.portfolio_b.staging_companies` c
+WHERE NOT STARTS_WITH(c.company_number, 'OE')
+  AND c.company_number NOT IN (
+    SELECT nf.company_number
+    FROM `portfolio-508106.portfolio_b.staging_companies` nf
+    JOIN `portfolio-508106.portfolio_b.staging_companies` g
+      ON g.company_name_norm = nf.company_name_norm
+     AND NOT STARTS_WITH(g.company_number, 'NF')
+     AND NOT STARTS_WITH(g.company_number, 'OE')
+    WHERE STARTS_WITH(nf.company_number, 'NF'));

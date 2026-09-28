@@ -5,7 +5,7 @@ The intellectual core of this project. Figures measured 2026-09-18; resolution, 
 ## The problem
 
 Six public bodies publish spend independently. **14,434 distinct raw vendor spellings**
-appear across their files. They describe **at most 6,085 identified companies plus 7,152
+appear across their files. They describe **at most 6,086 identified companies plus 7,151
 names that could not be identified**. One supplier alone is spelled **16** different ways.
 
 Nobody can answer "how much did the public sector pay this company?" until those spellings
@@ -30,9 +30,9 @@ first or conflate the second.
 |---|---|---|---:|---:|
 | 1 | Company number, bridged via a Contracts Finder award | high | 1,172 | 3,981,459,526.06 |
 | 1 | …demoted, then accepted on recorded review | **reviewed** | 101 | 457,312,766.80 |
-| 2 | Exact normalised name against Companies House | high | 4,758 | 15,846,552,637.36 |
-| 3 | Name core + postcode | medium | 54 | 10,164,008,997.88 |
-| 4 | Token-set similarity ≥ 0.85 on the core | **review**; resolves only on a recorded human accept | 1,017 | 2,108,229,697.72 |
+| 2 | Exact normalised name against Companies House | high | 4,760 | 15,875,678,255.84 |
+| 3 | Name core + postcode | medium | 53 | 10,154,852,356.40 |
+| 4 | Token-set similarity ≥ 0.85 on the core | **review**; resolves only on a recorded human accept | 1,016 | 2,088,260,720.72 |
 | 4 | …accepted on recorded review | **reviewed** | 140 | 958,347,589.20 |
 | 5 | Unresolved, with a stated reason | none | 6,135 | 17,814,347,880.36 |
 
@@ -49,7 +49,7 @@ data: publishers truncate and reorder supplier names far more often than they mi
 value.** Human review adds tier-4 names accepted on a recorded decision, reported
 **separately** so one kind of evidence never borrows the other's credibility: so far 102 names by
 the user, GBP 1,412,232,877.44 (2.75%), and 139 names by the builder under the Tier C
-authorisation, GBP 3,427,478.56 (0.0067%) — **61.19% in total**.
+authorisation, GBP 3,427,478.56 (0.0067%) — **61.23% in total**.
 
 ## Eight hard rules
 
@@ -83,7 +83,9 @@ authorisation, GBP 3,427,478.56 (0.0067%) — **61.19% in total**.
    view every tier reads. Found on a row where a statutory transport executive scored 1.00
    against an overseas property registration. The exclusion **raised** method resolution, from
    58.32% to 58.43%: names where a real company and an `OE` entry shared a name had been
-   rejected as ambiguous, and removing the `OE` entry left a single candidate.
+   rejected as ambiguous, and removing the `OE` entry left a single candidate. **Extended 2026-09-28:** 73
+   duplicate Northern Ireland (`NF`) registrations — an `NF` entry sharing an exact name with a
+   non-`NF` company — are excluded the same way; `NF` entries with no twin remain candidates.
 
 ## Survivorship
 
@@ -100,7 +102,7 @@ stays countable instead of disappearing.
 `E-3` hides the Contracts Finder company number, runs the tiers on the **name alone**, and
 compares the prediction with the buyer's stated answer across **24,506 measurable awards**.
 
-**95.27% precision, 84.48% recall.** Tier 2 alone 96.93%; tier 4 alone 81.24%; 979
+**95.28% precision, 84.69% recall.** Tier 2 alone 96.94%; tier 4 alone 81.05%; 980
 predictions wrong. Full method, threshold curve and ceilings in `match_precision.md`.
 
 **The threshold was chosen from the measured curve, not assumed.** 0.85 is where the
@@ -111,14 +113,14 @@ precision plateau begins; below 0.70, tier-4 precision collapses.
 **1,351 rows, one per name, highest value first** (`review_queue.csv`). Worked by value in
 three tiers: A (≥ GBP 10m) per-row by the user, B (GBP 100k–10m) in user-approved evidence
 batches, C (< GBP 100k) delegated to the builder where the evidence fits an established
-class. **249 decisions recorded** — 110 by the user, 139 delegated — and **1,106 rows open**, GBP 445,659,477.26,
+class. **249 decisions recorded** — 110 by the user, 139 delegated — and **1,105 rows open**, GBP 425,690,500.26,
 including 4 the user reviewed and ruled left open.
 Four evidence classes may support an accept: the same-payer bridge, the payer's own awards, (from 2026-09-23) the register's **previous names**, cited only where the payer's spelling is the company's registered name for the whole period it was paid, and (from 2026-09-24, tier-4 rows only) **other buyers' awards** — a Contracts Finder award from any buyer stating the candidate's number, with none stating another. An award without a number supplies nothing. **A decided row stays in the queue**: it is the
 decision log, not only the to-do list.
 
 **The most confident batch in that queue — score 1.00 with a single candidate — is correct
-81.23% of the time.** Bulk-accepting it would be wrong about one time in six, and only 42 of
-its 288 errors are explained by the matchable universe missing the answer.
+83.24% of the time.** Bulk-accepting it would be wrong about one time in six, and only 30 of
+its 251 errors are explained by the matchable universe missing the answer.
 
 **The dominant failure mode is a public body matching a private company of the same name.** A
 government department, a passenger transport executive and a transport authority all score

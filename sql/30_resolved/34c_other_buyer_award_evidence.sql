@@ -7,7 +7,7 @@
 -- WHY ANOTHER BUYER'S AWARD IS EVIDENCE
 -- ===========================================================================
 -- A tier-4 candidate is a similarity score and nothing more; measured against
--- known answers it is right 81.24% of the time. A Contracts Finder award in which
+-- known answers it is right 81.05% of the time (re-measured 2026-09-28). A Contracts Finder award in which
 -- a buyer -- ANY buyer, not only the payer -- names the supplier AND states the
 -- candidate's company number is a statement made independently of that score.
 -- Where it agrees with the fuzzy candidate, and no buyer states a different

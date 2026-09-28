@@ -77,7 +77,7 @@ them inflates a total.
 
 | Table | Grain |
 |---|---|
-| `resolved_company_universe` | One matchable register entry — `staging_companies` minus 30,199 `OE` overseas-entity registrations (a view) |
+| `resolved_company_universe` | One matchable register entry — `staging_companies` minus 30,199 `OE` overseas-entity registrations and 73 duplicate `NF` Northern Ireland registrations (a view) |
 | `resolved_names` | One normalised supplier name — the matching universe, spend and `E-3` together |
 | `resolved_match_tier1`–`tier4` | One name per tier, with `accepted`, `candidate_count` and `reject_reason` |
 | `resolved_tier4_candidates` | One (name, company) pair scoring ≥ 0.5 |
@@ -85,7 +85,7 @@ them inflates a total.
 | `resolved_prev_name_evidence` | One (name, candidate) pair where the payer's spelling was the candidate's registered name for the whole payment window |
 | `resolved_other_buyer_award_evidence` | One (name, tier-4 candidate) pair with the Contracts Finder awards stating a number under that name, and whether the pair `qualifies` |
 | `resolved_supplier_match` | One name, with its winning tier, method, confidence and notes |
-| `resolved_supplier_golden` | One supplier entity — 6,085 resolved + 7,152 unresolved buckets |
+| `resolved_supplier_golden` | One supplier entity — 6,086 resolved + 7,151 unresolved buckets |
 | `resolved_spend` | **Every** `staging_spend` row, carrying `row_role` and a `supplier_key` |
 | `resolved_review_queue` | One queued name — tier-4 candidates and demoted tier-1 names — with `review_tier` and any decision |
 | `resolved_queue_decisions` | One **user** decision — `accepted`, `rejected` or `left_open` — as a versioned literal with its basis |
@@ -114,8 +114,8 @@ from every aggregate.
 | `dim_entity` | One publishing body | 6 |
 | `dim_date` | One day | 728 |
 | `dim_category` | One (`entity`, `expense_type_raw`) pair + `uncategorised` | 1,637 |
-| `fact_spend` | One payment line to a **resolved** supplier, with its `resolution_basis` | 187,780 |
-| `fact_spend_unresolved` | One payment line, supplier **not** resolved | 164,748 |
+| `fact_spend` | One payment line to a **resolved** supplier, with its `resolution_basis` | 187,784 |
+| `fact_spend_unresolved` | One payment line, supplier **not** resolved | 164,744 |
 
 **Two fact tables, one grain.** The split exists so the unresolved population is a reportable
 category rather than a silent omission. Together they are every transaction row:
