@@ -1159,6 +1159,29 @@ file's SHA-256 and its corrected script path.
 **Open queue: 1,134 rows, GBP 478,402,447.77 (0.93%)** — A 11, B 341, C 782.
 220 decisions, 0 stale; `V3`, `V4` and `D.1`–`D.11` pass; `E-3` unchanged at 95.27%, tier 4 81.24%.
 
+
+### 7.19 Tier A row 4 left open, and Tier B batch 4 applied (ruled 2026-09-24, confirmed 2026-09-28)
+
+**`TELEREAL TRILLIUM` left open by user decision.** The payer's coding identifies a PFI estate contract with
+the Telereal group, but the exact-name company is a holding company among many group entities at one
+registered address, and nothing from the payer separates them — the same ruling as Mail Solutions.
+
+**Tier B batch 4 approved in full:** 28 `ACCEPT-OTHER-BUYER-AWARDS` accepts, GBP 32,742,970.51,
+recorded as user decisions; the two flagged rows carry their flags in their bases, and the three
+held rows stay open. Every row was re-verified against the build before writing — none stale, every
+class basis intact — and `D.11` backs all 74 delegated and 28 user decisions citing the class.
+
+| Basis | Names | Rows | Value (GBP) | % of value |
+|---|---:|---:|---:|---:|
+| Method — tiers 1–3, by rule | 5,984 | 175,847 | 29,992,021,161.30 | 58.43% |
+| User review | 102 | 10,892 | 1,412,232,877.44 | 2.75% |
+| Delegated review — Tier C | 139 | 1,041 | 3,427,478.56 | 0.0067% |
+| **Total resolved** | | **187,780** | **31,407,681,517.30** | **61.19%** |
+| Unresolved | 7,152 | 164,748 | 19,922,577,578.08 | 38.81% |
+
+**Open queue: 1,106 rows, GBP 445,659,477.26 (0.87%)** — A 11, B 313, C 782.
+249 decisions, 0 stale; `V3`, `V4` and `D.1`–`D.11` pass; `E-3` unchanged at 95.27%, tier 4 81.24%.
+
 ---
 
 ## 8. Layer 4 — the star schema (`94_validate_reporting.sql`)

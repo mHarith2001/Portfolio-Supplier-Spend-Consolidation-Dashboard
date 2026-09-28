@@ -111,7 +111,7 @@ GBP 273,975,883.60 to make a date range look tidy.
 | Transaction value | GBP 51,330,259,095.38 |
 | Excluded non-payment value | GBP 2,556,596,745.72 |
 | In-window transactions | 289,950 (+ 24 annex duplicates + 16 out-of-scope section rows = 289,990) |
-| Vendor spellings → identified suppliers | 14,434 → 6,066, plus 7,180 unidentified names |
+| Vendor spellings → identified suppliers | 14,434 → 6,085, plus 7,152 unidentified names |
 
 ---
 
@@ -122,9 +122,9 @@ GBP 273,975,883.60 to make a date range look tidy.
   1.00 with a single candidate — is correct **81.23%** of the time. Bulk-accepting it would
   be wrong about one time in six.
 - **That 58.43% is a good resolution rate or a bad one.** It is the method's measured rate for
-  these six publishers against this snapshot. User review adds 2.69% and delegated review
-  0.0067% so far, each reported separately, for 61.12% in total.
-- **That the unresolved population is small.** It is 38.88% of transaction value, reported
+  these six publishers against this snapshot. User review adds 2.75% and delegated review
+  0.0067% so far, each reported separately, for 61.19% in total.
+- **That the unresolved population is small.** It is 38.81% of transaction value, reported
   with its reasons and its value.
 - **That any named supplier has done anything wrong.** This is payment-line data.
   Concentration and variance are legitimate readings; impropriety is not supported by spend
@@ -142,11 +142,11 @@ published as such.
 | Tier | Band | How it is decided | Open rows | Open value (GBP) |
 |---|---|---|---:|---:|
 | **A** | ≥ GBP 10m | Per-row user decision | 11 | 169,059,375.87 |
-| **B** | GBP 100k – < 10m | User-approved evidence batches | 341 | 295,185,494.29 |
+| **B** | GBP 100k – < 10m | User-approved evidence batches | 313 | 262,442,523.78 |
 | **C** | < GBP 100k | Delegated to the builder on established evidence classes | 782 | 14,157,577.61 |
-| **Total** | | | **1,134** | **478,402,447.77** |
+| **Total** | | | **1,106** | **445,659,477.26** |
 
-**Decisions recorded: 220.** 81 by the user (74 accepted, 4 rejected, 3 left open — the evidence cannot separate the candidates, so they stay in the open count above) and 139 by the builder under
+**Decisions recorded: 249.** 110 by the user (102 accepted, 4 rejected, 4 left open — the evidence cannot separate the candidates, so they stay in the open count above) and 139 by the builder under
 the Tier C authorisation (all accepted — 55 on the same-payer bridge, 10 on the register's
 previous names, 74 on other buyers' awards — each reviewed individually). Every decision is recorded with its basis and is published in
 `review_queue.csv`; a user decision always overrides a delegated one. Two of the user's accepts
@@ -154,9 +154,9 @@ resolve a hard-rule-2 tie on same-payer evidence, under an override the user sco
 two names (control `D.10`).
 
 **How much the open queue could move the headline, and how little it can.** Resolution by
-method is **58.43%**. The open queue holds GBP 478,402,447.77 — **0.93%** of transaction value.
+method is **58.43%**. The open queue holds GBP 445,659,477.26 — **0.87%** of transaction value.
 Even if every open row were eventually accepted, the resolution rate could rise by at most that
-much. Most of the unresolved 38.88% is not in the queue at all: it is `no_match` and
+much. Most of the unresolved 38.81% is not in the queue at all: it is `no_match` and
 `below_threshold` names that no candidate reaches.
 
 **Four ceilings sit under the open queue:**
@@ -179,4 +179,4 @@ much. Most of the unresolved 38.88% is not in the queue at all: it is `no_match`
   stated a number. A buyer's statement is not taken on trust where it conflicts with something
   structural: a Tier C row was escalated, not decided, where the stated company is dormant or
   non-trading, or where the payer's own other spelling resolves by rule to a different company.
-  Tier C: 74 decided under the class, GBP 2,132,129.81; 4 escalated, GBP 245,751.83.
+  Tier C: 74 decided under the class, GBP 2,132,129.81; 4 escalated, GBP 245,751.83. Tier B: 28 approved by the user as a batch, GBP 32,742,970.51; 3 held open.
