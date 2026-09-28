@@ -1224,6 +1224,26 @@ candidate is right **83.24%** of the time, 1,498 names.
 **Open queue: 1,105 rows, GBP 425,690,500.26 (0.83%)** — A 10, B 313, C 782.
 249 decisions, 0 stale; `V3`, `V4` and `D.1`–`D.11` pass.
 
+
+### 7.21 Tier A row 6 accepted (2026-09-29)
+
+**`FIRST WEST OF ENGLAND` → `00025088`, accepted by the user**, on the payer's own coding and an independent
+payer's rule-resolved spelling: every Department for Transport payment on this name is coded as private-sector
+subsidy under its public-transport directorate, matching the candidate's bus-operator SIC, and Bristol City
+Council's `FIRST WEST OF ENGLAND LTD` resolves by rule at tier 2 to the same company. The name now resolves at
+tier 4 with `reviewed` confidence (`4|reviewed|00025088`).
+
+| Basis | Names | Rows | Value (GBP) | % of value |
+|---|---:|---:|---:|---:|
+| Method — tiers 1–3, by rule | 5,985 | 175,851 | 30,011,990,138.30 | 58.47% |
+| User review | 103 | 10,920 | 1,430,961,818.18 | 2.79% |
+| Delegated review — Tier C | 139 | 1,041 | 3,427,478.56 | 0.0067% |
+| **Total resolved** | | **187,812** | **31,446,379,435.04** | **61.26%** |
+| Unresolved | 7,150 | 164,716 | 19,883,879,660.34 | 38.74% |
+
+**Open queue: 1,104 rows, GBP 406,961,559.52 (0.79%)** — A 9, B 313, C 782.
+250 decisions, 0 stale; `V3`, `V4` and `D.1`–`D.11` pass; `E-3` unchanged at 95.28%, tier 4 81.05%.
+
 ---
 
 ## 8. Layer 4 — the star schema (`94_validate_reporting.sql`)

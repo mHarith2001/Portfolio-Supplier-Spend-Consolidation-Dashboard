@@ -12304,7 +12304,7 @@ supplier_id,supplier_key,supplier_name,company_number,legal_name,company_status,
 12303,ed8fce6b1fe384e6a2d07984370e22639eb9e13d66843744c735d1025f70ca22,GIAN HEALTHCARE LTD,09266552,GIAN HEALTHCARE LTD,Active,2014-10-16,1,true,,2,high,Resolved to Companies House,method,false
 12304,ed90b07e3cdce39a18273b2b98a987de52816f0ddb6cae32e289107df5b4c2c2,FIELD AND LAWN LIMITED,SC100165,FIELD AND LAWN LIMITED,Active,1986-07-22,1,true,,2,high,Resolved to Companies House,method,false
 12305,ed933f47d01144563c6a233380effe86a73772e76cb6a3bb507c4ba9a4f60a50,Castings Services,,,,,1,false,review,4,review,Awaiting review,unresolved,false
-12306,ed96c400dba4e02787600be66b67b0420b8a420fd9d0f11c5bfaa0fe5a87e35d,FIRST WEST OF ENGLAND LIMITED,00025088,FIRST WEST OF ENGLAND LIMITED,Active,1887-10-01,1,true,,2,high,Resolved to Companies House,method,false
+12306,ed96c400dba4e02787600be66b67b0420b8a420fd9d0f11c5bfaa0fe5a87e35d,FIRST WEST OF ENGLAND LIMITED,00025088,FIRST WEST OF ENGLAND LIMITED,Active,1887-10-01,2,true,,2,high,Resolved to Companies House,method,false
 12307,ed982057021bb24200c57182450e2fb2ef894278ff42d1632cbd86ca8515728f,Amadeus,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
 12308,ed9999178820be779a8cee49bade128b55fcf98f0055a03e25e67b6266abe54a,STREET CARS MANCHESTER LT,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
 12309,ed9ea582a709d1d16b4ae9764f0728ed3c71420f1f608cffaf6784970a3ae6e1,CITIZENS ADVICE ISLE OF WIGHT,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
@@ -13121,118 +13121,117 @@ supplier_id,supplier_key,supplier_name,company_number,legal_name,company_status,
 13120,fd8d068e6b0bd30dc4e85dfd6804bb7b3329d3bfadf1be1b6fe769cc5cd2ffd2,Professional Development Group t/a Government Events,,,,,2,false,review,4,review,Awaiting review,unresolved,false
 13121,fd8d451f37ce7933656d1bde23a41df890deac6cc5e8123cbcbd55c6898808d8,Kikkerland Europe BV,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
 13122,fd93294eb0eedb60189267c5631d1c29fe2a0909e8d10a329b8e8f61e091eb4a,FLEXPRESS,,,,,1,false,review,4,review,Awaiting review,unresolved,false
-13123,fd9352a48c7f76c576675a5630746105d8e1dab3120bffc83e8934d1d591e3be,FIRST WEST OF ENGLAND,,,,,1,false,review,4,review,Awaiting review,unresolved,false
-13124,fd94ca4e51faaa309ae778fbdec8862ccc13fa5238816122a7be36ead759eb18,AMY FLOORING LTD,10399801,AMY FLOORING LTD,Active,2016-09-28,1,true,,2,high,Resolved to Companies House,method,false
-13125,fd97d913984c8f33408bd0c16bf60633fba15054ffa6c4abff570fd20501844f,YELLOW JIGSAW CIC,09197741,YELLOW JIGSAW CIC,Active,2014-09-01,1,true,,2,high,Resolved to Companies House,method,false
-13126,fd9b9cae3539ebeb8d5fcf4580dcb18dec484bd59391d489aebaa403e8050e7e,PEOPLE FOR RESEARCH LTD,03734502,PEOPLE FOR RESEARCH LTD,Active,1999-03-17,1,true,,1,high,Resolved to Companies House,method,false
-13127,fd9e561da69d0b04edaa9b43c1bb49b6f0da0e477ecf74016ab84d27d0fef6a0,TET LIMITED,01923808,TET LIMITED,Active,1985-06-19,2,true,,1,high,Resolved to Companies House,method,false
-13128,fda47d71acd5813dc44daad7e8c0350d4329aebacb483611365515d95e8a080b,INSTATHERM COMBUSTION SERVICES LIMITED,02349701,INSTATHERM COMBUSTION SERVICES LIMITED,Active,1989-02-20,1,true,,2,high,Resolved to Companies House,method,false
-13129,fdac1fcb9af334f1c1f0a9a436d220a9a3b1dc5ee91343c46b702f177e4497d4,FACEBK EECLSYXV92,,,,,1,false,no_match,5,none,Unresolved,unresolved,false
-13130,fdb1d6ea7e0247368a31b464ded9207c96f0324bcbac68c5f21722808963043e,THE CHRISTMAS CABIN LIMITED,04076716,THE CHRISTMAS CABIN LIMITED,Active,2000-09-22,1,true,,2,high,Resolved to Companies House,method,false
-13131,fdb882dceaa21200e4c23363e81145a6c7921726104c0ce58116a28e1c7cdf56,SILVERDALE SOLICITORS,,,,,1,false,review,4,review,Awaiting review,unresolved,false
-13132,fdbfa75d8a4946d1a3ddd31086475bfb0247fc4ae2fb84c5d5361bd85ce740ee,SPECIALIST COMPUTER CENTRES PLC SCC,,,,,1,false,ambiguous,5,none,Unresolved,unresolved,false
-13133,fdc7ce5e82b066a21d84ed5ccce44bc63d6a74f4a86deffdd7b9e27d6ab9f67e,BRISTOL SPACEWORKS LTD,01944157,BRISTOL SPACEWORKS LTD,Active,1985-09-03,1,true,,2,high,Resolved to Companies House,method,false
-13134,fdcff4124297b98454a8df7c80dd0417e472bde633f87a14cab90e428105d9f1,DIAMONDS GUEST HOUSE LTD,10426082,DIAMONDS GUEST HOUSE LTD,Active,2016-10-13,1,true,,2,high,Resolved to Companies House,method,false
-13135,fdd37ab92661d99c6defc302a1ee746b86d0be489e8b88a17b9274ae4914dc03,BRISTOL CLIMATE AND NATURE PARTNERSHIP CIC,09062455,BRISTOL CLIMATE AND NATURE PARTNERSHIP CIC,Active,2014-05-29,1,true,,2,high,Resolved to Companies House,method,false
-13136,fdd8771810265557c330f1f6d0f70492977a73e71527befa0141065c7f6cb7f2,Morelock Signs Limited,,,,,1,false,review,4,review,Awaiting review,unresolved,false
-13137,fddfc1d0590b4ef35fc428d4edea440b2aeaacd64d30436e96de43b3b66c8d03,DPT and Son Joiners and Builders Ltd,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
-13138,fde538e1855a4b86a1fde404d0280376bd8b577a484074ca43ad6de5619c7533,FuelGenie,,,,,1,false,no_match,5,none,Unresolved,unresolved,false
-13139,fdebf6827db96649e05a864bf0b96246c95279854907a78bb21ab7da32ea4360,FIRST TRANSPENNINE EXPRESS LIMITED,09111801,FIRST TRANSPENNINE EXPRESS LIMITED,Active,2014-07-02,1,true,,2,high,Resolved to Companies House,method,false
-13140,fdf131bde26767dad110ecdf9211c09c79a6585cbb494ae25babacaea709a5fc,CULINA ROC LTD,13234816,CULINA ROC LTD,Active,2021-03-01,1,true,,2,high,Resolved to Companies House,method,false
-13141,fe03255dd146d3d4de48f03f70afcc0d3bfed345986e7d1015e5c82ba6c829d1,Rigby Taylor Ltd,,,,,1,false,ambiguous,5,none,Unresolved,unresolved,false
-13142,fe16340f8a645739a0fe878c78e4490a6b9729d34504ccaeb887b1932e031bd6,Individual — name withheld,,,,,1,false,no_match,5,none,Unresolved,unresolved,true
-13143,fe1b443ebe77ce4b3b7e04407cd5fae4d03f319e5585342f7d885061574be939,Loop Blinds,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
-13144,fe234d8dd0ffca1a2712ed063222f8cd6835c28cf02655e9be4e04338b24dcac,AWARE TECHNOLOGIES LIMITED,09900749,AWARE TECHNOLOGIES LIMITED,Active,2015-12-03,1,true,,2,high,Resolved to Companies House,method,false
-13145,fe2a6d9cbf548d5184bd1d6e3445d528a0d3986bbff2686af4ebf5901983013d,VOUCHER EXPRESS,,,,,1,false,review,4,review,Awaiting review,unresolved,false
-13146,fe2ac862341b64f845e6b916a75584f663f0f2842aae51937f56b40e52cb1d3a,Houses4Homes 4U Ltd,,,,,1,false,no_match,5,none,Unresolved,unresolved,false
-13147,fe341340c59aa2067110d092a614223383cdd05c2643cc4f39ba049d308ac6a4,The Coffee Sack,,,,,1,false,no_match,5,none,Unresolved,unresolved,false
-13148,fe3590dfcdb78d96390f854c1881ded9ce44e217abb43f06e924f9ceb33d9a8e,MARSH LIMITED,01507274,MARSH LIMITED,Active,1980-07-11,2,true,,2,high,Resolved to Companies House,method,false
-13149,fe49942cd2c811fa67b230d276333c10a39524cbfd558585d4d7f7c1fd5ea6e2,MDE CONSULTANTS LTD,08110758,MDE CONSULTANTS LTD,Active,2012-06-19,1,true,,2,high,Resolved to Companies House,method,false
-13150,fe4e93f8de1e50b6ab9a55d32b687fa1b10b44e3011977869cb35ec7188ed0cc,Syrian Community Council,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
-13151,fe51d54e8d453a5de091eab6d8759ee9f6f235edc8e204fc39ea482f348f4490,Bristol Free School,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
-13152,fe6bc656577ae97ee09f62be87a7cbc7c498d2759ef734c1ad1082703ec0fab3,LOCAL GOVERNMENT ASSOCIATION,11177145,LOCAL GOVERNMENT ASSOCIATION,Active,2018-01-30,1,true,,2,high,Resolved to Companies House,method,false
-13153,fe6cb7530055ba4b971596c0f96a4dee3c8d8ddc16b1b4cc69f9b379da4c3b95,Withington Village Regen,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
-13154,fe6cbb3a507a5a9e428a364ea09e9b83226a006849d34c89ce6ddd50ee1a6e03,GOOGLE*CLOUD JXBDXL,,,,,1,false,no_match,5,none,Unresolved,unresolved,false
-13155,fe718dd11f658ed04f8cadad6785c9d0e5af1f63ac8a8d9c2b97848a9346aaa8,VEHICLE CERTIFICATION AGENCY,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
-13156,fe7194019f52f0b33dfae7e4cd475a12765531d6633a6a85c652572f89622b9d,Individual — name withheld,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,true
-13157,fe894658eb0b45e96ec8d20a4fbd9b99ae4ebb6ebebf83aafb9e536c5bfe4a08,HIRA CARPETS LTD,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
-13158,fe8aaa8db0cc660dd4edafd143f9ace34d0cba2d0cb10cd2100a19bef8594472,Earswick Parish Council,,,,,1,false,no_match,5,none,Unresolved,unresolved,false
-13159,fe8bd652c41882c5b7d792c3b8c9412047aa6eca6b842e8270758f9c10a6323d,BDB PITMANS,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
-13160,fe9a1a459499f606827927f9a7fcd69c10ef2e4461d333123ede48c0bf12e967,Amazon Web Services t/a Amazon Web SVS EMEA SARL,,,,,2,false,below_threshold,5,none,Unresolved,unresolved,false
-13161,fe9f8e59df7987e0c504cc64aa198cedb53253c918b8d966403e46d15db60942,AECOM INFRASTRUCTURE & ENVIRONMENT UK LIMITED,00880328,AECOM INFRASTRUCTURE & ENVIRONMENT UK LIMITED,Active,1966-05-27,2,true,,2,high,Resolved to Companies House,method,false
-13162,fea2141b92c5243c0d5c68cf19eb2b59ec71ad99607cce0cfa901011eb270a82,COOLERAID LTD,02585899,COOLERAID LTD,Active,1991-02-26,1,true,,2,high,Resolved to Companies House,method,false
-13163,fea2d304e6cedaaf3b4eb14cb0fea8789947593ff5a5986489b5d31ca7def851,KINGKRAFT LIMITED,01811672,KINGKRAFT LIMITED,Active,1984-04-26,1,true,,1,high,Resolved to Companies House,method,false
-13164,fea4be5760f597ae5c2144a0c4d86fec7da189180cccac457eb75e2b840c26cd,VPS (UK) LIMITED,04028962,VPS (UK) LIMITED,Active,2000-07-04,1,true,,1,high,Resolved to Companies House,method,false
-13165,fea9ea14590176426b5a757f4a36996025ee9651f5621465135dad34bd8bfaa9,Coram,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
-13166,feb070b23933602138e76ba69bb667822f61a867ef2fe660f462a49fc1f2d32e,Individual — name withheld,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,true
-13167,feb44813c3491069c499738ca8d73c58fdeb7b01615fed9f329ca2a3ced2b4e7,OVERBURY PLC,00836946,OVERBURY PLC,Active,1965-02-08,1,true,,1,high,Resolved to Companies House,method,false
-13168,febad487da39b4cc9718d1d4c58a99510ef6c0162db6acbddc918473b870df4d,Café no.16 LTD,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
-13169,febd02622e3237e8e2c88020b83391ad3fda3e63381286c629f048989b47af7b,ARRIVA MIDLANDS NORTH LIMITED,01556305,ARRIVA MIDLANDS NORTH LIMITED,Active,1981-04-15,1,true,,2,high,Resolved to Companies House,method,false
-13170,fedb713c508e2b767475ddfa19a58f856b824492d8a2cfc8948c94f72ecd0511,COMMUNITY IN PARTNERSHIP KNOWLE WEST,03301167,COMMUNITY IN PARTNERSHIP KNOWLE WEST,Active,1997-01-13,1,true,,2,high,Resolved to Companies House,method,false
-13171,fedf001144672d675c7fd35c25fec2db6ea54861dde6d7dc5d23328a2998842d,WHIPPET COACHES LIMITED,00520428,WHIPPET COACHES LIMITED,Active,1953-06-08,1,true,,2,high,Resolved to Companies House,method,false
-13172,fee2aaca8ec4bb069db91c2d3f16b83835d6362d8823aae34f655163f7a389d4,DWNJQSDH-1,,,,,1,false,no_match,5,none,Unresolved,unresolved,false
-13173,fee327c976d19f44c7073caa4b72b9025eb4402f25eee3e45f5d1df4d6a34b90,Love to Eat Cafe,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
-13174,fee4ef41a2aebd3f3bd40c5126306ff944ab0a045479b4ccce9d4e7716b81c99,Turnaround Publisher Servives Lt,,,,,1,false,no_match,5,none,Unresolved,unresolved,false
-13175,fee5d85b268972aa106065ff51fb39d2f5788b43c89e1b2c690105f9be6fc821,St.Wilfrids Playgroup,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
-13176,fee636686f11095ad2601ce2d8da713600818ff70ae42b34e62cb7bbb5c08aaf,Wildlife and Birdcare Nature Recovery Project CIC,,,,,1,false,review,4,review,Awaiting review,unresolved,false
-13177,fee8807b515d0494c5dfaa4c6fd41faf70bab25431da0f26b7e2997cee0a731e,WILLFAB LIMITED,07983233,WILLFAB LIMITED,Active,2012-03-09,1,true,,2,high,Resolved to Companies House,method,false
-13178,fee93c1d0245c59ebe4646db9b03fb0b434c9e511e1b44a55c4f8f6eec60ca7b,JACOBS U.K. LIMITED,02594504,JACOBS U.K. LIMITED,Active,1991-03-22,1,true,,1,high,Resolved to Companies House,method,false
-13179,feecaf14709b4cef5a37fd235899257f4b83c0552cbe330aac5950908eb76dfd,Individual — name withheld,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,true
-13180,fef8c3de68bfa865f566f7922aa3c8e548eddcf08f0144ae5660fffeb7184365,Groundwork Yorkshire,,,,,1,false,review,4,review,Awaiting review,unresolved,false
-13181,ff03035255838e23a5c8e64372837ad33149d9623f0ca9d7a1e569a05461d0c7,Association of Town Centre Manageme,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
-13182,ff09cb02ce276bfd1a38b898d493eebdc1776e241053c052c4f3ea30023555de,LINDSAY CUNNINGHAM LIMITED,07541862,LINDSAY CUNNINGHAM LIMITED,Active,2011-02-24,1,true,,2,high,Resolved to Companies House,method,false
-13183,ff0b06dd06fa03920d089347f83052c5647be368823788dcef6e497ef4fb8b9c,STRATFORD CITY CAR PARK LIMITED,07537021,STRATFORD CITY CAR PARK LIMITED,Active,2011-02-21,1,true,,2,high,Resolved to Companies House,method,false
-13184,ff0cd1b93b2694226440b89a6fd63a10cd28813bb6bd19a482233622b04d3c1e,Day Lewis Pharmacy,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
-13185,ff1763eeb6f1ac437dc55a9382088e229610271a8a53bcb65f2aaabf96763131,St Bartholomews Church,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
-13186,ff1ff2fa46172ff17e3afe6ec2c9d2793c6a57157bdee032172bbf66e160256e,CONSTRUCTIVE COLLABORATION LTD,03551490,CONSTRUCTIVE COLLABORATION LTD,Active,1998-04-23,1,true,,2,high,Resolved to Companies House,method,false
-13187,ff2080e63c4766c4c0b2e0e9a8d0981653e68dc4d6d6b2968787413b5bde6529,METRO PAGES LTD,10022644,METRO PAGES LTD,Active,2016-02-24,1,true,,2,high,Resolved to Companies House,method,false
-13188,ff23458228dfc2503ce678cbaa0061ce30e460237a5fe7a93de5c57de5105e5b,Bethnall Drive Allotment Society,,,,,1,false,no_match,5,none,Unresolved,unresolved,false
-13189,ff23f0afd40f9764ce5bd251c433c56a4e39ebbab358a49aaa27143755bdd279,QUARTZELEC LTD,02364716,QUARTZELEC LTD,Active,1989-03-22,1,true,,2,high,Resolved to Companies House,method,false
-13190,ff258f222cd23ad3bd54a91e309a9138c9d2d472c0bbd75aef1815b5dcd8a3e3,CONVERTYOURGARAGE (NW) LTD,09457287,CONVERTYOURGARAGE (NW) LTD,Active,2015-02-25,1,true,,2,high,Resolved to Companies House,method,false
-13191,ff2fcb483046400e7412921197d169f4b1b3142b4717808aebd49b82717e62ec,ENGIE POWER LIMITED,04236804,ENGIE POWER LIMITED,Active,2001-06-18,1,true,,2,high,Resolved to Companies House,method,false
-13192,ff30e80968d8a099eb0cab043db6b4d72d0e85acaf426795ad1dc2e5e19df811,Mill School,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
-13193,ff314ecda711dcc9a665b142afd212f59f55c1deccadded23c825981158f4f7f,Next Stage Ltd - Learning Disabilit,,,,,1,false,no_match,5,none,Unresolved,unresolved,false
-13194,ff4e6fdb2209f733adf571162c728d09686585b22ada7fa94a9685fc756319b1,UK POWER NETWORKS (OPERATIONS) LIMITED,03870728,UK POWER NETWORKS (OPERATIONS) LIMITED,Active,1999-11-03,1,true,,1,high,Resolved to Companies House,method,false
-13195,ff4e72320861ad75305ecbe453e7db91ba4451a48088a5c9af7b1113c01d95a0,New Islington Medical Practice,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
-13196,ff51f7cb5873918059e1ac801f128a177afabaf30d19fe0b3d80949880410b15,TOTALENERGIES GAS & POWER LIMITED,02172239,TOTALENERGIES GAS & POWER LIMITED,Active,1987-09-30,1,true,,1,high,Resolved to Companies House,method,false
-13197,ff5201a4956e5b29d042143e0928829161188393a43e6c3911447c6f53ce32f2,PARAGON TRAFFIC MANAGEMENT LIMITED,09704818,PARAGON TRAFFIC MANAGEMENT LIMITED,Active,2015-07-27,1,true,,2,high,Resolved to Companies House,method,false
-13198,ff545bd804baadfb5372b073d68b211200d89a43fe494fc8bd91d4e06cfb6a54,FACEBK 73SVXW7W92,,,,,1,false,no_match,5,none,Unresolved,unresolved,false
-13199,ff5d5e5ad42df3141f30379c658a5b7675532e442a337cadb2f5cbda7c2c176e,Oxfordshire County Council Shared Lives Scheme,,,,,1,false,no_match,5,none,Unresolved,unresolved,false
-13200,ff5dec0a01ef26a20dea3797f505eb7b646e87f60c2b61e1f080863e861a0a38,ZIP HEATERS (UK) LTD,02649782,ZIP HEATERS (UK) LTD,Active,1991-09-24,1,true,,2,high,Resolved to Companies House,method,false
-13201,ff5e7fd3975ed42664f48738f7c262d71c7f194321f745fb414a93b1362d6c1f,Rowley & Sons,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
-13202,ff655aaf80e392191ecf3cc882f9dbabfbeb80128ccd0ac94fe79576fdbecbf5,Ruche Marketing,,,,,1,false,review,4,review,Awaiting review,unresolved,false
-13203,ff6c887082e23dfd98bfc8713669d48124f05e15bf261e65e21e328a9c3813c9,Cannon Fire & Security Ltd,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
-13204,ff70d86e5a0e16340e9586b817767a88163bd6f7bd237ef1d8c00ddd9b0a5e7f,CELERITY LIMITED,04475496,CELERITY LIMITED,Active,2002-07-02,1,true,,2,high,Resolved to Companies House,method,false
-13205,ff70e0cf294516ed4b53bedad577eeb10e046fa93f7199abf5d06fbb6a0f43f9,Dunnington and Grimston Playing Fields Association,,,,,2,false,below_threshold,5,none,Unresolved,unresolved,false
-13206,ff71d9b876467bfc00e0ba0f46266bcabcc6871fea9f2d45bb61a07d4fc02986,ACT NOW TRAINING LIMITED,04524979,ACT NOW TRAINING LIMITED,Active,2002-09-03,1,true,,1,high,Resolved to Companies House,method,false
-13207,ff7298f548466a53acf1b81348f1e8e204b0760314194e6152ea07a4826bf34d,Egerton Recovery Ltd,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
-13208,ff72fd2867d655ed7c24c5ad3bc9fc2d8c026af9f15386cb46fe3489340966fd,Vision Aid Technologies,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
-13209,ff7ce22fa6c19a45d7407ff552db7d3c0200819c666bc9f420f22a044df81332,Reliance Motor Services,,,,,1,false,review,4,review,Awaiting review,unresolved,false
-13210,ff80d2b5f7debc10ecdcd35d67606d0cd28f106bc77a0a1dc312f2a6e0606a34,FYLDE BOROUGH COUNCIL,,,,,1,false,no_match,5,none,Unresolved,unresolved,false
-13211,ff85478265781a0241d8e0e124d3f10f867651e283d15448850c25a313a9f3ef,Haashim Bux,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
-13212,ff862c11701dd71ef15ed0f1639a1f53007c4d8f6a617e549de6dcf3de65d854,UNIVERSITY OF LEEDS,RC000658,UNIVERSITY OF LEEDS,Active,1981-01-01,2,true,,2,high,Resolved to Companies House,method,false
-13213,ff877880e154737a9d449d42718095e3c5694a1eb787113268643d0b39c7938e,Little Faces Nursery Ltd,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
-13214,ff8a2ef6955cb1be40e25a344f36efb9af95d3a70de2e8323d8b066129da245b,HENRY,06952404,HENRY,Active,2009-07-04,1,true,,2,high,Resolved to Companies House,method,false
-13215,ff8dfba5f88d455fbbe4b6a9c0405aa269f3071b87adc3cd676d334ff4a9af20,BROADBEAN TECHNOLOGY LIMITED,04283360,BROADBEAN TECHNOLOGY LIMITED,Active,2001-09-07,1,true,,1,high,Resolved to Companies House,method,false
-13216,ff9790606114d3d1be08e6a63031dbf36a5d725c38427fa9a9fae86e907b49de,LONDON BOROUGH OF TOWER HAMLETS,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
-13217,ff992789da8c143aad2141e74d6dab45229ab5a21bf79854aa3ff10cde8277ce,ACTIVE COMMUNITIES NETWORK LIMITED,06086438,ACTIVE COMMUNITIES NETWORK LIMITED,Active,2007-02-06,1,true,,2,high,Resolved to Companies House,method,false
-13218,ffa0ef23e18a9d0115d6f763aeca13b41705a00316eb50bd29e9bdb4341fb6ee,VIRTUAL COLLEGE LIMITED,03052439,VIRTUAL COLLEGE LIMITED,Active,1995-05-02,1,true,,2,high,Resolved to Companies House,method,false
-13219,ffa414671a10e385c2d8fd661da74f7926653303c4bc953e0025947eee476b4c,HAYMARKET MEDIA GROUP LTD.,00267189,HAYMARKET MEDIA GROUP LTD.,Active,1932-07-22,1,true,,1,reviewed,Resolved to Companies House,delegated_review,false
-13220,ffa6afd494484fc2d99eb932f297f34545d6a42544416a0134235b7f7aa403eb,E&K Solicitors,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
-13221,ffa762600f4582f4e6f9615a75da8945ddb622f7e011faf51b565185a79f733c,REFUGE,01412276,REFUGE,Active,1979-01-30,1,true,,2,high,Resolved to Companies House,method,false
-13222,ffa8bee9f7e32d378a42fc714c6b5a1d7f74f11e19f9d2a193890f1b8f4e1ff5,York Survey Supply Centre,,,,,1,false,review,4,review,Awaiting review,unresolved,false
-13223,ffb6b783a3350f2922c4834c9f16472cee65189204c649f235c2f6fd6f5238e4,Weston-super-Mare Town Council,,,,,1,false,no_match,5,none,Unresolved,unresolved,false
-13224,ffba2d3a906d7a055b5c5b57d65a466dc21d9299c740f3b186183c84c7d90eec,Individual — name withheld,,,,,1,false,no_match,5,none,Unresolved,unresolved,true
-13225,ffbbf9a757dd488462971c50e90f577e45e0e86e8b9d953b42bf0a4a464b34fc,FRAGRANCE UK-HOTEL MANAGEMENT,,,,,1,false,review,4,review,Awaiting review,unresolved,false
-13226,ffc95a0a36874d7d96b6bee77bf7a41f31e9c997a037f97349e581baf3fb865a,Park NOW Limited,,,,,3,false,below_threshold,5,none,Unresolved,unresolved,false
-13227,ffcb376c2775c029d102a56ce4017525de3762917fb88dd064948dbf34a59d05,BRIGHTON & HOVE CITY COUNCIL,,,,,2,false,below_threshold,5,none,Unresolved,unresolved,false
-13228,ffcbb5503fa431bd69e99e27e97d1bdca624d585da1027f6ed1fbef8b7e636b4,BE LTD,05169344,BE LTD,Active,2004-07-02,1,true,,1,high,Resolved to Companies House,method,false
-13229,ffd5443326259b3606c221e482011931b21059ecee9a2b2ab5f1e763895973a8,CHARIOT OFFICE SUPPLIES LIMITED,01329301,CHARIOT OFFICE SUPPLIES LIMITED,Active,1977-09-08,1,true,,2,high,Resolved to Companies House,method,false
-13230,ffe6cc178b84000f8ada452d03c356a52ba91fa3f4ec726341ae279451986107,MEDIA FIRST LIMITED,01830643,MEDIA FIRST LIMITED,Active,1984-07-06,1,true,,2,high,Resolved to Companies House,method,false
-13231,ffe81971c20d6f91e6532b98fed195839d1ddad61c715ccf3da72c1df4aa95e5,M & S Property Services,,,,,1,false,review,4,review,Awaiting review,unresolved,false
-13232,ffebb47e0ba5dcd905a98e5a0c67a1e3364411135a72e1d1aef9f17d47e7ebc5,D.J. GOODE & ASSOCIATES LIMITED,04568964,D.J. GOODE & ASSOCIATES LIMITED,Active,2002-10-22,1,true,,2,high,Resolved to Companies House,method,false
-13233,ffecc2767e99e641ca6e9a778e1c347a20e364fbed94b1c85c72c2645a8634bc,The Lodge Residential Home,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
-13234,ffed3aa868c810c93dfecdd36ac06b55c4b6de07e5d29792996858d9a43be788,JAX First Aid Supplies,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
-13235,fff286a5a23336aed16c5a6c3544fe52eb2b1313b0c71520d951055de0c8826f,CARMARTHENSHIRE COUNTY COUNCIL,,,,,2,false,no_match,5,none,Unresolved,unresolved,false
-13236,fff9e1a7412d594f2fb899ade2e1f52ee7ce29483a6ec9e74c2e1004cb54bd61,ALLEGIANT GROUP LTD,11587309,ALLEGIANT GROUP LTD,Active,2018-09-25,1,true,,2,high,Resolved to Companies House,method,false
-13237,fffdff492b5f42e5806e02ec0cf7baec2b9d2a4c5a6fb363748b78bd3729dfa0,Claremont Exclusive,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
+13123,fd94ca4e51faaa309ae778fbdec8862ccc13fa5238816122a7be36ead759eb18,AMY FLOORING LTD,10399801,AMY FLOORING LTD,Active,2016-09-28,1,true,,2,high,Resolved to Companies House,method,false
+13124,fd97d913984c8f33408bd0c16bf60633fba15054ffa6c4abff570fd20501844f,YELLOW JIGSAW CIC,09197741,YELLOW JIGSAW CIC,Active,2014-09-01,1,true,,2,high,Resolved to Companies House,method,false
+13125,fd9b9cae3539ebeb8d5fcf4580dcb18dec484bd59391d489aebaa403e8050e7e,PEOPLE FOR RESEARCH LTD,03734502,PEOPLE FOR RESEARCH LTD,Active,1999-03-17,1,true,,1,high,Resolved to Companies House,method,false
+13126,fd9e561da69d0b04edaa9b43c1bb49b6f0da0e477ecf74016ab84d27d0fef6a0,TET LIMITED,01923808,TET LIMITED,Active,1985-06-19,2,true,,1,high,Resolved to Companies House,method,false
+13127,fda47d71acd5813dc44daad7e8c0350d4329aebacb483611365515d95e8a080b,INSTATHERM COMBUSTION SERVICES LIMITED,02349701,INSTATHERM COMBUSTION SERVICES LIMITED,Active,1989-02-20,1,true,,2,high,Resolved to Companies House,method,false
+13128,fdac1fcb9af334f1c1f0a9a436d220a9a3b1dc5ee91343c46b702f177e4497d4,FACEBK EECLSYXV92,,,,,1,false,no_match,5,none,Unresolved,unresolved,false
+13129,fdb1d6ea7e0247368a31b464ded9207c96f0324bcbac68c5f21722808963043e,THE CHRISTMAS CABIN LIMITED,04076716,THE CHRISTMAS CABIN LIMITED,Active,2000-09-22,1,true,,2,high,Resolved to Companies House,method,false
+13130,fdb882dceaa21200e4c23363e81145a6c7921726104c0ce58116a28e1c7cdf56,SILVERDALE SOLICITORS,,,,,1,false,review,4,review,Awaiting review,unresolved,false
+13131,fdbfa75d8a4946d1a3ddd31086475bfb0247fc4ae2fb84c5d5361bd85ce740ee,SPECIALIST COMPUTER CENTRES PLC SCC,,,,,1,false,ambiguous,5,none,Unresolved,unresolved,false
+13132,fdc7ce5e82b066a21d84ed5ccce44bc63d6a74f4a86deffdd7b9e27d6ab9f67e,BRISTOL SPACEWORKS LTD,01944157,BRISTOL SPACEWORKS LTD,Active,1985-09-03,1,true,,2,high,Resolved to Companies House,method,false
+13133,fdcff4124297b98454a8df7c80dd0417e472bde633f87a14cab90e428105d9f1,DIAMONDS GUEST HOUSE LTD,10426082,DIAMONDS GUEST HOUSE LTD,Active,2016-10-13,1,true,,2,high,Resolved to Companies House,method,false
+13134,fdd37ab92661d99c6defc302a1ee746b86d0be489e8b88a17b9274ae4914dc03,BRISTOL CLIMATE AND NATURE PARTNERSHIP CIC,09062455,BRISTOL CLIMATE AND NATURE PARTNERSHIP CIC,Active,2014-05-29,1,true,,2,high,Resolved to Companies House,method,false
+13135,fdd8771810265557c330f1f6d0f70492977a73e71527befa0141065c7f6cb7f2,Morelock Signs Limited,,,,,1,false,review,4,review,Awaiting review,unresolved,false
+13136,fddfc1d0590b4ef35fc428d4edea440b2aeaacd64d30436e96de43b3b66c8d03,DPT and Son Joiners and Builders Ltd,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
+13137,fde538e1855a4b86a1fde404d0280376bd8b577a484074ca43ad6de5619c7533,FuelGenie,,,,,1,false,no_match,5,none,Unresolved,unresolved,false
+13138,fdebf6827db96649e05a864bf0b96246c95279854907a78bb21ab7da32ea4360,FIRST TRANSPENNINE EXPRESS LIMITED,09111801,FIRST TRANSPENNINE EXPRESS LIMITED,Active,2014-07-02,1,true,,2,high,Resolved to Companies House,method,false
+13139,fdf131bde26767dad110ecdf9211c09c79a6585cbb494ae25babacaea709a5fc,CULINA ROC LTD,13234816,CULINA ROC LTD,Active,2021-03-01,1,true,,2,high,Resolved to Companies House,method,false
+13140,fe03255dd146d3d4de48f03f70afcc0d3bfed345986e7d1015e5c82ba6c829d1,Rigby Taylor Ltd,,,,,1,false,ambiguous,5,none,Unresolved,unresolved,false
+13141,fe16340f8a645739a0fe878c78e4490a6b9729d34504ccaeb887b1932e031bd6,Individual — name withheld,,,,,1,false,no_match,5,none,Unresolved,unresolved,true
+13142,fe1b443ebe77ce4b3b7e04407cd5fae4d03f319e5585342f7d885061574be939,Loop Blinds,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
+13143,fe234d8dd0ffca1a2712ed063222f8cd6835c28cf02655e9be4e04338b24dcac,AWARE TECHNOLOGIES LIMITED,09900749,AWARE TECHNOLOGIES LIMITED,Active,2015-12-03,1,true,,2,high,Resolved to Companies House,method,false
+13144,fe2a6d9cbf548d5184bd1d6e3445d528a0d3986bbff2686af4ebf5901983013d,VOUCHER EXPRESS,,,,,1,false,review,4,review,Awaiting review,unresolved,false
+13145,fe2ac862341b64f845e6b916a75584f663f0f2842aae51937f56b40e52cb1d3a,Houses4Homes 4U Ltd,,,,,1,false,no_match,5,none,Unresolved,unresolved,false
+13146,fe341340c59aa2067110d092a614223383cdd05c2643cc4f39ba049d308ac6a4,The Coffee Sack,,,,,1,false,no_match,5,none,Unresolved,unresolved,false
+13147,fe3590dfcdb78d96390f854c1881ded9ce44e217abb43f06e924f9ceb33d9a8e,MARSH LIMITED,01507274,MARSH LIMITED,Active,1980-07-11,2,true,,2,high,Resolved to Companies House,method,false
+13148,fe49942cd2c811fa67b230d276333c10a39524cbfd558585d4d7f7c1fd5ea6e2,MDE CONSULTANTS LTD,08110758,MDE CONSULTANTS LTD,Active,2012-06-19,1,true,,2,high,Resolved to Companies House,method,false
+13149,fe4e93f8de1e50b6ab9a55d32b687fa1b10b44e3011977869cb35ec7188ed0cc,Syrian Community Council,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
+13150,fe51d54e8d453a5de091eab6d8759ee9f6f235edc8e204fc39ea482f348f4490,Bristol Free School,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
+13151,fe6bc656577ae97ee09f62be87a7cbc7c498d2759ef734c1ad1082703ec0fab3,LOCAL GOVERNMENT ASSOCIATION,11177145,LOCAL GOVERNMENT ASSOCIATION,Active,2018-01-30,1,true,,2,high,Resolved to Companies House,method,false
+13152,fe6cb7530055ba4b971596c0f96a4dee3c8d8ddc16b1b4cc69f9b379da4c3b95,Withington Village Regen,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
+13153,fe6cbb3a507a5a9e428a364ea09e9b83226a006849d34c89ce6ddd50ee1a6e03,GOOGLE*CLOUD JXBDXL,,,,,1,false,no_match,5,none,Unresolved,unresolved,false
+13154,fe718dd11f658ed04f8cadad6785c9d0e5af1f63ac8a8d9c2b97848a9346aaa8,VEHICLE CERTIFICATION AGENCY,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
+13155,fe7194019f52f0b33dfae7e4cd475a12765531d6633a6a85c652572f89622b9d,Individual — name withheld,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,true
+13156,fe894658eb0b45e96ec8d20a4fbd9b99ae4ebb6ebebf83aafb9e536c5bfe4a08,HIRA CARPETS LTD,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
+13157,fe8aaa8db0cc660dd4edafd143f9ace34d0cba2d0cb10cd2100a19bef8594472,Earswick Parish Council,,,,,1,false,no_match,5,none,Unresolved,unresolved,false
+13158,fe8bd652c41882c5b7d792c3b8c9412047aa6eca6b842e8270758f9c10a6323d,BDB PITMANS,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
+13159,fe9a1a459499f606827927f9a7fcd69c10ef2e4461d333123ede48c0bf12e967,Amazon Web Services t/a Amazon Web SVS EMEA SARL,,,,,2,false,below_threshold,5,none,Unresolved,unresolved,false
+13160,fe9f8e59df7987e0c504cc64aa198cedb53253c918b8d966403e46d15db60942,AECOM INFRASTRUCTURE & ENVIRONMENT UK LIMITED,00880328,AECOM INFRASTRUCTURE & ENVIRONMENT UK LIMITED,Active,1966-05-27,2,true,,2,high,Resolved to Companies House,method,false
+13161,fea2141b92c5243c0d5c68cf19eb2b59ec71ad99607cce0cfa901011eb270a82,COOLERAID LTD,02585899,COOLERAID LTD,Active,1991-02-26,1,true,,2,high,Resolved to Companies House,method,false
+13162,fea2d304e6cedaaf3b4eb14cb0fea8789947593ff5a5986489b5d31ca7def851,KINGKRAFT LIMITED,01811672,KINGKRAFT LIMITED,Active,1984-04-26,1,true,,1,high,Resolved to Companies House,method,false
+13163,fea4be5760f597ae5c2144a0c4d86fec7da189180cccac457eb75e2b840c26cd,VPS (UK) LIMITED,04028962,VPS (UK) LIMITED,Active,2000-07-04,1,true,,1,high,Resolved to Companies House,method,false
+13164,fea9ea14590176426b5a757f4a36996025ee9651f5621465135dad34bd8bfaa9,Coram,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
+13165,feb070b23933602138e76ba69bb667822f61a867ef2fe660f462a49fc1f2d32e,Individual — name withheld,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,true
+13166,feb44813c3491069c499738ca8d73c58fdeb7b01615fed9f329ca2a3ced2b4e7,OVERBURY PLC,00836946,OVERBURY PLC,Active,1965-02-08,1,true,,1,high,Resolved to Companies House,method,false
+13167,febad487da39b4cc9718d1d4c58a99510ef6c0162db6acbddc918473b870df4d,Café no.16 LTD,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
+13168,febd02622e3237e8e2c88020b83391ad3fda3e63381286c629f048989b47af7b,ARRIVA MIDLANDS NORTH LIMITED,01556305,ARRIVA MIDLANDS NORTH LIMITED,Active,1981-04-15,1,true,,2,high,Resolved to Companies House,method,false
+13169,fedb713c508e2b767475ddfa19a58f856b824492d8a2cfc8948c94f72ecd0511,COMMUNITY IN PARTNERSHIP KNOWLE WEST,03301167,COMMUNITY IN PARTNERSHIP KNOWLE WEST,Active,1997-01-13,1,true,,2,high,Resolved to Companies House,method,false
+13170,fedf001144672d675c7fd35c25fec2db6ea54861dde6d7dc5d23328a2998842d,WHIPPET COACHES LIMITED,00520428,WHIPPET COACHES LIMITED,Active,1953-06-08,1,true,,2,high,Resolved to Companies House,method,false
+13171,fee2aaca8ec4bb069db91c2d3f16b83835d6362d8823aae34f655163f7a389d4,DWNJQSDH-1,,,,,1,false,no_match,5,none,Unresolved,unresolved,false
+13172,fee327c976d19f44c7073caa4b72b9025eb4402f25eee3e45f5d1df4d6a34b90,Love to Eat Cafe,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
+13173,fee4ef41a2aebd3f3bd40c5126306ff944ab0a045479b4ccce9d4e7716b81c99,Turnaround Publisher Servives Lt,,,,,1,false,no_match,5,none,Unresolved,unresolved,false
+13174,fee5d85b268972aa106065ff51fb39d2f5788b43c89e1b2c690105f9be6fc821,St.Wilfrids Playgroup,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
+13175,fee636686f11095ad2601ce2d8da713600818ff70ae42b34e62cb7bbb5c08aaf,Wildlife and Birdcare Nature Recovery Project CIC,,,,,1,false,review,4,review,Awaiting review,unresolved,false
+13176,fee8807b515d0494c5dfaa4c6fd41faf70bab25431da0f26b7e2997cee0a731e,WILLFAB LIMITED,07983233,WILLFAB LIMITED,Active,2012-03-09,1,true,,2,high,Resolved to Companies House,method,false
+13177,fee93c1d0245c59ebe4646db9b03fb0b434c9e511e1b44a55c4f8f6eec60ca7b,JACOBS U.K. LIMITED,02594504,JACOBS U.K. LIMITED,Active,1991-03-22,1,true,,1,high,Resolved to Companies House,method,false
+13178,feecaf14709b4cef5a37fd235899257f4b83c0552cbe330aac5950908eb76dfd,Individual — name withheld,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,true
+13179,fef8c3de68bfa865f566f7922aa3c8e548eddcf08f0144ae5660fffeb7184365,Groundwork Yorkshire,,,,,1,false,review,4,review,Awaiting review,unresolved,false
+13180,ff03035255838e23a5c8e64372837ad33149d9623f0ca9d7a1e569a05461d0c7,Association of Town Centre Manageme,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
+13181,ff09cb02ce276bfd1a38b898d493eebdc1776e241053c052c4f3ea30023555de,LINDSAY CUNNINGHAM LIMITED,07541862,LINDSAY CUNNINGHAM LIMITED,Active,2011-02-24,1,true,,2,high,Resolved to Companies House,method,false
+13182,ff0b06dd06fa03920d089347f83052c5647be368823788dcef6e497ef4fb8b9c,STRATFORD CITY CAR PARK LIMITED,07537021,STRATFORD CITY CAR PARK LIMITED,Active,2011-02-21,1,true,,2,high,Resolved to Companies House,method,false
+13183,ff0cd1b93b2694226440b89a6fd63a10cd28813bb6bd19a482233622b04d3c1e,Day Lewis Pharmacy,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
+13184,ff1763eeb6f1ac437dc55a9382088e229610271a8a53bcb65f2aaabf96763131,St Bartholomews Church,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
+13185,ff1ff2fa46172ff17e3afe6ec2c9d2793c6a57157bdee032172bbf66e160256e,CONSTRUCTIVE COLLABORATION LTD,03551490,CONSTRUCTIVE COLLABORATION LTD,Active,1998-04-23,1,true,,2,high,Resolved to Companies House,method,false
+13186,ff2080e63c4766c4c0b2e0e9a8d0981653e68dc4d6d6b2968787413b5bde6529,METRO PAGES LTD,10022644,METRO PAGES LTD,Active,2016-02-24,1,true,,2,high,Resolved to Companies House,method,false
+13187,ff23458228dfc2503ce678cbaa0061ce30e460237a5fe7a93de5c57de5105e5b,Bethnall Drive Allotment Society,,,,,1,false,no_match,5,none,Unresolved,unresolved,false
+13188,ff23f0afd40f9764ce5bd251c433c56a4e39ebbab358a49aaa27143755bdd279,QUARTZELEC LTD,02364716,QUARTZELEC LTD,Active,1989-03-22,1,true,,2,high,Resolved to Companies House,method,false
+13189,ff258f222cd23ad3bd54a91e309a9138c9d2d472c0bbd75aef1815b5dcd8a3e3,CONVERTYOURGARAGE (NW) LTD,09457287,CONVERTYOURGARAGE (NW) LTD,Active,2015-02-25,1,true,,2,high,Resolved to Companies House,method,false
+13190,ff2fcb483046400e7412921197d169f4b1b3142b4717808aebd49b82717e62ec,ENGIE POWER LIMITED,04236804,ENGIE POWER LIMITED,Active,2001-06-18,1,true,,2,high,Resolved to Companies House,method,false
+13191,ff30e80968d8a099eb0cab043db6b4d72d0e85acaf426795ad1dc2e5e19df811,Mill School,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
+13192,ff314ecda711dcc9a665b142afd212f59f55c1deccadded23c825981158f4f7f,Next Stage Ltd - Learning Disabilit,,,,,1,false,no_match,5,none,Unresolved,unresolved,false
+13193,ff4e6fdb2209f733adf571162c728d09686585b22ada7fa94a9685fc756319b1,UK POWER NETWORKS (OPERATIONS) LIMITED,03870728,UK POWER NETWORKS (OPERATIONS) LIMITED,Active,1999-11-03,1,true,,1,high,Resolved to Companies House,method,false
+13194,ff4e72320861ad75305ecbe453e7db91ba4451a48088a5c9af7b1113c01d95a0,New Islington Medical Practice,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
+13195,ff51f7cb5873918059e1ac801f128a177afabaf30d19fe0b3d80949880410b15,TOTALENERGIES GAS & POWER LIMITED,02172239,TOTALENERGIES GAS & POWER LIMITED,Active,1987-09-30,1,true,,1,high,Resolved to Companies House,method,false
+13196,ff5201a4956e5b29d042143e0928829161188393a43e6c3911447c6f53ce32f2,PARAGON TRAFFIC MANAGEMENT LIMITED,09704818,PARAGON TRAFFIC MANAGEMENT LIMITED,Active,2015-07-27,1,true,,2,high,Resolved to Companies House,method,false
+13197,ff545bd804baadfb5372b073d68b211200d89a43fe494fc8bd91d4e06cfb6a54,FACEBK 73SVXW7W92,,,,,1,false,no_match,5,none,Unresolved,unresolved,false
+13198,ff5d5e5ad42df3141f30379c658a5b7675532e442a337cadb2f5cbda7c2c176e,Oxfordshire County Council Shared Lives Scheme,,,,,1,false,no_match,5,none,Unresolved,unresolved,false
+13199,ff5dec0a01ef26a20dea3797f505eb7b646e87f60c2b61e1f080863e861a0a38,ZIP HEATERS (UK) LTD,02649782,ZIP HEATERS (UK) LTD,Active,1991-09-24,1,true,,2,high,Resolved to Companies House,method,false
+13200,ff5e7fd3975ed42664f48738f7c262d71c7f194321f745fb414a93b1362d6c1f,Rowley & Sons,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
+13201,ff655aaf80e392191ecf3cc882f9dbabfbeb80128ccd0ac94fe79576fdbecbf5,Ruche Marketing,,,,,1,false,review,4,review,Awaiting review,unresolved,false
+13202,ff6c887082e23dfd98bfc8713669d48124f05e15bf261e65e21e328a9c3813c9,Cannon Fire & Security Ltd,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
+13203,ff70d86e5a0e16340e9586b817767a88163bd6f7bd237ef1d8c00ddd9b0a5e7f,CELERITY LIMITED,04475496,CELERITY LIMITED,Active,2002-07-02,1,true,,2,high,Resolved to Companies House,method,false
+13204,ff70e0cf294516ed4b53bedad577eeb10e046fa93f7199abf5d06fbb6a0f43f9,Dunnington and Grimston Playing Fields Association,,,,,2,false,below_threshold,5,none,Unresolved,unresolved,false
+13205,ff71d9b876467bfc00e0ba0f46266bcabcc6871fea9f2d45bb61a07d4fc02986,ACT NOW TRAINING LIMITED,04524979,ACT NOW TRAINING LIMITED,Active,2002-09-03,1,true,,1,high,Resolved to Companies House,method,false
+13206,ff7298f548466a53acf1b81348f1e8e204b0760314194e6152ea07a4826bf34d,Egerton Recovery Ltd,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
+13207,ff72fd2867d655ed7c24c5ad3bc9fc2d8c026af9f15386cb46fe3489340966fd,Vision Aid Technologies,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
+13208,ff7ce22fa6c19a45d7407ff552db7d3c0200819c666bc9f420f22a044df81332,Reliance Motor Services,,,,,1,false,review,4,review,Awaiting review,unresolved,false
+13209,ff80d2b5f7debc10ecdcd35d67606d0cd28f106bc77a0a1dc312f2a6e0606a34,FYLDE BOROUGH COUNCIL,,,,,1,false,no_match,5,none,Unresolved,unresolved,false
+13210,ff85478265781a0241d8e0e124d3f10f867651e283d15448850c25a313a9f3ef,Haashim Bux,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
+13211,ff862c11701dd71ef15ed0f1639a1f53007c4d8f6a617e549de6dcf3de65d854,UNIVERSITY OF LEEDS,RC000658,UNIVERSITY OF LEEDS,Active,1981-01-01,2,true,,2,high,Resolved to Companies House,method,false
+13212,ff877880e154737a9d449d42718095e3c5694a1eb787113268643d0b39c7938e,Little Faces Nursery Ltd,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
+13213,ff8a2ef6955cb1be40e25a344f36efb9af95d3a70de2e8323d8b066129da245b,HENRY,06952404,HENRY,Active,2009-07-04,1,true,,2,high,Resolved to Companies House,method,false
+13214,ff8dfba5f88d455fbbe4b6a9c0405aa269f3071b87adc3cd676d334ff4a9af20,BROADBEAN TECHNOLOGY LIMITED,04283360,BROADBEAN TECHNOLOGY LIMITED,Active,2001-09-07,1,true,,1,high,Resolved to Companies House,method,false
+13215,ff9790606114d3d1be08e6a63031dbf36a5d725c38427fa9a9fae86e907b49de,LONDON BOROUGH OF TOWER HAMLETS,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
+13216,ff992789da8c143aad2141e74d6dab45229ab5a21bf79854aa3ff10cde8277ce,ACTIVE COMMUNITIES NETWORK LIMITED,06086438,ACTIVE COMMUNITIES NETWORK LIMITED,Active,2007-02-06,1,true,,2,high,Resolved to Companies House,method,false
+13217,ffa0ef23e18a9d0115d6f763aeca13b41705a00316eb50bd29e9bdb4341fb6ee,VIRTUAL COLLEGE LIMITED,03052439,VIRTUAL COLLEGE LIMITED,Active,1995-05-02,1,true,,2,high,Resolved to Companies House,method,false
+13218,ffa414671a10e385c2d8fd661da74f7926653303c4bc953e0025947eee476b4c,HAYMARKET MEDIA GROUP LTD.,00267189,HAYMARKET MEDIA GROUP LTD.,Active,1932-07-22,1,true,,1,reviewed,Resolved to Companies House,delegated_review,false
+13219,ffa6afd494484fc2d99eb932f297f34545d6a42544416a0134235b7f7aa403eb,E&K Solicitors,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
+13220,ffa762600f4582f4e6f9615a75da8945ddb622f7e011faf51b565185a79f733c,REFUGE,01412276,REFUGE,Active,1979-01-30,1,true,,2,high,Resolved to Companies House,method,false
+13221,ffa8bee9f7e32d378a42fc714c6b5a1d7f74f11e19f9d2a193890f1b8f4e1ff5,York Survey Supply Centre,,,,,1,false,review,4,review,Awaiting review,unresolved,false
+13222,ffb6b783a3350f2922c4834c9f16472cee65189204c649f235c2f6fd6f5238e4,Weston-super-Mare Town Council,,,,,1,false,no_match,5,none,Unresolved,unresolved,false
+13223,ffba2d3a906d7a055b5c5b57d65a466dc21d9299c740f3b186183c84c7d90eec,Individual — name withheld,,,,,1,false,no_match,5,none,Unresolved,unresolved,true
+13224,ffbbf9a757dd488462971c50e90f577e45e0e86e8b9d953b42bf0a4a464b34fc,FRAGRANCE UK-HOTEL MANAGEMENT,,,,,1,false,review,4,review,Awaiting review,unresolved,false
+13225,ffc95a0a36874d7d96b6bee77bf7a41f31e9c997a037f97349e581baf3fb865a,Park NOW Limited,,,,,3,false,below_threshold,5,none,Unresolved,unresolved,false
+13226,ffcb376c2775c029d102a56ce4017525de3762917fb88dd064948dbf34a59d05,BRIGHTON & HOVE CITY COUNCIL,,,,,2,false,below_threshold,5,none,Unresolved,unresolved,false
+13227,ffcbb5503fa431bd69e99e27e97d1bdca624d585da1027f6ed1fbef8b7e636b4,BE LTD,05169344,BE LTD,Active,2004-07-02,1,true,,1,high,Resolved to Companies House,method,false
+13228,ffd5443326259b3606c221e482011931b21059ecee9a2b2ab5f1e763895973a8,CHARIOT OFFICE SUPPLIES LIMITED,01329301,CHARIOT OFFICE SUPPLIES LIMITED,Active,1977-09-08,1,true,,2,high,Resolved to Companies House,method,false
+13229,ffe6cc178b84000f8ada452d03c356a52ba91fa3f4ec726341ae279451986107,MEDIA FIRST LIMITED,01830643,MEDIA FIRST LIMITED,Active,1984-07-06,1,true,,2,high,Resolved to Companies House,method,false
+13230,ffe81971c20d6f91e6532b98fed195839d1ddad61c715ccf3da72c1df4aa95e5,M & S Property Services,,,,,1,false,review,4,review,Awaiting review,unresolved,false
+13231,ffebb47e0ba5dcd905a98e5a0c67a1e3364411135a72e1d1aef9f17d47e7ebc5,D.J. GOODE & ASSOCIATES LIMITED,04568964,D.J. GOODE & ASSOCIATES LIMITED,Active,2002-10-22,1,true,,2,high,Resolved to Companies House,method,false
+13232,ffecc2767e99e641ca6e9a778e1c347a20e364fbed94b1c85c72c2645a8634bc,The Lodge Residential Home,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
+13233,ffed3aa868c810c93dfecdd36ac06b55c4b6de07e5d29792996858d9a43be788,JAX First Aid Supplies,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
+13234,fff286a5a23336aed16c5a6c3544fe52eb2b1313b0c71520d951055de0c8826f,CARMARTHENSHIRE COUNTY COUNCIL,,,,,2,false,no_match,5,none,Unresolved,unresolved,false
+13235,fff9e1a7412d594f2fb899ade2e1f52ee7ce29483a6ec9e74c2e1004cb54bd61,ALLEGIANT GROUP LTD,11587309,ALLEGIANT GROUP LTD,Active,2018-09-25,1,true,,2,high,Resolved to Companies House,method,false
+13236,fffdff492b5f42e5806e02ec0cf7baec2b9d2a4c5a6fb363748b78bd3729dfa0,Claremont Exclusive,,,,,1,false,below_threshold,5,none,Unresolved,unresolved,false
