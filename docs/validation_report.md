@@ -1312,6 +1312,28 @@ spelling only; the later spelling was already resolved by rule and is not added 
 **Open queue: 1,101 rows, GBP 356,637,058.04 (0.69%)** — A 6, B 313, C 782.
 253 decisions, 0 stale; `V3`, `V4` and `D.1`–`D.11` pass; `E-3` unchanged at 95.28%, tier 4 81.05%.
 
+
+### 7.25 OVE ARUP AND PARTNERS accepted, with a stated qualification (2026-09-30)
+
+**`OVE ARUP AND PARTNERS` → `01312453`, accepted by the user as a row-specific Tier A decision.** The qualification
+is part of the recorded basis: the related spelling `OVE ARUP AND PARTNERS LTD`, which resolves by rule to
+`01312453`, is paid inside the DfT publication by bodies other than National Highways, which pays the queued
+spelling; the City of York residual has no bridge of its own. It creates no evidence class (its decision carries
+`user_review`), delegation, `D.10` or stale-guard change. It resolves at tier 4, `reviewed` (`4|reviewed|01312453`). The
+cross-paying-body scope is recorded as an open limitation in `limitations.md` §6; the audit of past bridge
+decisions is not authorised.
+
+| Basis | Names | Rows | Value (GBP) | % of value |
+|---|---:|---:|---:|---:|
+| Method — tiers 1–3, by rule | 5,985 | 175,851 | 30,011,990,138.30 | 58.47% |
+| User review | 107 | 11,355 | 1,491,970,698.45 | 2.91% |
+| Delegated review — Tier C | 139 | 1,041 | 3,427,478.56 | 0.0067% |
+| **Total resolved** | | **188,247** | **31,507,388,315.31** | **61.38%** |
+| Unresolved | 7,146 | 164,281 | 19,822,870,780.07 | 38.62% |
+
+**Open queue: 1,100 rows, GBP 345,952,679.25 (0.67%)** — A 5, B 313, C 782.
+254 decisions, 0 stale; `V3`, `V4` and `D.1`–`D.11` pass; `E-3` unchanged at 95.28%, tier 4 81.05%.
+
 ---
 
 ## 8. Layer 4 — the star schema (`94_validate_reporting.sql`)

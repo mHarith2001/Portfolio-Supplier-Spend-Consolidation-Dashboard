@@ -111,7 +111,7 @@ GBP 273,975,883.60 to make a date range look tidy.
 | Transaction value | GBP 51,330,259,095.38 |
 | Excluded non-payment value | GBP 2,556,596,745.72 |
 | In-window transactions | 289,950 (+ 24 annex duplicates + 16 out-of-scope section rows = 289,990) |
-| Vendor spellings → identified suppliers | 14,434 → 6,087, plus 7,147 unidentified names |
+| Vendor spellings → identified suppliers | 14,434 → 6,087, plus 7,146 unidentified names |
 
 ---
 
@@ -122,9 +122,9 @@ GBP 273,975,883.60 to make a date range look tidy.
   1.00 with a single candidate — is correct **83.24%** of the time. Bulk-accepting it would
   be wrong about one time in six.
 - **That 58.43% is a good resolution rate or a bad one.** It is the method's measured rate for
-  these six publishers against this snapshot. User review adds 2.89% and delegated review
-  0.0067% so far, each reported separately, for 61.36% in total.
-- **That the unresolved population is small.** It is 38.64% of transaction value, reported
+  these six publishers against this snapshot. User review adds 2.91% and delegated review
+  0.0067% so far, each reported separately, for 61.38% in total.
+- **That the unresolved population is small.** It is 38.62% of transaction value, reported
   with its reasons and its value.
 - **That any named supplier has done anything wrong.** This is payment-line data.
   Concentration and variance are legitimate readings; impropriety is not supported by spend
@@ -141,12 +141,12 @@ published as such.
 
 | Tier | Band | How it is decided | Open rows | Open value (GBP) |
 |---|---|---|---:|---:|
-| **A** | ≥ GBP 10m | Per-row user decision | 6 | 80,036,956.65 |
+| **A** | ≥ GBP 10m | Per-row user decision | 5 | 69,352,577.86 |
 | **B** | GBP 100k – < 10m | Delegated on established evidence classes (from 2026-09-29); novel, ambiguous or conflicting rows escalate | 313 | 262,442,523.78 |
 | **C** | < GBP 100k | Delegated to the builder on established evidence classes | 782 | 14,157,577.61 |
-| **Total** | | | **1,101** | **356,637,058.04** |
+| **Total** | | | **1,100** | **345,952,679.25** |
 
-**Decisions recorded: 253.** 114 by the user (106 accepted, 4 rejected, 4 left open — the evidence cannot separate the candidates, so they stay in the open count above) and 139 by the builder under
+**Decisions recorded: 254.** 115 by the user (107 accepted, 4 rejected, 4 left open — the evidence cannot separate the candidates, so they stay in the open count above) and 139 by the builder under
 the Tier C authorisation (all accepted — 55 on the same-payer bridge, 10 on the register's
 previous names, 74 on other buyers' awards — each reviewed individually). Every decision is recorded with its basis and is published in
 `review_queue.csv`; a user decision always overrides a delegated one. Two of the user's accepts
@@ -154,9 +154,9 @@ resolve a hard-rule-2 tie on same-payer evidence, under an override the user sco
 two names (control `D.10`).
 
 **How much the open queue could move the headline, and how little it can.** Resolution by
-method is **58.47%**. The open queue holds GBP 356,637,058.04 — **0.69%** of transaction value.
+method is **58.47%**. The open queue holds GBP 345,952,679.25 — **0.67%** of transaction value.
 Even if every open row were eventually accepted, the resolution rate could rise by at most that
-much. Most of the unresolved 38.64% is not in the queue at all: it is `no_match` and
+much. Most of the unresolved 38.62% is not in the queue at all: it is `no_match` and
 `below_threshold` names that no candidate reaches.
 
 **Four ceilings sit under the open queue:**
@@ -196,3 +196,15 @@ Some payers write a company's initials with spaces — `XEROX U K LTD` for `XERO
 **A normalisation rule is deferred, not rejected.** Rationale, as recorded: short-term progress on the
 lowest-risk path. Affected rows are decided on their evidence in the review queue meanwhile (`XEROX U K LTD` was,
 2026-09-29). **Re-open trigger: 3 names with spaced initials open in Tier A** — 0 today.
+
+### Open limitation: the same-payer bridge is publisher-level (recorded 2026-09-30)
+
+The same-payer bridge class treats a **publisher** as one payer. The Department for Transport publication combines
+11 paying bodies (its raw `entity` column: Active Travel England; British Transport Police; DVSA; Department for Transport; Driver & Vehicle Licensing Agency; EWR; High Speed Two (HS2) Limited; Maritime and Coastguard Agency; National Highways; Transport Focus; VCA), so a bridge can cross bodies inside it.
+Found on `OVE ARUP AND PARTNERS`, accepted by the user on 2026-09-30 with the qualification stated in the decision
+itself: the related spelling that resolves by rule is paid by other bodies, never by National Highways, which pays
+the queued spelling; and the City of York residual has no bridge of its own.
+
+76 decisions in force cite the same-payer bridge class (21 by the user, the rest delegated). **They have
+not been checked for cross-body bridges**; that audit waits for the user's go-ahead. No class, delegation or
+control has changed.
