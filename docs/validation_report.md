@@ -1272,6 +1272,25 @@ unresolved names, GBP 11,291,580.29, would match exactly one company if collapse
 **Open queue: 1,103 rows, GBP 388,304,404.48 (0.76%)** — A 8, B 313, C 782.
 251 decisions, 0 stale; `V3`, `V4` and `D.1`–`D.11` pass; `E-3` unchanged at 95.28%, tier 4 81.05%.
 
+
+### 7.23 Tier A row 8 accepted (2026-09-29)
+
+**`GO NORTH EAST` → `02057284`, accepted by the user**, on the payer's own coding and its rule-resolved pattern for
+the same group: every Department for Transport payment on this name is coded as private-sector subsidy under its
+public-transport directorate, matching the candidate's bus-operator SIC, and the same payer's spellings of two
+sibling Go-Ahead operating companies resolve by rule. It resolves at tier 4, `reviewed` (`4|reviewed|02057284`).
+
+| Basis | Names | Rows | Value (GBP) | % of value |
+|---|---:|---:|---:|---:|
+| Method — tiers 1–3, by rule | 5,985 | 175,851 | 30,011,990,138.30 | 58.47% |
+| User review | 105 | 11,024 | 1,465,816,683.76 | 2.86% |
+| Delegated review — Tier C | 139 | 1,041 | 3,427,478.56 | 0.0067% |
+| **Total resolved** | | **187,916** | **31,481,234,300.62** | **61.33%** |
+| Unresolved | 7,148 | 164,612 | 19,849,024,794.76 | 38.67% |
+
+**Open queue: 1,102 rows, GBP 372,106,693.94 (0.72%)** — A 7, B 313, C 782.
+252 decisions, 0 stale; `V3`, `V4` and `D.1`–`D.11` pass; `E-3` unchanged at 95.28%, tier 4 81.05%.
+
 ---
 
 ## 8. Layer 4 — the star schema (`94_validate_reporting.sql`)
