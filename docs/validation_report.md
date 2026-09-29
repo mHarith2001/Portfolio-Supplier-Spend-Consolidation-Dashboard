@@ -1291,6 +1291,27 @@ sibling Go-Ahead operating companies resolve by rule. It resolves at tier 4, `re
 **Open queue: 1,102 rows, GBP 372,106,693.94 (0.72%)** — A 7, B 313, C 782.
 252 decisions, 0 stale; `V3`, `V4` and `D.1`–`D.11` pass; `E-3` unchanged at 95.28%, tier 4 81.05%.
 
+
+### 7.24 Tier A row 9 accepted (2026-09-29)
+
+**`CHEVRON TRAFFIC MANAGEMENT` → `03316774`, accepted by the user under the per-row protocol.** The Department for
+Transport paid one stream under two spellings: this one from March to July 2024, then `CHEVRON TRAFFIC MANAGEMENT LTD`
+from August 2024, which resolves by rule at tier 2 to the same company. The windows are contiguous without overlap,
+and every expense code of the first spelling recurs under the second. The queue row's value is the pre-rename
+spelling only; the later spelling was already resolved by rule and is not added to it. It resolves at tier 4,
+`reviewed` (`4|reviewed|03316774`).
+
+| Basis | Names | Rows | Value (GBP) | % of value |
+|---|---:|---:|---:|---:|
+| Method — tiers 1–3, by rule | 5,985 | 175,851 | 30,011,990,138.30 | 58.47% |
+| User review | 106 | 11,192 | 1,481,286,319.66 | 2.89% |
+| Delegated review — Tier C | 139 | 1,041 | 3,427,478.56 | 0.0067% |
+| **Total resolved** | | **188,084** | **31,496,703,936.52** | **61.36%** |
+| Unresolved | 7,147 | 164,444 | 19,833,555,158.86 | 38.64% |
+
+**Open queue: 1,101 rows, GBP 356,637,058.04 (0.69%)** — A 6, B 313, C 782.
+253 decisions, 0 stale; `V3`, `V4` and `D.1`–`D.11` pass; `E-3` unchanged at 95.28%, tier 4 81.05%.
+
 ---
 
 ## 8. Layer 4 — the star schema (`94_validate_reporting.sql`)
