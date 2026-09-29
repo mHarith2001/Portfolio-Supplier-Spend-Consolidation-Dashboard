@@ -385,10 +385,11 @@ SELECT
      'PASS', 'FAIL  <-- HARD') AS d1_d4;
 
 -- ===========================================================================
--- D.5-D.8  Delegated (Tier C) decisions stay inside their authorisation  HARD
+-- D.5-D.8  Delegated (Tier B/C) decisions stay inside their authorisation  HARD
 -- ===========================================================================
--- D.5 every delegated decision is on a Tier C name (total spend < GBP 100k) --
---     the authorisation covers that band and nothing above it
+-- D.5 every delegated decision is on a Tier B or C name (total spend < GBP 10m) --
+--     the authorisation covers those bands and never Tier A (boundary moved from
+--     GBP 100k to GBP 10m when the user extended delegation to Tier B, 2026-09-29)
 -- D.6 every delegated ACCEPT rests on an accept class (corroboration / payer
 --     records) and every delegated REJECT on a structural class
 -- D.7 one decision in force per name -- a user decision and a delegated one on
@@ -408,14 +409,14 @@ SELECT
   (SELECT COUNTIF(decision = 'accepted') FROM dd)                                AS delegated_accepts,
   (SELECT COUNTIF(decision = 'rejected') FROM dd)                                AS delegated_rejects,
   (SELECT COUNT(*) FROM dd LEFT JOIN sp USING (supplier_name_norm)
-    WHERE sp.total_spend IS NULL OR sp.total_spend >= 100000)                    AS outside_tier_c,
+    WHERE sp.total_spend IS NULL OR sp.total_spend >= 10000000)                  AS outside_tiers_b_c,
   (SELECT COUNT(*) FROM dd
     WHERE NOT ((decision = 'accepted' AND STARTS_WITH(evidence_class, 'ACCEPT-'))
             OR (decision = 'rejected' AND STARTS_WITH(evidence_class, 'REJECT-')))) AS wrong_class_for_decision,
   (SELECT COUNT(*) - COUNT(DISTINCT supplier_name_norm) FROM v)                  AS names_with_two_decisions_in_force,
   (SELECT COUNTIF(decision_note IS NULL OR LENGTH(decision_note) < 40) FROM dd)  AS delegated_without_basis,
   IF((SELECT COUNT(*) FROM dd LEFT JOIN sp USING (supplier_name_norm)
-       WHERE sp.total_spend IS NULL OR sp.total_spend >= 100000) = 0
+       WHERE sp.total_spend IS NULL OR sp.total_spend >= 10000000) = 0
      AND (SELECT COUNT(*) FROM dd
        WHERE NOT ((decision = 'accepted' AND STARTS_WITH(evidence_class, 'ACCEPT-'))
                OR (decision = 'rejected' AND STARTS_WITH(evidence_class, 'REJECT-')))) = 0

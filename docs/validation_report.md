@@ -1244,6 +1244,34 @@ tier 4 with `reviewed` confidence (`4|reviewed|00025088`).
 **Open queue: 1,104 rows, GBP 406,961,559.52 (0.79%)** — A 9, B 313, C 782.
 250 decisions, 0 stale; `V3`, `V4` and `D.1`–`D.11` pass; `E-3` unchanged at 95.28%, tier 4 81.05%.
 
+
+### 7.22 Tier A row 7 accepted, Tier B delegation, and a deferred normalisation gap (2026-09-29)
+
+**`XEROX U K LTD` → `00330754`, accepted by the user.** A demoted tier-1 row whose demotion was a normalisation
+artefact: the payer spaces the initials (`U K`) that the register joins (`UK`). The payer codes nearly all of the
+value as print or reprographics; three other payers' `XEROX UK LTD` resolves by rule to the same company; the one
+award stating a different Xerox company contradicts its own supplier name. It resolves at tier 1, `reviewed`
+(`1|reviewed|00330754`).
+
+**Tier B joins the delegation mechanism** (`04` §8.1, dated backup; user decision): established evidence classes
+only, frozen literals, the stale guard and user precedence, unchanged; novel, ambiguous or conflicting rows still
+escalate, and Tier A stays per-row. The one control that moves is `D.5`, whose boundary encodes the delegated
+tiers: from < GBP 100k to < GBP 10m. It passes.
+
+**The spaced-initials gap is deferred**, with its figures and a re-open trigger in `limitations.md` §6: 25
+unresolved names, GBP 11,291,580.29, would match exactly one company if collapsed; 0 conflicts.
+
+| Basis | Names | Rows | Value (GBP) | % of value |
+|---|---:|---:|---:|---:|
+| Method — tiers 1–3, by rule | 5,985 | 175,851 | 30,011,990,138.30 | 58.47% |
+| User review | 104 | 11,001 | 1,449,618,973.22 | 2.82% |
+| Delegated review — Tier C | 139 | 1,041 | 3,427,478.56 | 0.0067% |
+| **Total resolved** | | **187,893** | **31,465,036,590.08** | **61.30%** |
+| Unresolved | 7,149 | 164,635 | 19,865,222,505.30 | 38.70% |
+
+**Open queue: 1,103 rows, GBP 388,304,404.48 (0.76%)** — A 8, B 313, C 782.
+251 decisions, 0 stale; `V3`, `V4` and `D.1`–`D.11` pass; `E-3` unchanged at 95.28%, tier 4 81.05%.
+
 ---
 
 ## 8. Layer 4 — the star schema (`94_validate_reporting.sql`)
