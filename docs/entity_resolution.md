@@ -112,7 +112,7 @@ precision plateau begins; below 0.70, tier-4 precision collapses.
 
 **1,350 rows, one per name, highest value first** (`review_queue.csv`). Worked by value in
 three tiers: A (≥ GBP 10m) per-row by the user, B (GBP 100k–10m) and C (< GBP 100k) delegated to the builder where the evidence fits an established
-class — Tier B since 2026-09-29, by user decision; novel, ambiguous or conflicting rows escalate to the user. **256 decisions recorded** — 117 by the user, 139 delegated — and **1,098 rows open**, GBP 320,775,777.68,
+class — Tier B since 2026-09-29, by user decision; novel, ambiguous or conflicting rows escalate to the user. **257 decisions recorded** — 118 by the user, 139 delegated — and **1,097 rows open**, GBP 310,236,701.90,
 including 4 the user reviewed and ruled left open.
 Four evidence classes may support an accept: the same-payer bridge, the payer's own awards, (from 2026-09-23) the register's **previous names**, cited only where the payer's spelling is the company's registered name for the whole period it was paid, and (from 2026-09-24, tier-4 rows only) **other buyers' awards** — a Contracts Finder award from any buyer stating the candidate's number, with none stating another. An award without a number supplies nothing. **A decided row stays in the queue**: it is the
 decision log, not only the to-do list.

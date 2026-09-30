@@ -1382,6 +1382,27 @@ spacing gap stays open. It resolves at tier 1, `reviewed` (`1|reviewed|02970707`
 **Open queue: 1,098 rows, GBP 320,775,777.68 (0.62%)** — A 3, B 313, C 782.
 256 decisions, 0 stale; `V3`, `V4` and `D.1`–`D.11` pass; `E-3` unchanged at 95.28%, tier 4 81.05%.
 
+
+### 7.28 MENCAP candidate rejected (2026-09-30)
+
+**`MENCAP` → `00889191` MENCAP LIMITED, rejected by the user as a row-specific Tier A decision; the name stays
+unresolved**, and its GBP 10,539,075.78 stays in the unresolved total. The tier-4 score rests on the one word
+`MENCAP`, which many register entries carry; no award states `00889191`; the numbered award evidence points to a
+different sibling company, Royal Mencap Society `00550457`, at the same registered postcode. The decision carries
+`user_review`. It does not substitute `00550457` (the stale guard admits only the queue candidate), creates no
+dormant or wrong-entity rejection class, and changes no stale-guard rule.
+
+| Basis | Names | Rows | Value (GBP) | % of value |
+|---|---:|---:|---:|---:|
+| Method — tiers 1–3, by rule | 5,985 | 175,851 | 30,011,990,138.30 | 58.47% |
+| User review | 109 | 11,772 | 1,517,147,600.02 | 2.96% |
+| Delegated review — Tier C | 139 | 1,041 | 3,427,478.56 | 0.0067% |
+| **Total resolved** | | **188,664** | **31,532,565,216.88** | **61.43%** |
+| Unresolved | 7,144 | 163,864 | 19,797,693,878.50 | 38.57% |
+
+**Open queue: 1,097 rows, GBP 310,236,701.90 (0.60%)** — A 2, B 313, C 782.
+257 decisions, 0 stale; `V3`, `V4` and `D.1`–`D.11` pass; `E-3` unchanged at 95.28%, tier 4 81.05%.
+
 ---
 
 ## 8. Layer 4 — the star schema (`94_validate_reporting.sql`)

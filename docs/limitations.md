@@ -141,12 +141,12 @@ published as such.
 
 | Tier | Band | How it is decided | Open rows | Open value (GBP) |
 |---|---|---|---:|---:|
-| **A** | ≥ GBP 10m | Per-row user decision | 3 | 44,175,676.29 |
+| **A** | ≥ GBP 10m | Per-row user decision | 2 | 33,636,600.51 |
 | **B** | GBP 100k – < 10m | Delegated on established evidence classes (from 2026-09-29); novel, ambiguous or conflicting rows escalate | 313 | 262,442,523.78 |
 | **C** | < GBP 100k | Delegated to the builder on established evidence classes | 782 | 14,157,577.61 |
-| **Total** | | | **1,098** | **320,775,777.68** |
+| **Total** | | | **1,097** | **310,236,701.90** |
 
-**Decisions recorded: 256.** 117 by the user (109 accepted, 4 rejected, 4 left open — the evidence cannot separate the candidates, so they stay in the open count above) and 139 by the builder under
+**Decisions recorded: 257.** 118 by the user (109 accepted, 5 rejected, 4 left open — the evidence cannot separate the candidates, so they stay in the open count above) and 139 by the builder under
 the Tier C authorisation (all accepted — 55 on the same-payer bridge, 10 on the register's
 previous names, 74 on other buyers' awards — each reviewed individually). Every decision is recorded with its basis and is published in
 `review_queue.csv`; a user decision always overrides a delegated one. Two of the user's accepts
@@ -154,7 +154,7 @@ resolve a hard-rule-2 tie on same-payer evidence, under an override the user sco
 two names (control `D.10`).
 
 **How much the open queue could move the headline, and how little it can.** Resolution by
-method is **58.47%**. The open queue holds GBP 320,775,777.68 — **0.62%** of transaction value.
+method is **58.47%**. The open queue holds GBP 310,236,701.90 — **0.60%** of transaction value.
 Even if every open row were eventually accepted, the resolution rate could rise by at most that
 much. Most of the unresolved 38.57% is not in the queue at all: it is `no_match` and
 `below_threshold` names that no candidate reaches.
