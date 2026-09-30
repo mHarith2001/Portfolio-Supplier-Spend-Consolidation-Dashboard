@@ -5,7 +5,7 @@ The intellectual core of this project. Figures measured 2026-09-18; resolution, 
 ## The problem
 
 Six public bodies publish spend independently. **14,434 distinct raw vendor spellings**
-appear across their files. They describe **at most 6,087 identified companies plus 7,146
+appear across their files. They describe **at most 6,087 identified companies plus 7,145
 names that could not be identified**. One supplier alone is spelled **16** different ways.
 
 Nobody can answer "how much did the public sector pay this company?" until those spellings
@@ -29,12 +29,12 @@ first or conflate the second.
 | Tier | Method | Confidence | Names | Value (GBP) |
 |---|---|---|---:|---:|
 | 1 | Company number, bridged via a Contracts Finder award | high | 1,172 | 3,981,459,526.06 |
-| 1 | …demoted, then accepted on recorded review | **reviewed** | 102 | 475,969,921.84 |
+| 1 | …demoted, then accepted on recorded review | **reviewed** | 103 | 489,056,577.41 |
 | 2 | Exact normalised name against Companies House | high | 4,760 | 15,875,678,255.84 |
 | 3 | Name core + postcode | medium | 53 | 10,154,852,356.40 |
 | 4 | Token-set similarity ≥ 0.85 on the core | **review**; resolves only on a recorded human accept | 1,012 | 2,027,180,054.75 |
 | 4 | …accepted on recorded review | **reviewed** | 144 | 1,019,428,255.17 |
-| 5 | Unresolved, with a stated reason | none | 6,134 | 17,795,690,725.32 |
+| 5 | Unresolved, with a stated reason | none | 6,133 | 17,782,604,069.75 |
 
 **Tier 1 is a bridge, not a lookup.** Spend files carry no company numbers. A spend supplier
 reaches a buyer-stated number only where its normalised name equals a Contracts Finder name
@@ -47,9 +47,9 @@ data: publishers truncate and reorder supplier names far more often than they mi
 
 **Resolution by method is tiers 1–3: 5,984 names, GBP 29,992,021,161.30 — 58.43% of transaction
 value.** Human review adds tier-4 names accepted on a recorded decision, reported
-**separately** so one kind of evidence never borrows the other's credibility: so far 107 names by
-the user, GBP 1,491,970,698.45 (2.91%), and 139 names by the builder under the Tier C
-authorisation, GBP 3,427,478.56 (0.0067%) — **61.38% in total**.
+**separately** so one kind of evidence never borrows the other's credibility: so far 108 names by
+the user, GBP 1,505,057,354.02 (2.93%), and 139 names by the builder under the Tier C
+authorisation, GBP 3,427,478.56 (0.0067%) — **61.41% in total**.
 
 ## Eight hard rules
 
@@ -112,7 +112,7 @@ precision plateau begins; below 0.70, tier-4 precision collapses.
 
 **1,351 rows, one per name, highest value first** (`review_queue.csv`). Worked by value in
 three tiers: A (≥ GBP 10m) per-row by the user, B (GBP 100k–10m) and C (< GBP 100k) delegated to the builder where the evidence fits an established
-class — Tier B since 2026-09-29, by user decision; novel, ambiguous or conflicting rows escalate to the user. **254 decisions recorded** — 115 by the user, 139 delegated — and **1,100 rows open**, GBP 345,952,679.25,
+class — Tier B since 2026-09-29, by user decision; novel, ambiguous or conflicting rows escalate to the user. **255 decisions recorded** — 116 by the user, 139 delegated — and **1,099 rows open**, GBP 332,866,023.68,
 including 4 the user reviewed and ruled left open.
 Four evidence classes may support an accept: the same-payer bridge, the payer's own awards, (from 2026-09-23) the register's **previous names**, cited only where the payer's spelling is the company's registered name for the whole period it was paid, and (from 2026-09-24, tier-4 rows only) **other buyers' awards** — a Contracts Finder award from any buyer stating the candidate's number, with none stating another. An award without a number supplies nothing. **A decided row stays in the queue**: it is the
 decision log, not only the to-do list.

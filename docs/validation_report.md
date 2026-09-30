@@ -1334,6 +1334,32 @@ decisions is not authorised.
 **Open queue: 1,100 rows, GBP 345,952,679.25 (0.67%)** — A 5, B 313, C 782.
 254 decisions, 0 stale; `V3`, `V4` and `D.1`–`D.11` pass; `E-3` unchanged at 95.28%, tier 4 81.05%.
 
+
+### 7.26 PRICEWATERHOUSE COOPERS LLP accepted, and a limitation corrected (2026-09-30)
+
+**`PRICEWATERHOUSE COOPERS LLP` → `OC303525`, accepted by the user as a row-specific Tier A decision.** A demoted
+tier-1 row whose demotion was one space: the payer writes `PRICEWATERHOUSE COOPERS`, the register holds
+`PRICEWATERHOUSECOOPERS`. Every payment comes from one body in the DfT publication, HS2, whose own Contracts Finder
+award states `OC303525`; three other payers' joined spelling resolves by rule to it, a cross-payer bridge. It
+expands no evidence class (the decision carries `user_review`), authorises no bridge audit, and changes no `D.10`,
+delegation or stale-guard rule. It resolves at tier 1, `reviewed` (`1|reviewed|OC303525`).
+
+**Corrected in `limitations.md` §6:** four of the six publishers state company numbers in Contracts Finder, not
+three — DfT through its bodies' own buyer names (338 of 1,970 awards). The earlier "DfT has no awards" had looked
+for DfT's own name only. The payer-award detector still does not map those bodies to DfT; that class-scope
+question is left open.
+
+| Basis | Names | Rows | Value (GBP) | % of value |
+|---|---:|---:|---:|---:|
+| Method — tiers 1–3, by rule | 5,985 | 175,851 | 30,011,990,138.30 | 58.47% |
+| User review | 108 | 11,409 | 1,505,057,354.02 | 2.93% |
+| Delegated review — Tier C | 139 | 1,041 | 3,427,478.56 | 0.0067% |
+| **Total resolved** | | **188,301** | **31,520,474,970.88** | **61.41%** |
+| Unresolved | 7,145 | 164,227 | 19,809,784,124.50 | 38.59% |
+
+**Open queue: 1,099 rows, GBP 332,866,023.68 (0.65%)** — A 4, B 313, C 782.
+255 decisions, 0 stale; `V3`, `V4` and `D.1`–`D.11` pass; `E-3` unchanged at 95.28%, tier 4 81.05%.
+
 ---
 
 ## 8. Layer 4 — the star schema (`94_validate_reporting.sql`)

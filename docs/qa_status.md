@@ -18,13 +18,13 @@ them — an unticked box is more useful than a tick that is not true.
 | # | Check | Status |
 |---|---|---|
 | `Q3.1` | Tier distribution by count **and value** | **PASS** — validation report §7.4 |
-| `Q3.2` | No tier-4 auto-merge | **PASS** — 1,351 queue rows, one per name, **no auto-accept anywhere**; 254 decisions, each with its basis recorded — 115 by the user, 139 delegated under the Tier C authorisation and controlled by `D.5`–`D.11` — and 1,100 open |
+| `Q3.2` | No tier-4 auto-merge | **PASS** — 1,351 queue rows, one per name, **no auto-accept anywhere**; 255 decisions, each with its basis recorded — 116 by the user, 139 delegated under the Tier C authorisation and controlled by `D.5`–`D.11` — and 1,099 open |
 | `Q3.3` | Ambiguity surfaced, never auto-accepted | **PASS** — `V3.6`: 0 method accepts with `candidate_count > 1`. Two ties were resolved by **user decision** on same-payer evidence (2026-09-24), under an override the user scoped to those two names; `D.10` fails on any other |
-| `Q3.4` | Plausibility applied | **PASS at every tier** — 0 of 188,247 attributed rows precede incorporation, and since 2026-09-18 hard rule 3 also filters tier-4 candidates: **0 impossible candidates remain in the queue** |
+| `Q3.4` | Plausibility applied | **PASS at every tier** — 0 of 188,301 attributed rows precede incorporation, and since 2026-09-18 hard rule 3 also filters tier-4 candidates: **0 impossible candidates remain in the queue** |
 | `Q3.5` | Redacted population reported as a named category | **PASS** — 4 names, 31,508 rows, GBP 113,266,026.75, **0.2207%** of transaction value |
 | `Q3.6` | Precision measured and published | **PASS** — `docs/match_precision.md` |
 | `Q3.7` | Precision reported honestly | **PASS** — 95.28% overall published with tier 4's 81.05%, recall 84.69%, and four ceilings, including a figure that **fell** when blocking was corrected, and fell again — by composition, not new errors — when duplicate `NF` registrations were excluded |
-| `Q3.8` | `name_variant_count` produces the headline | **PASS** — 14,434 vendor records → 6,087 identified suppliers + 7,146 unidentified names |
+| `Q3.8` | `name_variant_count` produces the headline | **PASS** — 14,434 vendor records → 6,087 identified suppliers + 7,145 unidentified names |
 
 ### `Q3.4` — how it came to pass at every tier (2026-09-18)
 

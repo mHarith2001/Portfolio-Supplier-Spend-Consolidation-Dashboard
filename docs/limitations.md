@@ -111,7 +111,7 @@ GBP 273,975,883.60 to make a date range look tidy.
 | Transaction value | GBP 51,330,259,095.38 |
 | Excluded non-payment value | GBP 2,556,596,745.72 |
 | In-window transactions | 289,950 (+ 24 annex duplicates + 16 out-of-scope section rows = 289,990) |
-| Vendor spellings → identified suppliers | 14,434 → 6,087, plus 7,146 unidentified names |
+| Vendor spellings → identified suppliers | 14,434 → 6,087, plus 7,145 unidentified names |
 
 ---
 
@@ -122,9 +122,9 @@ GBP 273,975,883.60 to make a date range look tidy.
   1.00 with a single candidate — is correct **83.24%** of the time. Bulk-accepting it would
   be wrong about one time in six.
 - **That 58.43% is a good resolution rate or a bad one.** It is the method's measured rate for
-  these six publishers against this snapshot. User review adds 2.91% and delegated review
-  0.0067% so far, each reported separately, for 61.38% in total.
-- **That the unresolved population is small.** It is 38.62% of transaction value, reported
+  these six publishers against this snapshot. User review adds 2.93% and delegated review
+  0.0067% so far, each reported separately, for 61.41% in total.
+- **That the unresolved population is small.** It is 38.59% of transaction value, reported
   with its reasons and its value.
 - **That any named supplier has done anything wrong.** This is payment-line data.
   Concentration and variance are legitimate readings; impropriety is not supported by spend
@@ -141,12 +141,12 @@ published as such.
 
 | Tier | Band | How it is decided | Open rows | Open value (GBP) |
 |---|---|---|---:|---:|
-| **A** | ≥ GBP 10m | Per-row user decision | 5 | 69,352,577.86 |
+| **A** | ≥ GBP 10m | Per-row user decision | 4 | 56,265,922.29 |
 | **B** | GBP 100k – < 10m | Delegated on established evidence classes (from 2026-09-29); novel, ambiguous or conflicting rows escalate | 313 | 262,442,523.78 |
 | **C** | < GBP 100k | Delegated to the builder on established evidence classes | 782 | 14,157,577.61 |
-| **Total** | | | **1,100** | **345,952,679.25** |
+| **Total** | | | **1,099** | **332,866,023.68** |
 
-**Decisions recorded: 254.** 115 by the user (107 accepted, 4 rejected, 4 left open — the evidence cannot separate the candidates, so they stay in the open count above) and 139 by the builder under
+**Decisions recorded: 255.** 116 by the user (108 accepted, 4 rejected, 4 left open — the evidence cannot separate the candidates, so they stay in the open count above) and 139 by the builder under
 the Tier C authorisation (all accepted — 55 on the same-payer bridge, 10 on the register's
 previous names, 74 on other buyers' awards — each reviewed individually). Every decision is recorded with its basis and is published in
 `review_queue.csv`; a user decision always overrides a delegated one. Two of the user's accepts
@@ -154,17 +154,23 @@ resolve a hard-rule-2 tie on same-payer evidence, under an override the user sco
 two names (control `D.10`).
 
 **How much the open queue could move the headline, and how little it can.** Resolution by
-method is **58.47%**. The open queue holds GBP 345,952,679.25 — **0.67%** of transaction value.
+method is **58.47%**. The open queue holds GBP 332,866,023.68 — **0.65%** of transaction value.
 Even if every open row were eventually accepted, the resolution rate could rise by at most that
-much. Most of the unresolved 38.62% is not in the queue at all: it is `no_match` and
+much. Most of the unresolved 38.59% is not in the queue at all: it is `no_match` and
 `below_threshold` names that no candidate reaches.
 
 **Four ceilings sit under the open queue:**
 
-- **Evidence is unevenly available by payer.** The payer's own award notices are a decisive
-  evidence class, but only three of the six publishers state company numbers in Contracts
-  Finder. **DfT has no awards in this extract; Bristol and Manchester state no company number
-  on any award.** Rows paid by those three cannot be corroborated that way.
+- **Evidence is unevenly available by payer** (corrected 2026-09-30). The payer's own award notices are
+  a decisive evidence class. **Four of the six publishers state company numbers in Contracts Finder**, not
+  three: HMRC (172 of 184 awards), the MoJ (338 of 579) and York (9 of 74) under their own names,
+  and DfT only through its bodies' own buyer names — DfT central (DfTc), National Highways, HS2, DVLA,
+  DVSA, the Maritime and Coastguard Agency, the Vehicle Certification Agency, British Transport Police and
+  East West Rail (338 of 1,970 awards). The earlier text said DfT had no awards; it had looked for
+  DfT's own name only. **The payer-award detector does not recognise these bodies as DfT** — it maps buyer
+  names to HMRC, the MoJ, York, Bristol and Manchester — so DfT-paid rows are not corroborated that way;
+  whether they should be is a class-scope question left open. **Bristol and Manchester state no company
+  number on any award** (432 and 101 awards), so rows they pay cannot be corroborated that way.
 - **Previous names help only inside their validity window** (adopted 2026-09-23). Hard rule 6
   compares a buyer's number to the company's **current** name, so a renamed company is demoted.
   The register's previous names are now evidence — but only where the payer's spelling was the
