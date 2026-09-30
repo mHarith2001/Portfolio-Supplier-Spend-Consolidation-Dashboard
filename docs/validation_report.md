@@ -1360,6 +1360,28 @@ question is left open.
 **Open queue: 1,099 rows, GBP 332,866,023.68 (0.65%)** — A 4, B 313, C 782.
 255 decisions, 0 stale; `V3`, `V4` and `D.1`–`D.11` pass; `E-3` unchanged at 95.28%, tier 4 81.05%.
 
+
+### 7.27 ETM CONTRACTORS LTD accepted (2026-09-30)
+
+**`ETM CONTRACTORS LTD` → `02970707`, accepted by the user as a row-specific Tier A decision.** A demoted tier-1
+row whose demotion was register-side spacing: the register holds `E T M CONTRACTORS LIMITED`, the payer writes
+`ETM CONTRACTORS LTD`, so the name check at hard rule 6 failed and no later tier had a candidate. All 363
+payments come from Bristol City Council, coded mainly to roads and highways work; a North Somerset Council award states
+`02970707`, and Bristol's own award states no number. The decision carries `user_review`; it adds no
+normalisation rule, evidence class or delegation, and changes no `D.10` or payer-awards scope. The register-side
+spacing gap stays open. It resolves at tier 1, `reviewed` (`1|reviewed|02970707`).
+
+| Basis | Names | Rows | Value (GBP) | % of value |
+|---|---:|---:|---:|---:|
+| Method — tiers 1–3, by rule | 5,985 | 175,851 | 30,011,990,138.30 | 58.47% |
+| User review | 109 | 11,772 | 1,517,147,600.02 | 2.96% |
+| Delegated review — Tier C | 139 | 1,041 | 3,427,478.56 | 0.0067% |
+| **Total resolved** | | **188,664** | **31,532,565,216.88** | **61.43%** |
+| Unresolved | 7,144 | 163,864 | 19,797,693,878.50 | 38.57% |
+
+**Open queue: 1,098 rows, GBP 320,775,777.68 (0.62%)** — A 3, B 313, C 782.
+256 decisions, 0 stale; `V3`, `V4` and `D.1`–`D.11` pass; `E-3` unchanged at 95.28%, tier 4 81.05%.
+
 ---
 
 ## 8. Layer 4 — the star schema (`94_validate_reporting.sql`)
