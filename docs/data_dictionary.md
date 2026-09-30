@@ -118,6 +118,6 @@ should be quoted without the VAT caveat** in `limitations.md` `P-2`.
 | `resolved_supplier_match` | The match audit trail, one row per name, with `reject_reason` and notes |
 | `resolved_tier4_candidates` | Every scored (name, company) pair ≥ 0.5 |
 
-`review_queue.csv` publishes the decision-bearing part of the audit trail: 1,350 rows — one per name — 257
-carrying a recorded decision (118 by the user, 139 delegated under the Tier C authorisation) and the rest blank. A decision is `accepted`, `rejected` or `left_open` — the last meaning a user reviewed the name and ruled that the evidence cannot separate its candidates, so it stays open; each decision carrying its reason and date from
+`review_queue.csv` publishes the decision-bearing part of the audit trail: 1,350 rows — one per name — 258
+carrying a recorded decision (119 by the user, 139 delegated under the Tier C authorisation) and the rest blank. A decision is `accepted`, `rejected` or `left_open` — the last meaning a user reviewed the name and ruled that the evidence cannot separate its candidates, so it stays open; each decision carrying its reason and date from
 `38_queue_decisions.sql`. Evidence columns show the facts behind the accept classes: `previous_name_evidence` (the register's previous names, 2026-09-23) and `other_buyer_award_evidence` (buyers' awards stating the tier-4 candidate's number, 2026-09-24).

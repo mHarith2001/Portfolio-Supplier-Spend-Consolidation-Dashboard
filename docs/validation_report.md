@@ -1403,6 +1403,27 @@ dormant or wrong-entity rejection class, and changes no stale-guard rule.
 **Open queue: 1,097 rows, GBP 310,236,701.90 (0.60%)** — A 2, B 313, C 782.
 257 decisions, 0 stale; `V3`, `V4` and `D.1`–`D.11` pass; `E-3` unchanged at 95.28%, tier 4 81.05%.
 
+
+### 7.29 CARTER JONAS candidate rejected; Tier A closed (2026-09-30)
+
+**`CARTER JONAS` → `06287947` CARTER JONAS LIMITED, rejected by the user as a row-specific Tier A decision; the name
+stays unresolved**, and its GBP 10,061,631.90 stays in the unresolved total. The offered candidate is a declared
+dormant company (SIC 99999), offered by a company-number tie-break between the two companies that reduce to
+`CARTER JONAS`; no award states it. The identity evidence for `OC304417` CARTER JONAS LLP was reviewed, but recording
+it is not authorised: no stale-guard or `D.10` exception is granted and no substitute candidate is recorded. The
+decision carries `user_review`. With it, every Tier A row carries a user decision.
+
+| Basis | Names | Rows | Value (GBP) | % of value |
+|---|---:|---:|---:|---:|
+| Method — tiers 1–3, by rule | 5,985 | 175,851 | 30,011,990,138.30 | 58.47% |
+| User review | 109 | 11,772 | 1,517,147,600.02 | 2.96% |
+| Delegated review — Tier C | 139 | 1,041 | 3,427,478.56 | 0.0067% |
+| **Total resolved** | | **188,664** | **31,532,565,216.88** | **61.43%** |
+| Unresolved | 7,144 | 163,864 | 19,797,693,878.50 | 38.57% |
+
+**Open queue: 1,096 rows, GBP 300,175,070.00 (0.58%)** — A 1, B 313, C 782.
+258 decisions, 0 stale; `V3`, `V4` and `D.1`–`D.11` pass; `E-3` unchanged at 95.28%, tier 4 81.05%.
+
 ---
 
 ## 8. Layer 4 — the star schema (`94_validate_reporting.sql`)
