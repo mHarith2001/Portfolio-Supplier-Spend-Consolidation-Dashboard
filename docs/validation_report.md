@@ -1424,6 +1424,28 @@ decision carries `user_review`. With it, every Tier A row carries a user decisio
 **Open queue: 1,096 rows, GBP 300,175,070.00 (0.58%)** — A 1, B 313, C 782.
 258 decisions, 0 stale; `V3`, `V4` and `D.1`–`D.11` pass; `E-3` unchanged at 95.28%, tier 4 81.05%.
 
+
+### 7.30 Tier B/C batch of 23 ruled by the user (2026-10-02)
+
+**23 Tier B/C rows ruled together by the user, each decided on its own evidence**: the 6 other-buyer signals whose
+candidate was flagged (dormant, non-trading or facing strike-off, or contradicted by the payer's other spellings), and
+17 rows whose award evidence states both the candidate and another company. **11 accepted (GBP
+7,155,733.13), 9 rejected (GBP 2,777,179.59), 3 left open
+(GBP 1,291,013.29).** Every accept is the queue candidate with a single candidate at score ≥ 0.85, so neither
+the stale guard nor `D.10` is engaged; every reject leaves its name unresolved with no substitute recorded. All carry
+`user_review`: no evidence class, delegation, `D.10` or stale-guard rule changed. `PAYPOINT`, held in batch 4, stays held.
+
+| Basis | Names | Rows | Value (GBP) | % of value |
+|---|---:|---:|---:|---:|
+| Method — tiers 1–3, by rule | 5,985 | 175,851 | 30,011,990,138.30 | 58.47% |
+| User review | 120 | 12,601 | 1,524,303,333.15 | 2.97% |
+| Delegated review — Tier C | 139 | 1,041 | 3,427,478.56 | 0.0067% |
+| **Total resolved** | | **189,493** | **31,539,720,950.01** | **61.44%** |
+| Unresolved | 7,133 | 163,035 | 19,790,538,145.37 | 38.56% |
+
+**Open queue: 1,076 rows, GBP 290,242,157.28 (0.57%)** — A 1, B 302, C 773.
+281 decisions, 0 stale; `V3`, `V4` and `D.1`–`D.11` pass; `E-3` unchanged at 95.28%, tier 4 81.05%.
+
 ---
 
 ## 8. Layer 4 — the star schema (`94_validate_reporting.sql`)
