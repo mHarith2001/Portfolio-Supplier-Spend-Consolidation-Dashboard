@@ -5,7 +5,7 @@ The intellectual core of this project. Figures measured 2026-09-18; resolution, 
 ## The problem
 
 Six public bodies publish spend independently. **14,434 distinct raw vendor spellings**
-appear across their files. They describe **at most 6,093 identified companies plus 7,133
+appear across their files. They describe **at most 6,107 identified companies plus 7,114
 names that could not be identified**. One supplier alone is spelled **16** different ways.
 
 Nobody can answer "how much did the public sector pay this company?" until those spellings
@@ -29,12 +29,12 @@ first or conflate the second.
 | Tier | Method | Confidence | Names | Value (GBP) |
 |---|---|---|---:|---:|
 | 1 | Company number, bridged via a Contracts Finder award | high | 1,172 | 3,981,459,526.06 |
-| 1 | …demoted, then accepted on recorded review | **reviewed** | 107 | 501,830,503.30 |
+| 1 | …demoted, then accepted on recorded review | **reviewed** | 116 | 545,642,004.35 |
 | 2 | Exact normalised name against Companies House | high | 4,760 | 15,875,678,255.84 |
 | 3 | Name core + postcode | medium | 53 | 10,154,852,356.40 |
-| 4 | Token-set similarity ≥ 0.85 on the core | **review**; resolves only on a recorded human accept | 1,001 | 2,020,024,321.62 |
-| 4 | …accepted on recorded review | **reviewed** | 152 | 1,025,900,308.41 |
-| 5 | Unresolved, with a stated reason | none | 6,132 | 17,770,513,823.75 |
+| 4 | Token-set similarity ≥ 0.85 on the core | **review**; resolves only on a recorded human accept | 991 | 1,963,223,735.83 |
+| 4 | …accepted on recorded review | **reviewed** | 162 | 1,082,700,894.20 |
+| 5 | Unresolved, with a stated reason | none | 6,123 | 17,726,702,322.70 |
 
 **Tier 1 is a bridge, not a lookup.** Spend files carry no company numbers. A spend supplier
 reaches a buyer-stated number only where its normalised name equals a Contracts Finder name
@@ -47,9 +47,9 @@ data: publishers truncate and reorder supplier names far more often than they mi
 
 **Resolution by method is tiers 1–3: 5,984 names, GBP 29,992,021,161.30 — 58.43% of transaction
 value.** Human review adds tier-4 names accepted on a recorded decision, reported
-**separately** so one kind of evidence never borrows the other's credibility: so far 120 names by
-the user, GBP 1,524,303,333.15 (2.97%), and 139 names by the builder under the Tier C
-authorisation, GBP 3,427,478.56 (0.0067%) — **61.44% in total**.
+**separately** so one kind of evidence never borrows the other's credibility: so far 139 names by
+the user, GBP 1,624,915,419.99 (3.17%), and 139 names by the builder under the Tier C
+authorisation, GBP 3,427,478.56 (0.0067%) — **61.64% in total**.
 
 ## Eight hard rules
 
@@ -112,8 +112,8 @@ precision plateau begins; below 0.70, tier-4 precision collapses.
 
 **1,350 rows, one per name, highest value first** (`review_queue.csv`). Worked by value in
 three tiers: A (≥ GBP 10m) per-row by the user, B (GBP 100k–10m) and C (< GBP 100k) delegated to the builder where the evidence fits an established
-class — Tier B since 2026-09-29, by user decision; novel, ambiguous or conflicting rows escalate to the user. **281 decisions recorded** — 142 by the user, 139 delegated — and **1,076 rows open**, GBP 290,242,157.28,
-including 7 the user reviewed and ruled left open.
+class — Tier B since 2026-09-29, by user decision; novel, ambiguous or conflicting rows escalate to the user. **306 decisions recorded** — 167 by the user, 139 delegated — and **1,052 rows open**, GBP 169,381,258.82,
+including 8 the user reviewed and ruled left open.
 Four evidence classes may support an accept: the same-payer bridge, the payer's own awards, (from 2026-09-23) the register's **previous names**, cited only where the payer's spelling is the company's registered name for the whole period it was paid, and (from 2026-09-24, tier-4 rows only) **other buyers' awards** — a Contracts Finder award from any buyer stating the candidate's number, with none stating another. An award without a number supplies nothing. **A decided row stays in the queue**: it is the
 decision log, not only the to-do list.
 

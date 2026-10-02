@@ -1446,6 +1446,28 @@ the stale guard nor `D.10` is engaged; every reject leaves its name unresolved w
 **Open queue: 1,076 rows, GBP 290,242,157.28 (0.57%)** — A 1, B 302, C 773.
 281 decisions, 0 stale; `V3`, `V4` and `D.1`–`D.11` pass; `E-3` unchanged at 95.28%, tier 4 81.05%.
 
+
+### 7.31 Value-prioritised no-class batch of 25 ruled by the user (2026-10-02)
+
+**The 25 highest-value undecided no-class Tier B rows** (PAYPOINT excluded), presented with full evidence and ruled by
+the user row by row: **19 accepted (GBP 100,612,086.84), 5 rejected (GBP
+20,248,811.62), 1 left open (GBP 3,544,008.58).** Each accept names the
+queue candidate or the demoted tier-1 number; each reject leaves the supplier spend unresolved with no substitute
+recorded; `AUTOMATION LOGIC` is left open because its candidate is tied with `SC416747` and no `D.10` exception is
+authorised. All carry `user_review`: no evidence or rejection class, normalisation rule, delegation, `D.10`,
+stale-guard or bridge-scope change. `PAYPOINT` stays held.
+
+| Basis | Names | Rows | Value (GBP) | % of value |
+|---|---:|---:|---:|---:|
+| Method — tiers 1–3, by rule | 5,985 | 175,851 | 30,011,990,138.30 | 58.47% |
+| User review | 139 | 14,117 | 1,624,915,419.99 | 3.17% |
+| Delegated review — Tier C | 139 | 1,041 | 3,427,478.56 | 0.0067% |
+| **Total resolved** | | **191,009** | **31,640,333,036.85** | **61.64%** |
+| Unresolved | 7,114 | 161,519 | 19,689,926,058.53 | 38.36% |
+
+**Open queue: 1,052 rows, GBP 169,381,258.82 (0.33%)** — A 1, B 278, C 773.
+306 decisions, 0 stale; `V3`, `V4` and `D.1`–`D.11` pass; `E-3` unchanged at 95.28%, tier 4 81.05%.
+
 ---
 
 ## 8. Layer 4 — the star schema (`94_validate_reporting.sql`)
