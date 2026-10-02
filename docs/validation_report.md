@@ -1468,6 +1468,28 @@ stale-guard or bridge-scope change. `PAYPOINT` stays held.
 **Open queue: 1,052 rows, GBP 169,381,258.82 (0.33%)** — A 1, B 278, C 773.
 306 decisions, 0 stale; `V3`, `V4` and `D.1`–`D.11` pass; `E-3` unchanged at 95.28%, tier 4 81.05%.
 
+
+### 7.32 No-class batch 2 of 25 ruled by the user (2026-10-03)
+
+**The next 25 highest-value undecided no-class Tier B rows** (PAYPOINT excluded), presented with full evidence and
+ruled by the user row by row: **17 accepted (GBP 25,406,506.44), 4 rejected (GBP
+6,471,185.27), 4 left open (GBP 7,015,570.65).** Each accept names the queue
+candidate or the demoted tier-1 number; each reject leaves the supplier spend unresolved with no substitute recorded.
+Left open: `GREAT MINDS TOGETHER LTD` (candidate in administration), `VENTURERS TRUST` (candidate in liquidation),
+`HOMECARE SUPPORT` and `FOSTERING TEAM` (tied candidates; no `D.10` exception). All carry `user_review`: no evidence or
+rejection class, normalisation rule, delegation, `D.10`, stale-guard or bridge-scope change. `PAYPOINT` stays held.
+
+| Basis | Names | Rows | Value (GBP) | % of value |
+|---|---:|---:|---:|---:|
+| Method — tiers 1–3, by rule | 5,985 | 175,851 | 30,011,990,138.30 | 58.47% |
+| User review | 156 | 19,519 | 1,650,321,926.43 | 3.22% |
+| Delegated review — Tier C | 139 | 1,041 | 3,427,478.56 | 0.0067% |
+| **Total resolved** | | **196,411** | **31,665,739,543.29** | **61.69%** |
+| Unresolved | 7,097 | 156,117 | 19,664,519,552.09 | 38.31% |
+
+**Open queue: 1,031 rows, GBP 137,503,567.11 (0.27%)** — A 1, B 257, C 773.
+331 decisions, 0 stale; `V3`, `V4` and `D.1`–`D.11` pass; `E-3` unchanged at 95.28%, tier 4 81.05%.
+
 ---
 
 ## 8. Layer 4 — the star schema (`94_validate_reporting.sql`)
